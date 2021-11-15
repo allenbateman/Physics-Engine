@@ -1,0 +1,73 @@
+﻿  Application.cpp
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(52,19): warning C4244: 'inicializando': conversión de 'const float' a 'int'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(54,30): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+  Main.cpp
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(52,19): warning C4244: 'inicializando': conversión de 'const float' a 'int'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(54,30): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+  ModuleAudio.cpp
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(52,19): warning C4244: 'inicializando': conversión de 'const float' a 'int'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(54,30): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+  ModuleCollisions.cpp
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(52,19): warning C4244: 'inicializando': conversión de 'const float' a 'int'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(54,30): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+  ModuleInput.cpp
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(52,19): warning C4244: 'inicializando': conversión de 'const float' a 'int'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(54,30): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+  ModulePhysics.cpp
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(52,19): warning C4244: 'inicializando': conversión de 'const float' a 'int'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(54,30): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+  ModulePlayer.cpp
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(52,19): warning C4244: 'inicializando': conversión de 'const float' a 'int'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(54,30): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(47,15): warning C4305: '=': truncamiento de 'double' a 'TYPE'
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(48,15): warning C4305: '=': truncamiento de 'double' a 'TYPE'
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(67,19): warning C4305: '+=': truncamiento de 'double' a 'TYPE'
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(116,134): warning C4305: 'argumento': truncamiento de 'double' a 'float'
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(116,78): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(116,41): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+  ModuleRender.cpp
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(52,19): warning C4244: 'inicializando': conversión de 'const float' a 'int'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(54,30): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleRender.cpp(69,36): warning C4244: '=': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleRender.cpp(70,48): warning C4244: '=': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleRender.cpp(107,23): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleRender.cpp(108,23): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+  ModuleSceneIntro.cpp
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(52,19): warning C4244: 'inicializando': conversión de 'const float' a 'int'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(54,30): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+  ModuleTextures.cpp
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(52,19): warning C4244: 'inicializando': conversión de 'const float' a 'int'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(54,30): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+  ModuleWindow.cpp
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(52,19): warning C4244: 'inicializando': conversión de 'const float' a 'int'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(54,30): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+  Generando código...
+  SDL Game.vcxproj -> C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Debug\Physics 2 Class 1 Handout.exe
