@@ -11,41 +11,23 @@ ModuleCollisions::ModuleCollisions(Application* app, bool start_enabled) : Modul
 	for (uint i = 0; i < MAX_COLLIDERS; ++i)
 		colliders[i] = nullptr;
 
-	//matrix[Collider::Type::WALL][Collider::Type::WALL] = false;
-	//matrix[Collider::Type::WALL][Collider::Type::PLAYER] = true;
-	//matrix[Collider::Type::WALL][Collider::Type::ENEMY] = true;
-	//matrix[Collider::Type::WALL][Collider::Type::PLAYER_SHOT] = true;
-	//matrix[Collider::Type::WALL][Collider::Type::ENEMY_SHOT] = true;
+	matrix[Collider::Type::WALL][Collider::Type::WALL] = false;
+	matrix[Collider::Type::WALL][Collider::Type::PLAYER] = true;
+	matrix[Collider::Type::WALL][Collider::Type::PARTICLE] = true;
+	matrix[Collider::Type::WALL][Collider::Type::BOUNDS] = true;
+	matrix[Collider::Type::WALL][Collider::Type::BULLET] = true;
 
-	//matrix[Collider::Type::PLAYER][Collider::Type::WALL] = true;
-	//matrix[Collider::Type::PLAYER][Collider::Type::PLAYER] = false;
-	//matrix[Collider::Type::PLAYER][Collider::Type::ENEMY] = true;
-	//matrix[Collider::Type::PLAYER][Collider::Type::PLAYER_SHOT] = false;
-	//matrix[Collider::Type::PLAYER][Collider::Type::ENEMY_SHOT] = true;
+	matrix[Collider::Type::PLAYER][Collider::Type::WALL] = true;
+	matrix[Collider::Type::PLAYER][Collider::Type::PLAYER] = true;
+	matrix[Collider::Type::PLAYER][Collider::Type::BOUNDS] = true;
+	matrix[Collider::Type::PLAYER][Collider::Type::BULLET] = true;
+	matrix[Collider::Type::PLAYER][Collider::Type::PARTICLE] = true;
 
-	//matrix[Collider::Type::ENEMY][Collider::Type::WALL] = true;
-	//matrix[Collider::Type::ENEMY][Collider::Type::PLAYER] = true;
-	//matrix[Collider::Type::ENEMY][Collider::Type::ENEMY] = false;
-	//matrix[Collider::Type::ENEMY][Collider::Type::PLAYER_SHOT] = true;
-	//matrix[Collider::Type::ENEMY][Collider::Type::ENEMY_SHOT] = false;
+	matrix[Collider::Type::PARTICLE][Collider::Type::PARTICLE] = true;
+	matrix[Collider::Type::PARTICLE][Collider::Type::WALL] = true;
+	matrix[Collider::Type::PARTICLE][Collider::Type::BOUNDS] = true;
+	matrix[Collider::Type::PARTICLE][Collider::Type::BULLET] = true;
 
-	//matrix[Collider::Type::EXPLOSION][Collider::Type::WALL] = true;
-	//matrix[Collider::Type::EXPLOSION][Collider::Type::PLAYER] = true;
-	//matrix[Collider::Type::EXPLOSION][Collider::Type::ENEMY] = true;
-	//matrix[Collider::Type::EXPLOSION][Collider::Type::RED_FLOWER] = true;
-	//matrix[Collider::Type::EXPLOSION][Collider::Type::YELLOW_FLOWER] = true;
-
-	//matrix[Collider::Type::BOMB][Collider::Type::WALL] = true;
-	//matrix[Collider::Type::BOMB][Collider::Type::PLAYER] = true;
-	//matrix[Collider::Type::BOMB][Collider::Type::ENEMY] = true;
-	//matrix[Collider::Type::BOMB][Collider::Type::RED_FLOWER] = true;
-	//matrix[Collider::Type::BOMB][Collider::Type::YELLOW_FLOWER] = true;
-
-	//matrix[Collider::Type::ENEMY_SHOT][Collider::Type::WALL] = true;
-	//matrix[Collider::Type::ENEMY_SHOT][Collider::Type::PLAYER] = true;
-	//matrix[Collider::Type::ENEMY_SHOT][Collider::Type::ENEMY] = false;
-	//matrix[Collider::Type::ENEMY_SHOT][Collider::Type::PLAYER_SHOT] = false;
-	//matrix[Collider::Type::ENEMY_SHOT][Collider::Type::ENEMY_SHOT] = false;
 }
 
 // Destructor
@@ -134,44 +116,14 @@ void ModuleCollisions::DebugDraw()
 		case Collider::Type::WALL: // blue
 			App->renderer->DrawQuad(colliders[i]->rect, 0, 0, 255, alpha);
 			break;
-		case Collider::Type::ORB: // blue
-			App->renderer->DrawQuad(colliders[i]->rect, 0, 255, 155, alpha);
-			break;
-		case Collider::Type::YELLOW_FLOWER: // yellow
-			App->renderer->DrawQuad(colliders[i]->rect, 255, 255, 0, alpha);
-			break;
-		case Collider::Type::RED_FLOWER: // orange
-			App->renderer->DrawQuad(colliders[i]->rect, 255, 122, 0, alpha);
-			break;
-		case Collider::Type::STRUCTURE: // purple
-			App->renderer->DrawQuad(colliders[i]->rect, 122, 0, 255, alpha);
-			break;
 		case Collider::Type::PLAYER: // green
 			App->renderer->DrawQuad(colliders[i]->rect, 0, 255, 0, alpha);
 			break;
-		case Collider::Type::BOMB: // red/white
-			App->renderer->DrawQuad(colliders[i]->rect, 255, 102, 102, alpha);
-			break;
-		case Collider::Type::EXPLOSION: // red/white
-			App->renderer->DrawQuad(colliders[i]->rect, 255, 255, 255, alpha);
-			break;
-		case Collider::Type::ENEMY: // red
+		case Collider::Type::BOUNDS: // red
 			App->renderer->DrawQuad(colliders[i]->rect, 255, 0, 0, alpha);
 			break;
-		case Collider::Type::PLAYER_SHOT: // yellow
-			App->renderer->DrawQuad(colliders[i]->rect, 255, 255, 0, alpha);
-			break;
-		case Collider::Type::ENEMY_SHOT: // magenta
-			App->renderer->DrawQuad(colliders[i]->rect, 0, 255, 255, alpha);
-			break;
-		case Collider::Type::WIN: // GREEN
-			App->renderer->DrawQuad(colliders[i]->rect, 0, 255, 0, alpha);
-			break;
-		case Collider::Type::NEXT: // Pink
-			App->renderer->DrawQuad(colliders[i]->rect, 255, 125, 0, alpha);
-			break;
-		case Collider::Type::BOUNDS: // Black
-			App->renderer->DrawQuad(colliders[i]->rect, 0, 0, 0, alpha);
+		case Collider::Type::PARTICLE: // red
+			App->renderer->DrawQuad(colliders[i]->rect, 255, 125,125, alpha);
 			break;
 		}
 	}

@@ -6,8 +6,8 @@ ModuleRender::ModuleRender(Application* app, bool start_enabled) : Module(app, s
 {
 	renderer = NULL;
 	camera.x = camera.y = 0;
-	camera.w = CAMERA_WIDTH;
-	camera.h = CAMERA_HEIGHT;
+	camera.w = SCREEN_WIDTH;
+	camera.h = SCREEN_HEIGHT;
 }
 
 // Destructor
@@ -34,16 +34,13 @@ bool ModuleRender::Init()
 		ret = false;
 	}
 
-
-
-
 	return ret;
 }
 
 // PreUpdate: clear buffer
 update_status ModuleRender::PreUpdate()
 {
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
 	SDL_RenderClear(renderer);
 	return UPDATE_CONTINUE;
 }
@@ -51,29 +48,14 @@ update_status ModuleRender::PreUpdate()
 // Update: debug camera
 update_status ModuleRender::Update()
 {
-	/*
-	int speed = 3;
-
-	if(App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
-		App->renderer->camera.y -= speed;
-
-	if(App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
-		App->renderer->camera.y += speed;
-
-	if(App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
-		App->renderer->camera.x -= speed;
-
-	if(App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
-		App->renderer->camera.x += speed;
-	*/
-	camera.x = App->player->position.x-camera.w/2;
-	camera.y = App->player->position.y - camera.h + 90;
+	
 	return UPDATE_CONTINUE;
 }
 
 // PostUpdate present buffer to screen
 update_status ModuleRender::PostUpdate()
 {
+	//draw camera bounds
 	App->renderer->DrawQuad(camera, 255, 0, 0, 255, false,false);
 
 	SDL_RenderPresent(renderer);

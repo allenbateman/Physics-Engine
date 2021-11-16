@@ -16,7 +16,14 @@ ModulePhysics::~ModulePhysics()
 bool ModulePhysics::Start()
 {
 	LOG("Creating Physics 2D environment");
+	SDL_Rect rectangle;
+	rectangle.x = 250;
+	rectangle.y = 250;
+	rectangle.w = 50;
+	rectangle.h = 50;
 
+	App->collisions->AddCollider(rectangle, Collider::PARTICLE, this);
+	App->collisions->AddCollider()
 	return true;
 }
 

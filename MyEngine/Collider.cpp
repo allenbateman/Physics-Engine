@@ -5,11 +5,25 @@ Collider::Collider(SDL_Rect rectangle, Type type, Module* listener) : rect(recta
 	listeners[0] = listener;
 }
 
+void Collider::CircleCollider(iPoint pos, float radius, Type type, Module* listener)
+{
+
+}
+
+void Collider::RectangleCollider(SDL_Rect rctangle, Type type, Module* listener)
+{
+}
+
+void Collider::ChainCollider(float* vertices, Type type, Module* listener)
+{
+}
+
 void Collider::SetPos(int x, int y)
 {
 	rect.x = x;
 	rect.y = y;
 }
+
 
 bool Collider::Intersects(const SDL_Rect& r) const
 {

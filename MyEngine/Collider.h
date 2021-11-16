@@ -13,27 +13,33 @@ struct Collider
 	{
 		NONE = -1,
 		WALL,
-		ORB,
-		YELLOW_FLOWER,
-		RED_FLOWER,
-		STRUCTURE,
+		BALL,
 		PLAYER,
-		ENEMY,
-		PLAYER_SHOT,
-		ENEMY_SHOT,
-		BOMB,
-		EXPLOSION,
-		WIN,
-		NEXT,
-		MAX,
-		POWER_UP,
-		BOUNDS
+		BULLET,
+		BOUNDS,
+		PARTICLE,
+		MAX
+	};
+	enum Shape {
+		RECTANGLE,
+		CIRCLE,
+		CHAIN
 	};
 
 	//Methods
 	Collider(SDL_Rect rectangle, Type type, Module* listener = nullptr);
 
+	void CircleCollider(iPoint pos,float radius, Type type, Module* listener = nullptr);
+
+	void RectangleCollider(SDL_Rect rctangle, Type type, Module* listener = nullptr);
+
+	void ChainCollider(float* vertices, Type type, Module* listener = nullptr);
+
 	void SetPos(int x, int y);
+
+	bool CircleRectangleCollision();
+	bool CircleCircleCollision();
+	bool RectangleRectangleCollsion();
 
 	iPoint GetPos() { return iPoint {rect.x,rect.y}; }
 	
@@ -45,6 +51,7 @@ struct Collider
 	SDL_Rect rect;
 	bool pendingToDelete = false;
 	Type type;
+	Shape shape;
 	Module* listeners[MAX_LISTENERS] = { nullptr };
 };
 

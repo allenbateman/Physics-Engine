@@ -34,6 +34,10 @@ public:
 	// Adds a new collider to the list
 	Collider* AddCollider(SDL_Rect rect, Collider::Type type, Module* listener = nullptr);
 
+	Collider* AddCircleCollider(iPoint center, float radius, Collider::Type type, Module* listener = nullptr);
+	Collider* AddRectangleCollider(SDL_Rect rect, Collider::Type type, Module* listener = nullptr);
+	//Collider* AddChainCollider(iPoint center,float[] chain, Collider::Type type, Module* listener = nullptr);
+
 	// Removes the collider memory and removes it from the colliders array
 	void RemoveCollider(Collider* collider);
 

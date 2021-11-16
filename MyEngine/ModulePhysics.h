@@ -14,6 +14,5 @@ public:
 	bool CleanUp();
 
 private:
-
 	bool debug;
 };
