@@ -11,6 +11,8 @@ ModuleCollisions::ModuleCollisions(Application* app, bool start_enabled) : Modul
 	for (uint i = 0; i < MAX_COLLIDERS; ++i)
 		colliders[i] = nullptr;
 
+	debug = true;
+
 	matrix[Collider::Type::WALL][Collider::Type::WALL] = false;
 	matrix[Collider::Type::WALL][Collider::Type::PLAYER] = true;
 	matrix[Collider::Type::WALL][Collider::Type::PARTICLE] = true;
@@ -89,6 +91,18 @@ update_status ModuleCollisions::Update()
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 		debug = !debug;
 
+	for(uint i = 0; i < MAX_COLLIDERS; i++)
+	{
+		if (colliders[i] == nullptr)
+			continue;
+
+		colliders[i]->position.y += 0.1f;
+		if (colliders[i]->shape == Collider::Shape::RECTANGLE)
+		{
+			colliders[i]->rect.y = colliders[i]->position.y;
+		}
+	}
+
 	return update_status::UPDATE_CONTINUE;
 }
 
@@ -108,24 +122,51 @@ void ModuleCollisions::DebugDraw()
 		if (colliders[i] == nullptr)
 			continue;
 
-		switch (colliders[i]->type)
-		{
-		case Collider::Type::NONE: // white
-			App->renderer->DrawQuad(colliders[i]->rect, 255, 255, 255, alpha);
+		switch (colliders[i]->shape) {
+		case Collider::Shape::RECTANGLE:
+			switch (colliders[i]->type)
+			{
+			case Collider::Type::NONE: // white
+				App->renderer->DrawQuad(colliders[i]->rect, 255, 255, 255, alpha);
+				break;
+			case Collider::Type::WALL: // blue
+				App->renderer->DrawQuad(colliders[i]->rect, 0, 0, 255, alpha);
+				break;
+			case Collider::Type::PLAYER: // green
+				App->renderer->DrawQuad(colliders[i]->rect, 0, 255, 0, alpha);
+				break;
+			case Collider::Type::BOUNDS: // red
+				App->renderer->DrawQuad(colliders[i]->rect, 255, 0, 0, alpha);
+				break;
+			case Collider::Type::PARTICLE: // red
+				App->renderer->DrawQuad(colliders[i]->rect, 255, 125, 125, alpha);
+				break;
+			}
 			break;
-		case Collider::Type::WALL: // blue
-			App->renderer->DrawQuad(colliders[i]->rect, 0, 0, 255, alpha);
+		case Collider::Shape::CIRCLE:
+			switch (colliders[i]->type)
+			{
+			case Collider::Type::NONE: // white
+				App->renderer->DrawCircle(colliders[i]->position, colliders[i]->radius, 255, 255, alpha);
+				break;
+			case Collider::Type::WALL: // blue
+				App->renderer->DrawCircle(colliders[i]->position, colliders[i]->radius, 0, 0, 255, alpha);
+				break;
+			case Collider::Type::PLAYER: // green
+				App->renderer->DrawCircle(colliders[i]->position, colliders[i]->radius, 0, 255, 0, alpha);
+				break;
+			case Collider::Type::BOUNDS: // red
+				App->renderer->DrawCircle(colliders[i]->position, colliders[i]->radius, 255, 0, 0, alpha);
+				break;
+			case Collider::Type::PARTICLE: // red
+				App->renderer->DrawCircle(colliders[i]->position, colliders[i]->radius, 255, 125, 125, alpha);
+				break;
+			}
 			break;
-		case Collider::Type::PLAYER: // green
-			App->renderer->DrawQuad(colliders[i]->rect, 0, 255, 0, alpha);
-			break;
-		case Collider::Type::BOUNDS: // red
-			App->renderer->DrawQuad(colliders[i]->rect, 255, 0, 0, alpha);
-			break;
-		case Collider::Type::PARTICLE: // red
-			App->renderer->DrawQuad(colliders[i]->rect, 255, 125,125, alpha);
+		default:
 			break;
 		}
+
 	}
 }
 
@@ -146,7 +187,7 @@ bool ModuleCollisions::CleanUp()
 	return true;
 }
 
-Collider* ModuleCollisions::AddCollider(SDL_Rect rect, Collider::Type type, Module* listener)
+Collider* ModuleCollisions::AddRectangleCollider(SDL_Rect rect, Collider::Type type, Module* listener)
 {
 	Collider* ret = nullptr;
 
@@ -155,6 +196,22 @@ Collider* ModuleCollisions::AddCollider(SDL_Rect rect, Collider::Type type, Modu
 		if (colliders[i] == nullptr)
 		{
 			ret = colliders[i] = new Collider(rect, type, listener);
+			break;
+		}
+	}
+
+	return ret;
+}
+
+Collider* ModuleCollisions::AddCircleCollider(fPoint center,float radius, Collider::Type type, Module* listener)
+{
+	Collider* ret = nullptr;
+
+	for (uint i = 0; i < MAX_COLLIDERS; ++i)
+	{
+		if (colliders[i] == nullptr)
+		{
+			ret = colliders[i] = new Collider(center, radius, type, listener);
 			break;
 		}
 	}

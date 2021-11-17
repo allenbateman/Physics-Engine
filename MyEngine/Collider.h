@@ -28,18 +28,21 @@ struct Collider
 
 	//Methods
 	Collider(SDL_Rect rectangle, Type type, Module* listener = nullptr);
+	Collider(fPoint positon,float radius, Type type, Module* listener = nullptr);
 
-	void CircleCollider(iPoint pos,float radius, Type type, Module* listener = nullptr);
+	void CircleCollider(fPoint pos,float _radius, Type _type, Module* listener = nullptr);
 
-	void RectangleCollider(SDL_Rect rctangle, Type type, Module* listener = nullptr);
+	void RectangleCollider(SDL_Rect _rctangle, Type _type, Module* listener = nullptr);
 
-	void ChainCollider(float* vertices, Type type, Module* listener = nullptr);
+	void ChainCollider(float* _vertices, Type _type, Module* listener = nullptr);
 
 	void SetPos(int x, int y);
 
-	bool CircleRectangleCollision();
-	bool CircleCircleCollision();
-	bool RectangleRectangleCollsion();
+	bool CircleRectangleCollision(Collider c1, Collider c2);
+
+	bool CircleCircleCollision(Collider c1, Collider c2);
+
+	bool RectangleRectangleCollsion(Collider c1, Collider c2);
 
 	iPoint GetPos() { return iPoint {rect.x,rect.y}; }
 	
@@ -48,7 +51,13 @@ struct Collider
 	void AddListener(Module* listener);
 
 	//Variables
+
+	//square
 	SDL_Rect rect;
+	
+	//circle
+	float radius;
+	fPoint position;
 	bool pendingToDelete = false;
 	Type type;
 	Shape shape;

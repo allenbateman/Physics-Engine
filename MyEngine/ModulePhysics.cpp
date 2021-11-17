@@ -22,13 +22,14 @@ bool ModulePhysics::Start()
 	rectangle.w = 50;
 	rectangle.h = 50;
 
-	App->collisions->AddCollider(rectangle, Collider::PARTICLE, this);
-	App->collisions->AddCollider()
+	App->collisions->AddRectangleCollider(rectangle, Collider::PARTICLE, this);
+	App->collisions->AddCircleCollider(fPoint(450,450), 25, Collider::PARTICLE, this);
 	return true;
 }
 
 update_status ModulePhysics::PreUpdate()
 {
+
 	return UPDATE_CONTINUE;
 }
 

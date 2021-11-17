@@ -40,7 +40,7 @@ bool ModuleRender::Init()
 // PreUpdate: clear buffer
 update_status ModuleRender::PreUpdate()
 {
-	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 	SDL_RenderClear(renderer);
 	return UPDATE_CONTINUE;
 }
@@ -165,7 +165,7 @@ bool ModuleRender::DrawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8 g, Ui
 	return ret;
 }
 
-bool ModuleRender::DrawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, Uint8 a, bool use_camera)
+bool ModuleRender::DrawCircle(fPoint center, int radius, Uint8 r, Uint8 g, Uint8 b, Uint8 a, bool use_camera)
 {
 	bool ret = true;
 
@@ -179,8 +179,8 @@ bool ModuleRender::DrawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 
 
 	for(uint i = 0; i < 360; ++i)
 	{
-		points[i].x = (int) (x + radius * cos( i * factor));
-		points[i].y = (int) (y + radius * sin( i * factor));
+		points[i].x = (int) (center.x + radius * cos( i * factor));
+		points[i].y = (int) (center.y + radius * sin( i * factor));
 	}
 
 	result = SDL_RenderDrawPoints(renderer, points, 360);

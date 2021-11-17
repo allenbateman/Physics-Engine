@@ -12,6 +12,7 @@ public:
 	// Constructor
 	// Fills all collision matrix data
 	ModuleCollisions(Application* app, bool start_enabled = true);
+
 	// Destructor
 	~ModuleCollisions();
 
@@ -34,7 +35,7 @@ public:
 	// Adds a new collider to the list
 	Collider* AddCollider(SDL_Rect rect, Collider::Type type, Module* listener = nullptr);
 
-	Collider* AddCircleCollider(iPoint center, float radius, Collider::Type type, Module* listener = nullptr);
+	Collider* AddCircleCollider(fPoint center, float radius, Collider::Type type, Module* listener = nullptr);
 	Collider* AddRectangleCollider(SDL_Rect rect, Collider::Type type, Module* listener = nullptr);
 	//Collider* AddChainCollider(iPoint center,float[] chain, Collider::Type type, Module* listener = nullptr);
 
