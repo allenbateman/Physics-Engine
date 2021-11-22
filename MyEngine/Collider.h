@@ -13,11 +13,8 @@ struct Collider
 	{
 		NONE = -1,
 		WALL,
-		BALL,
 		PLAYER,
 		BULLET,
-		BOUNDS,
-		PARTICLE,
 		MAX
 	};
 	enum Shape {
@@ -27,14 +24,14 @@ struct Collider
 	};
 
 	//Methods
-	Collider(SDL_Rect rectangle, Type type, Module* listener = nullptr);
-	Collider(fPoint positon,float radius, Type type, Module* listener = nullptr);
+	Collider(SDL_Rect rectangle, Type type, Module* listener = nullptr, float _mass = 1);
+	Collider(fPoint positon,float radius, Type type, Module* listener = nullptr,float _mass = 1);
 
-	void CircleCollider(fPoint pos,float _radius, Type _type, Module* listener = nullptr);
+	void CircleCollider(fPoint pos,float _radius, Type _type, Module* listener = nullptr,  float _mass = 1);
 
-	void RectangleCollider(SDL_Rect _rctangle, Type _type, Module* listener = nullptr);
+	void RectangleCollider(SDL_Rect _rctangle, Type _type, Module* listener = nullptr, float _mass = 1);
 
-	void ChainCollider(float* _vertices, Type _type, Module* listener = nullptr);
+	void ChainCollider(float* _vertices, Type _type, Module* listener = nullptr, float _mass = 1);
 
 	void SetPos(int x, int y);
 
@@ -46,7 +43,8 @@ struct Collider
 
 	iPoint GetPos() { return iPoint {rect.x,rect.y}; }
 	
-	bool Intersects(const SDL_Rect& r) const;
+	// const-> so it will not affect the object variables
+	bool Intersects( const Collider* other) const;
 
 	void AddListener(Module* listener);
 
@@ -57,8 +55,14 @@ struct Collider
 	
 	//circle
 	float radius;
+
 	fPoint position;
+	fPoint velocity;
+	fPoint acceleration;
+
+
 	bool pendingToDelete = false;
+	float mass;
 	Type type;
 	Shape shape;
 	Module* listeners[MAX_LISTENERS] = { nullptr };

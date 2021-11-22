@@ -16,19 +16,18 @@ ModulePhysics::~ModulePhysics()
 bool ModulePhysics::Start()
 {
 	LOG("Creating Physics 2D environment");
-	SDL_Rect rectangle;
-	rectangle.x = 250;
-	rectangle.y = 250;
-	rectangle.w = 50;
-	rectangle.h = 50;
 
-	App->collisions->AddRectangleCollider(rectangle, Collider::PARTICLE, this);
-	App->collisions->AddCircleCollider(fPoint(450,450), 25, Collider::PARTICLE, this);
+
 	return true;
 }
 
 update_status ModulePhysics::PreUpdate()
 {
+
+	return UPDATE_CONTINUE;
+}
+
+update_status ModulePhysics::Update() {
 
 	return UPDATE_CONTINUE;
 }

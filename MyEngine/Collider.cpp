@@ -1,21 +1,24 @@
 #include "Collider.h"
 
-Collider::Collider(SDL_Rect rectangle, Type type, Module* listener) : rect(rectangle), type(type)
+Collider::Collider(SDL_Rect rectangle, Type type, Module* listener, float _mass) : rect(rectangle), type(type)
 {
 	shape = Shape::RECTANGLE;
 	position.x = rectangle.x;
 	position.y = rectangle.y;
 	listeners[0] = listener;
+	mass = _mass;
 }
 
-Collider::Collider(fPoint center, float radius, Type type, Module* listener) : position(center),radius (radius), type(type)
+Collider::Collider(fPoint center, float radius, Type type, Module* listener, float _mass) : position(center),radius (radius), type(type)
 {
 	shape = Shape::CIRCLE;
 	listeners[0] = listener;
+	mass = _mass;
+
 }
 
 
-void Collider::CircleCollider(fPoint pos, float _radius, Type _type, Module* listener)
+void Collider::CircleCollider(fPoint pos, float _radius, Type _type, Module* listener, float _mass)
 {
 	shape = Shape::CIRCLE;
 	position.x = pos.x;
@@ -23,21 +26,28 @@ void Collider::CircleCollider(fPoint pos, float _radius, Type _type, Module* lis
 	radius = _radius;
 	type = _type;
 	listeners[0] = listener;
+	mass = _mass;
+
 }
 
-void Collider::RectangleCollider(SDL_Rect _rectangle, Type _type, Module* listener)
+void Collider::RectangleCollider(SDL_Rect _rectangle, Type _type, Module* listener, float _mass)
 {
 	shape = Shape::RECTANGLE;
 	rect = _rectangle;
 	position.x = _rectangle.x;
 	position.y = _rectangle.y;
+	mass = _mass;
 	type = _type;
 	listeners[0] = listener;
+	mass = _mass;
+
 }
 
-void Collider::ChainCollider(float* vertices, Type type, Module* listener)
+void Collider::ChainCollider(float* vertices, Type type, Module* listener, float _mass)
 {
 	//todo
+	mass = _mass;
+
 	shape = Shape::CHAIN;
 }
 
@@ -60,34 +70,69 @@ void Collider::SetPos(int x, int y)
 
 }
 
-bool Collider::CircleRectangleCollision(Collider c1, Collider c2)
+bool Collider::CircleRectangleCollision(Collider current, Collider other)
 {
 	//c1 -> being a circle 
 	//c2 -> being a rectangle
 	return false;
 }
 
-bool Collider::CircleCircleCollision(Collider c, Collider c2)
+bool Collider::CircleCircleCollision(Collider current, Collider other)
 {
 	//c1 -> being a Circle
 	//c2 -> being a Circle
 	return false;
 }
 
-bool Collider::RectangleRectangleCollsion(Collider c, Collider c2)
+bool Collider::RectangleRectangleCollsion(Collider current, Collider other)
 {
 	//c1 -> being a rectangle
 	//c2 -> being a rectangle
-	return false;
+	return (current.rect.x < other.rect.x + other.rect.w &&
+		current.rect.x + current.rect.w > other.rect.x &&
+		current.rect.y < other.rect.y + other.rect.h &&
+		current.rect.h + current.rect.y > other.rect.y);
 }
 
 
-bool Collider::Intersects(const SDL_Rect& r) const
+bool Collider::Intersects(const	Collider* other) const
 {
-	return (rect.x < r.x + r.w &&
-		rect.x + rect.w > r.x &&
-		rect.y < r.y + r.h &&
-		rect.h + rect.y > r.y);
+	switch (type)
+	{
+		case Shape::CIRCLE:
+			switch (other->shape)
+			{
+				case  Shape::CIRCLE:
+					break;
+				case  Shape::RECTANGLE:
+					return (rect.x < other->rect.x + other->rect.w &&
+						rect.x + rect.w > other->rect.x &&
+						rect.y < other->rect.y + other->rect.h &&
+						rect.h + rect.y > other->rect.y);
+					break;
+				default:
+					break;
+			}
+			break;
+		case Shape::RECTANGLE:
+			switch (other->shape)
+			{
+				case  Shape::CIRCLE:
+					break;
+				case  Shape::RECTANGLE:
+					return (rect.x < other->rect.x + other->rect.w &&
+						rect.x + rect.w > other->rect.x &&
+						rect.y < other->rect.y + other->rect.h &&
+						rect.h + rect.y > other->rect.y);
+					break;
+				default:
+					break;
+			}
+			break;
+		default:
+			break;
+	}
+
 }
 
 void Collider::AddListener(Module* listener)

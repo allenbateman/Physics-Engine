@@ -15,21 +15,16 @@ ModuleCollisions::ModuleCollisions(Application* app, bool start_enabled) : Modul
 
 	matrix[Collider::Type::WALL][Collider::Type::WALL] = false;
 	matrix[Collider::Type::WALL][Collider::Type::PLAYER] = true;
-	matrix[Collider::Type::WALL][Collider::Type::PARTICLE] = true;
-	matrix[Collider::Type::WALL][Collider::Type::BOUNDS] = true;
 	matrix[Collider::Type::WALL][Collider::Type::BULLET] = true;
 
 	matrix[Collider::Type::PLAYER][Collider::Type::WALL] = true;
 	matrix[Collider::Type::PLAYER][Collider::Type::PLAYER] = true;
-	matrix[Collider::Type::PLAYER][Collider::Type::BOUNDS] = true;
 	matrix[Collider::Type::PLAYER][Collider::Type::BULLET] = true;
-	matrix[Collider::Type::PLAYER][Collider::Type::PARTICLE] = true;
 
-	matrix[Collider::Type::PARTICLE][Collider::Type::PARTICLE] = true;
-	matrix[Collider::Type::PARTICLE][Collider::Type::WALL] = true;
-	matrix[Collider::Type::PARTICLE][Collider::Type::BOUNDS] = true;
-	matrix[Collider::Type::PARTICLE][Collider::Type::BULLET] = true;
 
+	matrix[Collider::Type::BULLET][Collider::Type::BULLET] = true;
+	matrix[Collider::Type::BULLET][Collider::Type::PLAYER] = true;
+	matrix[Collider::Type::BULLET][Collider::Type::WALL] = true;
 }
 
 // Destructor
@@ -40,48 +35,11 @@ ModuleCollisions::~ModuleCollisions()
 
 update_status ModuleCollisions::PreUpdate()
 {
-	// Remove all colliders scheduled for deletion
-	for (uint i = 0; i < MAX_COLLIDERS; ++i)
-	{
-		if (colliders[i] != nullptr)
-		{
-			if (colliders[i]->pendingToDelete == true) {
-				delete colliders[i];
-				colliders[i] = nullptr;
-			}
-		}
-	}
 
-	Collider* c1;
-	Collider* c2;
+	RemovePendingToDeleteColliders();
 
-	for (uint i = 0; i < MAX_COLLIDERS; ++i)
-	{
-		// skip empty colliders
-		if (colliders[i] == nullptr)
-			continue;
-
-		c1 = colliders[i];
-
-		// avoid checking collisions already checked
-		for (uint k = i + 1; k < MAX_COLLIDERS; ++k)
-		{
-			// skip empty colliders
-			if (colliders[k] == nullptr)
-				continue;
-
-			c2 = colliders[k];
-
-			if (matrix[c1->type][c2->type] && c1->Intersects(c2->rect))
-			{
-				for (uint i = 0; i < MAX_LISTENERS; ++i)
-					if (c1->listeners[i] != nullptr) c1->listeners[i]->OnCollision(c1, c2);
-
-				for (uint i = 0; i < MAX_LISTENERS; ++i)
-					if (c2->listeners[i] != nullptr) c2->listeners[i]->OnCollision(c2, c1);
-			}
-		}
-	}
+	CheckCollisions();
+	ApplyForces();
 
 	return update_status::UPDATE_CONTINUE;
 }
@@ -91,17 +49,6 @@ update_status ModuleCollisions::Update()
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 		debug = !debug;
 
-	for(uint i = 0; i < MAX_COLLIDERS; i++)
-	{
-		if (colliders[i] == nullptr)
-			continue;
-
-		colliders[i]->position.y += 0.1f;
-		if (colliders[i]->shape == Collider::Shape::RECTANGLE)
-		{
-			colliders[i]->rect.y = colliders[i]->position.y;
-		}
-	}
 
 	return update_status::UPDATE_CONTINUE;
 }
@@ -126,41 +73,35 @@ void ModuleCollisions::DebugDraw()
 		case Collider::Shape::RECTANGLE:
 			switch (colliders[i]->type)
 			{
-			case Collider::Type::NONE: // white
-				App->renderer->DrawQuad(colliders[i]->rect, 255, 255, 255, alpha);
-				break;
-			case Collider::Type::WALL: // blue
-				App->renderer->DrawQuad(colliders[i]->rect, 0, 0, 255, alpha);
-				break;
-			case Collider::Type::PLAYER: // green
-				App->renderer->DrawQuad(colliders[i]->rect, 0, 255, 0, alpha);
-				break;
-			case Collider::Type::BOUNDS: // red
-				App->renderer->DrawQuad(colliders[i]->rect, 255, 0, 0, alpha);
-				break;
-			case Collider::Type::PARTICLE: // red
-				App->renderer->DrawQuad(colliders[i]->rect, 255, 125, 125, alpha);
-				break;
+				case Collider::Type::NONE: // white
+					App->renderer->DrawQuad(colliders[i]->rect, 255, 255, 255, alpha);
+					break;
+				case Collider::Type::WALL: // blue
+					App->renderer->DrawQuad(colliders[i]->rect, 0, 0, 255, alpha);
+					break;
+				case Collider::Type::PLAYER: // green
+					App->renderer->DrawQuad(colliders[i]->rect, 0, 255, 0, alpha);
+					break;
+				case Collider::Type::BULLET: // red
+					App->renderer->DrawQuad(colliders[i]->rect, 255, 0, 0, alpha);
+					break;
 			}
 			break;
 		case Collider::Shape::CIRCLE:
 			switch (colliders[i]->type)
 			{
-			case Collider::Type::NONE: // white
-				App->renderer->DrawCircle(colliders[i]->position, colliders[i]->radius, 255, 255, alpha);
-				break;
-			case Collider::Type::WALL: // blue
-				App->renderer->DrawCircle(colliders[i]->position, colliders[i]->radius, 0, 0, 255, alpha);
-				break;
-			case Collider::Type::PLAYER: // green
-				App->renderer->DrawCircle(colliders[i]->position, colliders[i]->radius, 0, 255, 0, alpha);
-				break;
-			case Collider::Type::BOUNDS: // red
-				App->renderer->DrawCircle(colliders[i]->position, colliders[i]->radius, 255, 0, 0, alpha);
-				break;
-			case Collider::Type::PARTICLE: // red
-				App->renderer->DrawCircle(colliders[i]->position, colliders[i]->radius, 255, 125, 125, alpha);
-				break;
+				case Collider::Type::NONE: // white
+					App->renderer->DrawCircle(colliders[i]->position, colliders[i]->radius, 255, 255, alpha);
+					break;
+				case Collider::Type::WALL: // blue
+					App->renderer->DrawCircle(colliders[i]->position, colliders[i]->radius, 0, 0, 255, alpha);
+					break;
+				case Collider::Type::PLAYER: // green
+					App->renderer->DrawCircle(colliders[i]->position, colliders[i]->radius, 0, 255, 0, alpha);
+					break;
+				case Collider::Type::BULLET: // red
+					App->renderer->DrawQuad(colliders[i]->rect, 255, 0, 0, alpha);
+					break;
 			}
 			break;
 		default:
@@ -186,6 +127,75 @@ bool ModuleCollisions::CleanUp()
 
 	return true;
 }
+
+void ModuleCollisions::RemovePendingToDeleteColliders()
+{	
+	// Remove all colliders scheduled for deletion
+	for (uint i = 0; i < MAX_COLLIDERS; ++i)
+	{
+		if (colliders[i] != nullptr)
+		{
+			if (colliders[i]->pendingToDelete == true) {
+				delete colliders[i];
+				colliders[i] = nullptr;
+			}
+		}
+	}
+}
+
+void ModuleCollisions::CheckCollisions()
+{
+
+	Collider* c1;
+	Collider* c2;
+
+	for (uint i = 0; i < MAX_COLLIDERS; ++i)
+	{
+		// skip empty colliders
+		if (colliders[i] == nullptr)
+			continue;
+
+		c1 = colliders[i];
+
+		// avoid checking collisions already checked
+		for (uint k = i + 1; k < MAX_COLLIDERS; ++k)
+		{
+			// skip empty colliders
+			if (colliders[k] == nullptr)
+				continue;
+
+			c2 = colliders[k];
+
+			if (matrix[c1->type][c2->type] && c1->Intersects(c2))
+			{
+				for (uint i = 0; i < MAX_LISTENERS; ++i)
+					if (c1->listeners[i] != nullptr) c1->listeners[i]->OnCollision(c1, c2);
+
+				for (uint i = 0; i < MAX_LISTENERS; ++i)
+					if (c2->listeners[i] != nullptr) c2->listeners[i]->OnCollision(c2, c1);
+			}
+		}
+	}
+
+}
+
+void ModuleCollisions::ApplyForces()
+{
+	//Gravity
+	for (uint i = 0; i < MAX_COLLIDERS; ++i)
+	{
+		if (colliders[i] != nullptr)
+		{
+			if (colliders[i]->type != Collider::Type::WALL)
+			{
+				colliders[i]->velocity.y += colliders[i]->mass * GRAVITY;
+			}
+		}
+	}
+	//Other Forces...
+
+}
+
 
 Collider* ModuleCollisions::AddRectangleCollider(SDL_Rect rect, Collider::Type type, Module* listener)
 {

@@ -32,6 +32,17 @@ public:
 	// Removes all existing colliders
 	bool CleanUp();
 
+	void RemovePendingToDeleteColliders();
+
+	void CheckCollisions();
+
+	//Apply forces
+
+
+	void ApplyForces();
+
+
+
 	// Adds a new collider to the list
 	Collider* AddCollider(SDL_Rect rect, Collider::Type type, Module* listener = nullptr);
 
