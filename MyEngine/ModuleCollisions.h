@@ -2,7 +2,7 @@
 #define __MODULE_COLLISIONS_H__
 
 #define MAX_COLLIDERS 350
-
+#define GRAVITY 1
 #include "Module.h"
 #include "Collider.h"
 
@@ -15,32 +15,19 @@ public:
 
 	// Destructor
 	~ModuleCollisions();
-
-	// Called at the beginning of the application loop
-	// Removes all colliders pending to delete
-	// Checks for new collisions and calls its listeners
 	update_status PreUpdate();
-
-	// Called at the middle of the application loop
-	// Switches the debug mode on/off
-	update_status Update();
-
-	// Called at the end of the application loop
-	// Draw all colliders (if debug mode is enabled)
+	update_status Update(float dt);
 	update_status PostUpdate();
 
 	// Removes all existing colliders
 	bool CleanUp();
-
 	void RemovePendingToDeleteColliders();
 
 	void CheckCollisions();
 
 	//Apply forces
-
-
 	void ApplyForces();
-
+	void ApplyMovement(float dt);
 
 
 	// Adds a new collider to the list
@@ -50,21 +37,12 @@ public:
 	Collider* AddRectangleCollider(SDL_Rect rect, Collider::Type type, Module* listener = nullptr);
 	//Collider* AddChainCollider(iPoint center,float[] chain, Collider::Type type, Module* listener = nullptr);
 
-	// Removes the collider memory and removes it from the colliders array
 	void RemoveCollider(Collider* collider);
-
-	// Draws all existing colliders with some transparency
 	void DebugDraw();
-
+	void OnCollision(Collider* body1, Collider* body2);
 private:
-	// All existing colliders in the scene
 	Collider* colliders[MAX_COLLIDERS] = { nullptr };
-
-	// The collision matrix. Defines the interaction for two collider types
-	// If set to false, collider 1 will ignore collider 2
 	bool matrix[Collider::Type::MAX][Collider::Type::MAX];
-
-	// Simple debugging flag to draw all colliders
 	bool debug = false;
 };
 

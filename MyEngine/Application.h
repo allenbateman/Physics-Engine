@@ -13,6 +13,9 @@
 #include "ModulePhysics.h"
 #include "ModuleSceneIntro.h"
 #include "ModuleCollisions.h"
+#include "PerfTimer.h"
+#include "Defs.h"
+#include "Timer.h"
 
 
 class Application
@@ -37,6 +40,8 @@ public:
 	Application();
 	~Application();
 
+	bool PrepareUpdate();
+	bool FinishUpdate();
 	bool Init();
 	update_status Update();
 	bool CleanUp();
@@ -44,4 +49,17 @@ public:
 private:
 
 	void AddModule(Module* mod);
+
+	PerfTimer ptimer;
+	PerfTimer frameDuration;
+	uint64 frameCount = 0;
+
+	Timer startupTime;
+	Timer frameTime;
+	Timer lastSecFrameTime;
+	uint32 lastSecFrameCount = 0;
+	uint32 prevLastSecFrameCount = 0;
+	float dt = 0.0f;
+	bool FPSCapTo30 = true;
+	int maxFrameRate;
 };

@@ -1,4 +1,5 @@
 #include "Collider.h"
+#include "math.h"
 
 Collider::Collider(SDL_Rect rectangle, Type type, Module* listener, float _mass) : rect(rectangle), type(type)
 {
@@ -70,45 +71,68 @@ void Collider::SetPos(int x, int y)
 
 }
 
-bool Collider::CircleRectangleCollision(Collider current, Collider other)
+bool Collider::CircleRectangleCollision(const Collider* other) const
 {
 	//c1 -> being a circle 
 	//c2 -> being a rectangle
 	return false;
 }
 
-bool Collider::CircleCircleCollision(Collider current, Collider other)
+bool Collider::RectangleCircleCollision(const Collider* other) const
 {
-	//c1 -> being a Circle
-	//c2 -> being a Circle
 	return false;
 }
 
-bool Collider::RectangleRectangleCollsion(Collider current, Collider other)
+bool Collider::CircleCircleCollision(const Collider* other) const
+{
+	//c1 -> being a Circle
+	//c2 -> being a Circle
+	return ((other->position.x - position.x)* (other->position.x - position.x) + (other->position.y - position.y) * (other->position.y - position.y) <= (radius + other->radius)* (radius + other->radius));
+}
+
+bool Collider::RectangleRectangleCollsion(const Collider* other) const
 {
 	//c1 -> being a rectangle
 	//c2 -> being a rectangle
-	return (current.rect.x < other.rect.x + other.rect.w &&
-		current.rect.x + current.rect.w > other.rect.x &&
-		current.rect.y < other.rect.y + other.rect.h &&
-		current.rect.h + current.rect.y > other.rect.y);
+	return false;
+	return (rect.x < other->rect.x + other->rect.w &&
+		rect.x + rect.w > other->rect.x &&
+		rect.y < other->rect.y + other->rect.h &&
+		rect.h + rect.y > other->rect.y);
 }
+
+void Collider::SetPosition()
+{
+	switch(shape)
+	{
+		case RECTANGLE:
+			rect.x = position.x + rect.w * 0.5f;
+			rect.y = position.y + rect.h * 0.5f;
+			break;
+		case CIRCLE:
+			//Nothing since the center is alredy the pos
+			break;
+		default :
+			break;
+	}
+}
+
 
 
 bool Collider::Intersects(const	Collider* other) const
 {
+
+	return false;
 	switch (type)
 	{
 		case Shape::CIRCLE:
 			switch (other->shape)
 			{
 				case  Shape::CIRCLE:
+					return CircleCircleCollision(other);
 					break;
 				case  Shape::RECTANGLE:
-					return (rect.x < other->rect.x + other->rect.w &&
-						rect.x + rect.w > other->rect.x &&
-						rect.y < other->rect.y + other->rect.h &&
-						rect.h + rect.y > other->rect.y);
+					return CircleRectangleCollision(other);
 					break;
 				default:
 					break;
@@ -118,12 +142,10 @@ bool Collider::Intersects(const	Collider* other) const
 			switch (other->shape)
 			{
 				case  Shape::CIRCLE:
+					return RectangleCircleCollision(other);
 					break;
 				case  Shape::RECTANGLE:
-					return (rect.x < other->rect.x + other->rect.w &&
-						rect.x + rect.w > other->rect.x &&
-						rect.y < other->rect.y + other->rect.h &&
-						rect.h + rect.y > other->rect.y);
+					return RectangleRectangleCollsion(other);
 					break;
 				default:
 					break;

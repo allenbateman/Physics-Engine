@@ -6,6 +6,8 @@
 #include "ModuleInput.h"
 #include "SDL/include/SDL_Scancode.h"
 
+//https://www.toptal.com/game/video-game-physics-part-i-an-introduction-to-rigid-body-dynamics
+
 ModuleCollisions::ModuleCollisions(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 	for (uint i = 0; i < MAX_COLLIDERS; ++i)
@@ -44,12 +46,14 @@ update_status ModuleCollisions::PreUpdate()
 	return update_status::UPDATE_CONTINUE;
 }
 
-update_status ModuleCollisions::Update()
+update_status ModuleCollisions::Update(float dt)
 {
+	
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 		debug = !debug;
 
-
+	ApplyMovement(dt);
+	
 	return update_status::UPDATE_CONTINUE;
 }
 
@@ -100,7 +104,7 @@ void ModuleCollisions::DebugDraw()
 					App->renderer->DrawCircle(colliders[i]->position, colliders[i]->radius, 0, 255, 0, alpha);
 					break;
 				case Collider::Type::BULLET: // red
-					App->renderer->DrawQuad(colliders[i]->rect, 255, 0, 0, alpha);
+					App->renderer->DrawCircle(colliders[i]->position, colliders[i]->radius, 255, 0, 0, alpha);
 					break;
 			}
 			break;
@@ -109,6 +113,11 @@ void ModuleCollisions::DebugDraw()
 		}
 
 	}
+}
+
+void ModuleCollisions::OnCollision(Collider* body1, Collider* body2)
+{
+	LOG("COLLSION!");
 }
 
 // Called before quitting
@@ -188,12 +197,45 @@ void ModuleCollisions::ApplyForces()
 		{
 			if (colliders[i]->type != Collider::Type::WALL)
 			{
-				colliders[i]->velocity.y += colliders[i]->mass * GRAVITY;
+				colliders[i]->force = fPoint(0 ,colliders[i]->mass * GRAVITY);
 			}
 		}
 	}
 	//Other Forces...
 
+}
+
+void ModuleCollisions::ApplyMovement(float dt)
+{
+	for (uint i = 0; i < MAX_COLLIDERS; ++i)
+	{
+		if (colliders[i] != nullptr)
+		{
+			if (colliders[i]->type != Collider::Type::WALL)
+			{
+
+				colliders[i]->acceleration.x = colliders[i]->force.x;
+				colliders[i]->acceleration.y = colliders[i]->force.y;
+
+				colliders[i]->velocity.x += colliders[i]->acceleration.x * dt;
+				colliders[i]->velocity.y += colliders[i]->acceleration.y * dt;
+
+				colliders[i]->position.x += colliders[i]->velocity.x * dt;
+				colliders[i]->position.y += colliders[i]->velocity.y * dt;
+
+
+				if (colliders[i]->position.y > SCREEN_HEIGHT)
+					colliders[i]->position.y = SCREEN_HEIGHT;
+
+				if (i == 6)
+				{
+					LOG("ACCELERATION[%i]:x:%f y:%f", i, colliders[i]->acceleration.x, colliders[i]->acceleration.y);
+					LOG("VELOCITY[%i]:x:%f y:%f", i, colliders[i]->velocity.x, colliders[i]->velocity.y);
+					LOG("POSITION[%i]:x:%f y:%f", i, colliders[i]->position.x, colliders[i]->position.y);
+				}
+			}
+		}
+	}
 }
 
 

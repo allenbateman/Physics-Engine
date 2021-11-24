@@ -35,13 +35,16 @@ struct Collider
 
 	void SetPos(int x, int y);
 
-	bool CircleRectangleCollision(Collider c1, Collider c2);
+	bool CircleRectangleCollision( const Collider* other) const;
+	bool RectangleCircleCollision( const Collider* other) const;
 
-	bool CircleCircleCollision(Collider c1, Collider c2);
+	bool CircleCircleCollision(const Collider* other) const;
 
-	bool RectangleRectangleCollsion(Collider c1, Collider c2);
+	bool RectangleRectangleCollsion(const Collider* other) const;
 
-	iPoint GetPos() { return iPoint {rect.x,rect.y}; }
+	void SetPosition();
+
+	//fPoint GetPos() { return fPoint {rect.x,rect.y}; }
 	
 	// const-> so it will not affect the object variables
 	bool Intersects( const Collider* other) const;
@@ -59,6 +62,7 @@ struct Collider
 	fPoint position;
 	fPoint velocity;
 	fPoint acceleration;
+	fPoint force;
 
 
 	bool pendingToDelete = false;

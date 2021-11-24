@@ -2,7 +2,7 @@
 #include "Module.h"
 #include "Globals.h"
 
-#define GRAVITY -10
+
 
 class ModulePhysics : public Module
 {
