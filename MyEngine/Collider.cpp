@@ -35,8 +35,8 @@ void Collider::RectangleCollider(SDL_Rect _rectangle, Type _type, Module* listen
 {
 	shape = Shape::RECTANGLE;
 	rect = _rectangle;
-	position.x = _rectangle.x;
-	position.y = _rectangle.y;
+	position.x = _rectangle.x - _rectangle.w * 0.5f;
+	position.y = _rectangle.y - _rectangle.h * 0.5f;
 	mass = _mass;
 	type = _type;
 	listeners[0] = listener;
@@ -94,7 +94,6 @@ bool Collider::RectangleRectangleCollsion(const Collider* other) const
 {
 	//c1 -> being a rectangle
 	//c2 -> being a rectangle
-	return false;
 	return (rect.x < other->rect.x + other->rect.w &&
 		rect.x + rect.w > other->rect.x &&
 		rect.y < other->rect.y + other->rect.h &&
@@ -106,8 +105,8 @@ void Collider::SetPosition()
 	switch(shape)
 	{
 		case RECTANGLE:
-			rect.x = position.x + rect.w * 0.5f;
-			rect.y = position.y + rect.h * 0.5f;
+			rect.x = position.x - rect.w * 0.5f;
+			rect.y = position.y - rect.h * 0.5f;
 			break;
 		case CIRCLE:
 			//Nothing since the center is alredy the pos
@@ -117,21 +116,20 @@ void Collider::SetPosition()
 	}
 }
 
-
-
 bool Collider::Intersects(const	Collider* other) const
 {
 
-	return false;
 	switch (type)
 	{
 		case Shape::CIRCLE:
 			switch (other->shape)
 			{
 				case  Shape::CIRCLE:
+					LOG("circle -> circle ");
 					return CircleCircleCollision(other);
 					break;
 				case  Shape::RECTANGLE:
+					LOG("circle -> rect ");
 					return CircleRectangleCollision(other);
 					break;
 				default:
@@ -142,9 +140,11 @@ bool Collider::Intersects(const	Collider* other) const
 			switch (other->shape)
 			{
 				case  Shape::CIRCLE:
+					LOG("rect -> circle ");
 					return RectangleCircleCollision(other);
 					break;
 				case  Shape::RECTANGLE:
+					LOG("rect -> rect ");
 					return RectangleRectangleCollsion(other);
 					break;
 				default:

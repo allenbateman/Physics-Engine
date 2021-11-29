@@ -51,10 +51,14 @@ public:
 	update_status Update();
 	bool CleanUp();
 
+	void OnCollision(Collider* body1, Collider* body2);
+
 public:
 
 	SDL_Texture* graphics;
 	PhysBody* background;
+
+	Collider* squareBullet;
 
 	Bouncer bouncer1;
 	Bouncer bouncer2;

@@ -16,15 +16,15 @@ ModuleCollisions::ModuleCollisions(Application* app, bool start_enabled) : Modul
 	debug = true;
 
 	matrix[Collider::Type::WALL][Collider::Type::WALL] = false;
-	matrix[Collider::Type::WALL][Collider::Type::PLAYER] = true;
+	matrix[Collider::Type::WALL][Collider::Type::PLAYER] = false;
 	matrix[Collider::Type::WALL][Collider::Type::BULLET] = true;
 
-	matrix[Collider::Type::PLAYER][Collider::Type::WALL] = true;
+	matrix[Collider::Type::PLAYER][Collider::Type::WALL] = false;
 	matrix[Collider::Type::PLAYER][Collider::Type::PLAYER] = true;
 	matrix[Collider::Type::PLAYER][Collider::Type::BULLET] = true;
 
 
-	matrix[Collider::Type::BULLET][Collider::Type::BULLET] = true;
+	matrix[Collider::Type::BULLET][Collider::Type::BULLET] = false;
 	matrix[Collider::Type::BULLET][Collider::Type::PLAYER] = true;
 	matrix[Collider::Type::BULLET][Collider::Type::WALL] = true;
 }
@@ -37,6 +37,8 @@ ModuleCollisions::~ModuleCollisions()
 
 update_status ModuleCollisions::PreUpdate()
 {
+
+	
 
 	RemovePendingToDeleteColliders();
 
@@ -118,6 +120,42 @@ void ModuleCollisions::DebugDraw()
 void ModuleCollisions::OnCollision(Collider* body1, Collider* body2)
 {
 	LOG("COLLSION!");
+	if (body1->shape == Collider::Shape::CIRCLE)
+	{
+		switch (body2->shape)
+		{
+		case Collider::Shape::CIRCLE:
+			body1->velocity.y =  -body1->velocity.y;
+
+			break;
+		case Collider::Shape::RECTANGLE:
+			body1->velocity.y = -body1->velocity.y;
+			break;
+		default:
+			break;
+		}
+	}
+	else if (body1->shape == Collider::Shape::RECTANGLE)
+	{
+		switch (body2->shape)
+		{
+		case Collider::Shape::CIRCLE:
+			body1->velocity.y = -body1->velocity.y;
+			break;
+		case Collider::Shape::RECTANGLE:
+			if (body1->type == Collider::Type::BULLET)
+			{
+				//if (body1->position.y + body1->rect.h >= SCREEN_HEIGHT)
+				//{
+					body1->velocity.y = -body1->velocity.y;
+					body1->velocity.x = -body1->velocity.x;
+				//}
+			}
+			break;
+		default:
+			break;
+		}
+	}
 }
 
 // Called before quitting
@@ -197,7 +235,8 @@ void ModuleCollisions::ApplyForces()
 		{
 			if (colliders[i]->type != Collider::Type::WALL)
 			{
-				colliders[i]->force = fPoint(0 ,colliders[i]->mass * GRAVITY);
+				//colliders[i]->force = fPoint(0 ,colliders[i]->mass * 0.00005f);
+				colliders[i]->force = fPoint(0 ,colliders[i]->mass * 0.0001f);
 			}
 		}
 	}
@@ -223,12 +262,17 @@ void ModuleCollisions::ApplyMovement(float dt)
 				colliders[i]->position.x += colliders[i]->velocity.x * dt;
 				colliders[i]->position.y += colliders[i]->velocity.y * dt;
 
+				colliders[i]->SetPosition();
+
+
+				App->renderer->DrawCircle(colliders[i]->position,2, 0, 255, 0, 255);
 
 				if (colliders[i]->position.y > SCREEN_HEIGHT)
-					colliders[i]->position.y = SCREEN_HEIGHT;
+					//colliders[i]->position.y = SCREEN_HEIGHT;
 
-				if (i == 6)
+				if (i == -1)
 				{
+					
 					LOG("ACCELERATION[%i]:x:%f y:%f", i, colliders[i]->acceleration.x, colliders[i]->acceleration.y);
 					LOG("VELOCITY[%i]:x:%f y:%f", i, colliders[i]->velocity.x, colliders[i]->velocity.y);
 					LOG("POSITION[%i]:x:%f y:%f", i, colliders[i]->position.x, colliders[i]->position.y);
