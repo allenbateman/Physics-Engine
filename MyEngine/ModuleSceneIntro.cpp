@@ -47,13 +47,13 @@ bool ModuleSceneIntro::Start()
 	rectangle.y = 250;
 	rectangle.w = 50;
 	rectangle.h = 50;
-	App->collisions->AddRectangleCollider(rectangle, Collider::WALL, App->collisions);
+ //App->collisions->AddRectangleCollider(rectangle, Collider::WALL, App->collisions);
 
 	rectangle.x = 300;
 	rectangle.y = 200;
 	squareBullet = App->collisions->AddRectangleCollider(rectangle, Collider::BULLET, App->collisions);
 
-	App->collisions->AddCircleCollider(fPoint(450, 450), 25, Collider::BULLET, App->collisions);
+	//App->collisions->AddCircleCollider(fPoint(450, 450), 25, Collider::BULLET, App->collisions);
 
 
 
@@ -79,8 +79,8 @@ update_status ModuleSceneIntro::Update()
 {
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
 		squareBullet->force += fPoint{1,0};
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN)
-		squareBullet->force = fPoint{ -1,0 };
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
+		squareBullet->force += fPoint{ -1,0 };
 
 	return UPDATE_CONTINUE;
 }
