@@ -56,7 +56,8 @@ bool ModuleSceneIntro::Start()
 	//App->collisions->AddCircleCollider(fPoint(450, 450), 25, Collider::BULLET, App->collisions);
 
 
-
+	squareBullet->velocity.y = 0.5f;
+	squareBullet->velocity.x = 0.2f;
 
 	return ret;
 }
@@ -75,12 +76,18 @@ void ModuleSceneIntro::OnCollision(Collider* body1, Collider* body2)
 }
 
 // Update: draw background
-update_status ModuleSceneIntro::Update()
+update_status ModuleSceneIntro::Update(float dt)
 {
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
-		squareBullet->force += fPoint{1,0};
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
-		squareBullet->force += fPoint{ -1,0 };
-
+	fPoint addForce;
+	addForce.x = 1;
+	addForce.y = 0;
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN)
+	{
+		squareBullet->velocity.x += addForce.x;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN)
+	{
+		squareBullet->velocity.x -= addForce.x;
+	}
 	return UPDATE_CONTINUE;
 }

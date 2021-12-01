@@ -119,6 +119,7 @@ void ModuleCollisions::DebugDraw()
 
 void ModuleCollisions::OnCollision(Collider* body1, Collider* body2)
 {
+	https://happycoding.io/tutorials/processing/collision-detection
 	LOG("COLLSION!");
 	if (body1->shape == Collider::Shape::CIRCLE)
 	{
@@ -145,11 +146,14 @@ void ModuleCollisions::OnCollision(Collider* body1, Collider* body2)
 		case Collider::Shape::RECTANGLE:
 			if (body1->type == Collider::Type::BULLET)
 			{
-				//if (body1->position.y + body1->rect.h >= SCREEN_HEIGHT)
-				//{
-					body1->velocity.y = -body1->velocity.y;
-					body1->velocity.x = -body1->velocity.x;
-				//}
+
+				if (body1->position.y + body1->rect.h >= SCREEN_HEIGHT)
+				{
+					body1->position.y = SCREEN_HEIGHT - body1->rect.h;
+				}
+					body1->velocity.y *= -1;
+					body1->velocity.x *= -1;
+				
 			}
 			break;
 		default:
@@ -235,8 +239,7 @@ void ModuleCollisions::ApplyForces()
 		{
 			if (colliders[i]->type != Collider::Type::WALL)
 			{
-				//colliders[i]->force = fPoint(0 ,colliders[i]->mass * 0.00005f);
-				colliders[i]->force = fPoint(0 ,colliders[i]->mass * 0.0001f);
+				colliders[i]->force += fPoint(0 ,colliders[i]->mass * 0.00005f);
 			}
 		}
 	}
@@ -253,11 +256,12 @@ void ModuleCollisions::ApplyMovement(float dt)
 			if (colliders[i]->type != Collider::Type::WALL)
 			{
 
-				colliders[i]->acceleration.x = colliders[i]->force.x;
+			/*	colliders[i]->acceleration.x = colliders[i]->force.x;
 				colliders[i]->acceleration.y = colliders[i]->force.y;
 
 				colliders[i]->velocity.x += colliders[i]->acceleration.x * dt;
-				colliders[i]->velocity.y += colliders[i]->acceleration.y * dt;
+				colliders[i]->velocity.y += colliders[i]->acceleration.y * dt;*/
+			
 
 				colliders[i]->position.x += colliders[i]->velocity.x * dt;
 				colliders[i]->position.y += colliders[i]->velocity.y * dt;
