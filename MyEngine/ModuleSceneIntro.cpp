@@ -47,7 +47,7 @@ bool ModuleSceneIntro::Start()
 	rectangle.y = 250;
 	rectangle.w = 50;
 	rectangle.h = 50;
- //App->collisions->AddRectangleCollider(rectangle, Collider::WALL, App->collisions);
+	//App->collisions->AddRectangleCollider(rectangle, Collider::WALL, App->collisions);
 
 	rectangle.x = 300;
 	rectangle.y = 200;
@@ -56,8 +56,8 @@ bool ModuleSceneIntro::Start()
 	//App->collisions->AddCircleCollider(fPoint(450, 450), 25, Collider::BULLET, App->collisions);
 
 
-	squareBullet->velocity.y = 0.5f;
-	squareBullet->velocity.x = 0.2f;
+	squareBullet->velocity.y = 0.f;
+	squareBullet->velocity.x = 0.1f;
 
 	return ret;
 }

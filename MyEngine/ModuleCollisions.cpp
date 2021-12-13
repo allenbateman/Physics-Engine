@@ -120,45 +120,36 @@ void ModuleCollisions::DebugDraw()
 void ModuleCollisions::OnCollision(Collider* body1, Collider* body2)
 {
 	https://happycoding.io/tutorials/processing/collision-detection
+
 	LOG("COLLSION!");
-	if (body1->shape == Collider::Shape::CIRCLE)
+	if (body1->type == Collider::Type::BULLET)
 	{
-		switch (body2->shape)
-		{
-		case Collider::Shape::CIRCLE:
-			body1->velocity.y =  -body1->velocity.y;
+		if(body1->collInfo->horizontal)
+			body1->velocity.x *= -1;
+		if(body1->collInfo->vertical)
+			body1->velocity.y *= -1;
 
-			break;
-		case Collider::Shape::RECTANGLE:
-			body1->velocity.y = -body1->velocity.y;
-			break;
-		default:
-			break;
-		}
-	}
-	else if (body1->shape == Collider::Shape::RECTANGLE)
-	{
-		switch (body2->shape)
-		{
-		case Collider::Shape::CIRCLE:
-			body1->velocity.y = -body1->velocity.y;
-			break;
-		case Collider::Shape::RECTANGLE:
-			if (body1->type == Collider::Type::BULLET)
-			{
+		body1->collInfo->horizontal = false;
+		body1->collInfo->vertical = false;
 
-				if (body1->position.y + body1->rect.h >= SCREEN_HEIGHT)
+		/*switch (body1->shape) {
+			case Collider::Shape::RECTANGLE:
+				switch (body1->collInfo->collision)
 				{
-					body1->position.y = SCREEN_HEIGHT - body1->rect.h;
-				}
-					body1->velocity.y *= -1;
+				case CollisionRecived::HORIZONTAL:
 					body1->velocity.x *= -1;
-				
-			}
-			break;
-		default:
-			break;
-		}
+					break;
+				case CollisionRecived::VERTICAL:
+					body1->velocity.y *= -1;
+					break;
+				case CollisionRecived::NONE:
+					LOG("No Collison");
+					break;
+				}
+				break;
+			case Collider::Shape::CIRCLE:
+				break;
+		}*/
 	}
 }
 
@@ -217,7 +208,7 @@ void ModuleCollisions::CheckCollisions()
 
 			c2 = colliders[k];
 
-			if (matrix[c1->type][c2->type] && c1->Intersects(c2))
+			if (matrix[c1->type][c2->type] && c1->Intersects(c2)->Collided)
 			{
 				for (uint i = 0; i < MAX_LISTENERS; ++i)
 					if (c1->listeners[i] != nullptr) c1->listeners[i]->OnCollision(c1, c2);
@@ -256,11 +247,11 @@ void ModuleCollisions::ApplyMovement(float dt)
 			if (colliders[i]->type != Collider::Type::WALL)
 			{
 
-			/*	colliders[i]->acceleration.x = colliders[i]->force.x;
+				colliders[i]->acceleration.x = colliders[i]->force.x;
 				colliders[i]->acceleration.y = colliders[i]->force.y;
 
 				colliders[i]->velocity.x += colliders[i]->acceleration.x * dt;
-				colliders[i]->velocity.y += colliders[i]->acceleration.y * dt;*/
+				colliders[i]->velocity.y += colliders[i]->acceleration.y * dt;
 			
 
 				colliders[i]->position.x += colliders[i]->velocity.x * dt;

@@ -1,4 +1,9 @@
-﻿  ModuleSceneIntro.cpp
+﻿  ModuleCollisions.cpp
 C:\Users\allenbn\Documents\GitHub\MyEngine\MyEngine\Animation.h(52,19): warning C4244: 'inicializando': conversión de 'const float' a 'int'; posible pérdida de datos
 C:\Users\allenbn\Documents\GitHub\MyEngine\MyEngine\Animation.h(54,30): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+C:\Users\allenbn\Documents\GitHub\MyEngine\MyEngine\ModuleCollisions.cpp(100,68): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
+C:\Users\allenbn\Documents\GitHub\MyEngine\MyEngine\ModuleCollisions.cpp(103,68): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
+C:\Users\allenbn\Documents\GitHub\MyEngine\MyEngine\ModuleCollisions.cpp(106,68): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
+C:\Users\allenbn\Documents\GitHub\MyEngine\MyEngine\ModuleCollisions.cpp(109,68): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
+C:\Users\allenbn\Documents\GitHub\MyEngine\MyEngine\ModuleCollisions.cpp(122,7): warning C4102: 'https': etiqueta sin referencia
   SDL Game.vcxproj -> C:\Users\allenbn\Documents\GitHub\MyEngine\MyEngine\Debug\Physics 2 Class 1 Handout.exe

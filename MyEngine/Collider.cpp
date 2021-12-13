@@ -8,6 +8,8 @@ Collider::Collider(SDL_Rect rectangle, Type type, Module* listener, float _mass)
 	position.y = rectangle.y;
 	listeners[0] = listener;
 	mass = _mass;
+	collInfo = new CollisionInfo();
+
 }
 
 Collider::Collider(fPoint center, float radius, Type type, Module* listener, float _mass) : position(center),radius (radius), type(type)
@@ -15,6 +17,8 @@ Collider::Collider(fPoint center, float radius, Type type, Module* listener, flo
 	shape = Shape::CIRCLE;
 	listeners[0] = listener;
 	mass = _mass;
+	collInfo = new CollisionInfo();
+
 
 }
 
@@ -28,6 +32,7 @@ void Collider::CircleCollider(fPoint pos, float _radius, Type _type, Module* lis
 	type = _type;
 	listeners[0] = listener;
 	mass = _mass;
+	collInfo = new CollisionInfo();
 
 }
 
@@ -41,6 +46,8 @@ void Collider::RectangleCollider(SDL_Rect _rectangle, Type _type, Module* listen
 	type = _type;
 	listeners[0] = listener;
 	mass = _mass;
+	collInfo = new CollisionInfo();
+
 
 }
 
@@ -71,33 +78,67 @@ void Collider::SetPos(int x, int y)
 
 }
 
-bool Collider::CircleRectangleCollision(const Collider* other) const
+CollisionInfo* Collider::CircleRectangleCollision(const Collider* other) const
 {
 	//c1 -> being a circle 
 	//c2 -> being a rectangle
-	return false;
+	CollisionInfo* info = new CollisionInfo();
+	info->Collided = false;
+	info->collision =CollisionRecived::NONE;
+
+	return info;
 }
 
-bool Collider::RectangleCircleCollision(const Collider* other) const
+CollisionInfo* Collider::RectangleCircleCollision(const Collider* other) const
 {
-	return false;
+	CollisionInfo* info = new CollisionInfo();
+	info->Collided = false;
+	info->collision = CollisionRecived::NONE;
+
+
+	return info;
 }
 
-bool Collider::CircleCircleCollision(const Collider* other) const
+CollisionInfo* Collider::CircleCircleCollision(const Collider* other) const
 {
 	//c1 -> being a Circle
 	//c2 -> being a Circle
-	return ((other->position.x - position.x)* (other->position.x - position.x) + (other->position.y - position.y) * (other->position.y - position.y) <= (radius + other->radius)* (radius + other->radius));
+	CollisionInfo* info = new CollisionInfo();
+	info->Collided = false;
+	info->collision = CollisionRecived::NONE;
+
+
+	 //((other->position.x - position.x)* (other->position.x - position.x) + (other->position.y - position.y) * (other->position.y - position.y) <= (radius + other->radius)* (radius + other->radius));
+	 return info;
 }
 
-bool Collider::RectangleRectangleCollsion(const Collider* other) const
+CollisionInfo* Collider::RectangleRectangleCollsion(const Collider* other) const
 {
 	//c1 -> being a rectangle
 	//c2 -> being a rectangle
-	return (rect.x < other->rect.x + other->rect.w &&
-		rect.x + rect.w > other->rect.x &&
-		rect.y < other->rect.y + other->rect.h &&
-		rect.h + rect.y > other->rect.y);
+	
+	//side collsions
+	other->collInfo->Collided = false;
+	other->collInfo->horizontal = false;
+	other->collInfo->horizontal = false;
+	other->collInfo->collision = CollisionRecived::NONE;
+
+	if (other->rect.x + other->rect.w + other->velocity.x > rect.x &&
+		other->rect.x + other->velocity.x < rect.x + rect.w )
+	{
+		other->collInfo->Collided = true;
+		other->collInfo->horizontal = true;
+	}
+
+	if (other->rect.y + other->rect.h + other->velocity.y >rect.y &&
+		other->rect.y + other->velocity.y < rect.y + rect.h)
+	{
+		other->collInfo->Collided = true;
+		other->collInfo->vertical = true;
+	}
+
+
+	return other->collInfo;
 }
 
 void Collider::SetPosition()
@@ -116,7 +157,7 @@ void Collider::SetPosition()
 	}
 }
 
-bool Collider::Intersects(const	Collider* other) const
+CollisionInfo* Collider::Intersects(const	Collider* other) const
 {
 
 	switch (type)

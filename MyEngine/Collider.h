@@ -7,6 +7,27 @@
 
 class Module;
 
+enum CollisionRecived
+{
+
+
+	NONE,
+	TOP,
+	BOT,
+	LEFT,
+	RIGHT,
+	HORIZONTAL,
+	VERTICAL
+};
+
+struct CollisionInfo {
+	CollisionRecived collision;
+	bool vertical;
+	bool horizontal;
+	bool Collided;
+};
+
+
 struct Collider
 {
 	enum Type
@@ -35,19 +56,19 @@ struct Collider
 
 	void SetPos(int x, int y);
 
-	bool CircleRectangleCollision( const Collider* other) const;
-	bool RectangleCircleCollision( const Collider* other) const;
+	CollisionInfo* CircleRectangleCollision( const Collider* other) const;
+	CollisionInfo* RectangleCircleCollision( const Collider* other) const;
 
-	bool CircleCircleCollision(const Collider* other) const;
+	CollisionInfo* CircleCircleCollision(const Collider* other) const;
 
-	bool RectangleRectangleCollsion(const Collider* other) const;
+	CollisionInfo* RectangleRectangleCollsion(const Collider* other)const;
 
 	void SetPosition();
 
 	//fPoint GetPos() { return fPoint {rect.x,rect.y}; }
 	
 	// const-> so it will not affect the object variables
-	bool Intersects( const Collider* other) const;
+	CollisionInfo* Intersects( const Collider* other) const;
 
 	void AddListener(Module* listener);
 
@@ -64,6 +85,7 @@ struct Collider
 	fPoint acceleration;
 	fPoint force;
 
+	CollisionInfo* collInfo;
 
 	bool pendingToDelete = false;
 	float mass;
