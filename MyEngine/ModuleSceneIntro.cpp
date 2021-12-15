@@ -49,7 +49,7 @@ bool ModuleSceneIntro::Start()
 	squareBullet = App->collisions->AddRectangleCollider(rectangle, Collider::BULLET, App->collisions);
 	squareBullet->SetPosition();
 	squareBullet->velocity.y = 0.0f;
-	squareBullet->velocity.x = 0.5f;
+	squareBullet->velocity.x = 0.0f;
 	squareBullet->mass = 2;
 	rectangle.x = 350;
 	rectangle.y = 350;
@@ -58,32 +58,18 @@ bool ModuleSceneIntro::Start()
 	squareBullet2 = App->collisions->AddRectangleCollider(rectangle, Collider::PLAYER, App->collisions);
 	squareBullet2->SetPosition();
 	squareBullet2->velocity.y = 0.0f;
-	squareBullet2->velocity.x = 0.7f;
+	squareBullet2->velocity.x = 0.0f;
 
 
 
 	return ret;
 }
 
-// Load assets
-bool ModuleSceneIntro::CleanUp()
-{
-	LOG("Unloading Intro scene");
-
-	return true;
-}
-
-void ModuleSceneIntro::OnCollision(Collider* body1, Collider* body2)
-{
-	LOG("COLLISION IN SCENE INTRO");
-}
-
-// Update: draw background
-update_status ModuleSceneIntro::Update(float dt)
+update_status ModuleSceneIntro::PreUpdate()
 {
 	fPoint addForce;
-	addForce.x = 0.0001f;
-	addForce.y = 0.0001;
+	addForce.x = 0.001f;
+	addForce.y = 0.01;
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN)
 	{
 		squareBullet->force.x += addForce.x;
@@ -100,5 +86,27 @@ update_status ModuleSceneIntro::Update(float dt)
 	{
 		squareBullet->force.y += addForce.y;
 	}
+
 	return UPDATE_CONTINUE;
+}
+
+
+// Update: draw background
+update_status ModuleSceneIntro::Update(float dt)
+{
+
+	return UPDATE_CONTINUE;
+}
+
+// Load assets
+bool ModuleSceneIntro::CleanUp()
+{
+	LOG("Unloading Intro scene");
+
+	return true;
+}
+
+void ModuleSceneIntro::OnCollision(Collider* body1, Collider* body2)
+{
+	LOG("COLLISION IN SCENE INTRO");
 }

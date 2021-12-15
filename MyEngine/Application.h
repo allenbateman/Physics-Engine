@@ -60,6 +60,6 @@ private:
 	uint32 lastSecFrameCount = 0;
 	uint32 prevLastSecFrameCount = 0;
 	float dt = 0.0f;
-	bool FPSCapTo30 = true;
+	bool FPSCapTo30 = false;
 	int maxFrameRate;
 };

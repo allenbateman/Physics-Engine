@@ -72,6 +72,15 @@ struct Collider
 
 	void AddListener(Module* listener);
 
+
+
+	//modyfiers
+
+	void ResetForce() { force = fPoint(0, 0); }
+	void ApplyGravity() { force.y += 0.000005f; }
+	void ApplyHorizontalFriction() {force.x -= horizontalFriction;}
+	void ApplyVerticalFriction() {force.x -= verticalFriction;}
+	void ApplyExternalForce(fPoint externalForce) { force += externalForce; }
 	//Variables
 
 	//square
@@ -95,7 +104,8 @@ struct Collider
 	Shape shape;
 	Module* listeners[MAX_LISTENERS] = { nullptr };
 
-	float friction = 0.01;
+	float horizontalFriction = 0.01;
+	float verticalFriction = 0.01;
 
 	bool activeGravity = true;
 };

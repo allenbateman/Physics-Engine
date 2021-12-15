@@ -132,23 +132,44 @@ CollisionInfo* Collider::RectangleRectangleCollsion(const Collider* other) const
 	other->collInfo->collision = CollisionRecived::NONE;
 
 
+
+
+
 	if (other->rect.x + other->rect.w + other->velocity.x > rect.x &&
 		other->rect.x + other->velocity.x < rect.x + rect.w &&
 		other->rect.y + other->rect.h  > rect.y &&
-		other->rect.y + other->velocity.y < rect.h)
+		other->rect.y < rect.y + rect.h)
 	{
 		other->collInfo->Collided = true;
 		other->collInfo->horizontal = true;
 	}
-		 
+
 	if (other->rect.x + other->rect.w > rect.x &&
-		other->rect.x < rect.x + rect.w && 
+		other->rect.x < rect.x + rect.w &&
 		other->rect.y + other->rect.h + other->velocity.y >rect.y &&
 		other->rect.y + other->velocity.y < rect.y + rect.h)
 	{
 		other->collInfo->Collided = true;
 		other->collInfo->vertical = true;
 	}
+
+	//if (other->rect.x + other->rect.w + other->velocity.x > rect.x &&
+	//	other->rect.x + other->velocity.x < rect.x + rect.w &&
+	//	other->rect.y + other->rect.h  > rect.y &&
+	//	other->rect.y + other->velocity.y < rect.h)
+	//{
+	//	other->collInfo->Collided = true;
+	//	other->collInfo->horizontal = true;
+	//}
+	//	 
+	//if (other->rect.x + other->rect.w > rect.x &&
+	//	other->rect.x < rect.x + rect.w && 
+	//	other->rect.y + other->rect.h + other->velocity.y >rect.y &&
+	//	other->rect.y + other->velocity.y < rect.y + rect.h)
+	//{
+	//	other->collInfo->Collided = true;
+	//	other->collInfo->vertical = true;
+	//}
 
 
 	return other->collInfo;

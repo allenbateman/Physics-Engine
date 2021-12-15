@@ -40,8 +40,9 @@ update_status ModuleCollisions::PreUpdate()
 {
 	RemovePendingToDeleteColliders();
 
-	CheckCollisions();
+	//Sumatory forces
 	ApplyForces();
+
 
 	return update_status::UPDATE_CONTINUE;
 }
@@ -53,12 +54,16 @@ update_status ModuleCollisions::Update(float dt)
 		debug = !debug;
 
 	ApplyMovement(dt);
+
+	CheckCollisions();
+
 	
 	return update_status::UPDATE_CONTINUE;
 }
 
 update_status ModuleCollisions::PostUpdate()
 {
+	//set force to zero
 	if (debug)
 		DebugDraw();
 
@@ -121,38 +126,32 @@ void ModuleCollisions::OnCollision(Collider* body1, Collider* body2)
 
 	if (body2->type == Collider::Type::BULLET || body2->type == Collider::Type::PLAYER)
 	{
-		
-		if (body2->collInfo->horizontal)
-		{
-			//if velocity is very small stop the particle
-			float dtvx = fabs(body2->velocity.x);
-			float acbax = fabs(body2->acceleration.x);
-			if (dtvx <= 0.05f)
-			{
-				body2->velocity.x = 0;
-			}
-			else {
-		/*		acbax -= body2->friction;
-				body2->acceleration.x = dtvx;*/
 
-				body2->velocity.x *= -1;
-			}
-			
+		//if velocity is very small stop the particle
+		float dtvx = fabs(body2->velocity.x);
+		float acbax = fabs(body2->acceleration.x);
+		if (dtvx <= 0.05f)
+		{
+			body2->acceleration.x = 0;
+			body2->velocity.x = 0;
+		}
+		//if velocity is very small stop the particle
+		float dtvy = fabs(body2->velocity.y);
+		if (dtvy < 0.05f)
+		{
+			body2->activeGravity = false;
+			body2->acceleration.y = 0;
+			body2->velocity.y = 0;
+		}
+
+
+		if (body2->collInfo->horizontal)
+		{	
+			body2->velocity.x *= -1;			
 		}
 		if (body2->collInfo->vertical)
 		{
-		
-			//if velocity is very small stop the particle
-			float dtvy = fabs(body2->velocity.y); 
-			if (dtvy < 0.05f )
-			{
-				body2->activeGravity = false;
-				body2->acceleration.y = 0;
-				body2->velocity.y = 0;
-			}
-			else {
-				body2->velocity.y *= -1;
-			}
+			body2->velocity.y *= -1;
 		}
 
 		body2->collInfo->horizontal = false;
@@ -232,14 +231,23 @@ void ModuleCollisions::CheckCollisions()
 
 void ModuleCollisions::ApplyForces()
 {
-	//Gravity
+	
 	for (uint i = 0; i < MAX_COLLIDERS; ++i)
 	{
 		if (colliders[i] != nullptr)
 		{
-			if (colliders[i]->type != Collider::Type::WALL && colliders[i]->activeGravity)
+			if (colliders[i]->type != Collider::Type::WALL)
 			{
-				colliders[i]->force += fPoint(0 ,colliders[i]->mass * 0.000005f);
+
+				colliders[i]->force = fPoint(0, 0);
+				//Gravity
+				if (colliders[i]->velocity.y != 0.00000f)
+					colliders[i]->activeGravity = true;
+				if(colliders[i]->activeGravity)
+				 colliders[i]->force += fPoint(0 , 0.0005f);
+				//Wind
+				colliders[i]->force += fPoint(0,0);
+
 			}
 		}
 	}
@@ -260,8 +268,8 @@ void ModuleCollisions::ApplyMovement(float dt)
 				colliders[i]->lastPosition = colliders[i]->position;
 				colliders[i]->SetPosition();
 
-				colliders[i]->acceleration.x = colliders[i]->force.x;
-				colliders[i]->acceleration.y = colliders[i]->force.y;
+				colliders[i]->acceleration.x = colliders[i]->mass * colliders[i]->force.x;
+				colliders[i]->acceleration.y = colliders[i]->mass * colliders[i]->force.y;
 
 				colliders[i]->velocity.x += colliders[i]->acceleration.x * dt;
 				colliders[i]->velocity.y += colliders[i]->acceleration.y * dt;
@@ -271,9 +279,12 @@ void ModuleCollisions::ApplyMovement(float dt)
 
 				colliders[i]->deltaPosition = { colliders[i]->lastPosition.x - colliders[i]->position.x, colliders[i]->lastPosition.y - colliders[i]->position.y };
 
+
+
 				//LOG("Delata y [%i]: %f", i, colliders[i]->deltaPosition.y);
+				//LOG("FORCE[%i]:x:%f y:%f", i, colliders[i]->force.x, colliders[i]->force.y);
 				LOG("ACCELERATION[%i]:x:%f y:%f", i, colliders[i]->acceleration.x, colliders[i]->acceleration.y);
-				LOG("VELOCITY[%i]:x:%f y:%f", i, colliders[i]->velocity.x, colliders[i]->velocity.y);
+				//LOG("VELOCITY[%i]:x:%f y:%f", i, colliders[i]->velocity.x, colliders[i]->velocity.y);
 
 				if (colliders[i]->rect.y + colliders[i]->rect.h  >  App->scene_intro->botWall->rect.y )
 				{
@@ -281,7 +292,7 @@ void ModuleCollisions::ApplyMovement(float dt)
 				}
 				if (colliders[i]->rect.y < App->scene_intro->topWall->rect.y + App->scene_intro->topWall->rect.h)
 				{
-					colliders[i]->position.y = App->scene_intro->topWall->rect.y + App->scene_intro->topWall->rect.w + (colliders[i]->rect.h * 0.5f);
+					colliders[i]->position.y = App->scene_intro->topWall->rect.y + App->scene_intro->topWall->rect.h + (colliders[i]->rect.h * 0.5f);
 				}
 				if (colliders[i]->rect.x < App->scene_intro->leftWall->rect.x + App->scene_intro->leftWall->rect.w)
 				{

@@ -48,7 +48,9 @@ public:
 	~ModuleSceneIntro();
 
 	bool Start();
+	update_status PreUpdate();
 	update_status Update(float dt);
+	
 	bool CleanUp();
 
 	void OnCollision(Collider* body1, Collider* body2);
