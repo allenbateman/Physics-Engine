@@ -59,6 +59,12 @@ public:
 	PhysBody* background;
 
 	Collider* squareBullet;
+	Collider* squareBullet2;
+
+	Collider* leftWall;
+	Collider* rightWall;
+	Collider* topWall;
+	Collider* botWall;
 
 	Bouncer bouncer1;
 	Bouncer bouncer2;

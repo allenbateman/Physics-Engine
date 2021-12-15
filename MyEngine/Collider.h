@@ -22,9 +22,9 @@ enum CollisionRecived
 
 struct CollisionInfo {
 	CollisionRecived collision;
-	bool vertical;
-	bool horizontal;
-	bool Collided;
+	bool vertical = false;
+	bool horizontal = false;
+	bool Collided = false;
 };
 
 
@@ -81,6 +81,8 @@ struct Collider
 	float radius;
 
 	fPoint position;
+	fPoint lastPosition;
+	fPoint deltaPosition;
 	fPoint velocity;
 	fPoint acceleration;
 	fPoint force;
@@ -92,6 +94,10 @@ struct Collider
 	Type type;
 	Shape shape;
 	Module* listeners[MAX_LISTENERS] = { nullptr };
+
+	float friction = 0.01;
+
+	bool activeGravity = true;
 };
 
 

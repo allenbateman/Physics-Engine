@@ -1,7 +1,7 @@
 #ifndef __MODULE_COLLISIONS_H__
 #define __MODULE_COLLISIONS_H__
 
-#define MAX_COLLIDERS 10
+#define MAX_COLLIDERS 25
 #define GRAVITY 1
 #include "Module.h"
 #include "Collider.h"
@@ -28,7 +28,6 @@ public:
 	//Apply forces
 	void ApplyForces();
 	void ApplyMovement(float dt);
-
 
 	// Adds a new collider to the list
 	Collider* AddCollider(SDL_Rect rect, Collider::Type type, Module* listener = nullptr);

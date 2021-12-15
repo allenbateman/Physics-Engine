@@ -6,6 +6,8 @@ Collider::Collider(SDL_Rect rectangle, Type type, Module* listener, float _mass)
 	shape = Shape::RECTANGLE;
 	position.x = rectangle.x;
 	position.y = rectangle.y;
+	lastPosition = position;
+	deltaPosition = { 0,0 };
 	listeners[0] = listener;
 	mass = _mass;
 	collInfo = new CollisionInfo();
@@ -28,6 +30,8 @@ void Collider::CircleCollider(fPoint pos, float _radius, Type _type, Module* lis
 	shape = Shape::CIRCLE;
 	position.x = pos.x;
 	position.y = pos.y;
+	lastPosition = position;
+	deltaPosition = { 0,0 };
 	radius = _radius;
 	type = _type;
 	listeners[0] = listener;
@@ -116,21 +120,30 @@ CollisionInfo* Collider::RectangleRectangleCollsion(const Collider* other) const
 {
 	//c1 -> being a rectangle
 	//c2 -> being a rectangle
-	
+	//if (type == Type::WALL && other->type == Type::BULLET)
+	//	LOG(" this->WALL - other->BULLET collison");
+	//if (type == Type::BULLET && other->type == Type::BULLET)
+	//	LOG("this->BULLET - other->BULLET collison");
+
 	//side collsions
 	other->collInfo->Collided = false;
 	other->collInfo->horizontal = false;
 	other->collInfo->horizontal = false;
 	other->collInfo->collision = CollisionRecived::NONE;
 
+
 	if (other->rect.x + other->rect.w + other->velocity.x > rect.x &&
-		other->rect.x + other->velocity.x < rect.x + rect.w )
+		other->rect.x + other->velocity.x < rect.x + rect.w &&
+		other->rect.y + other->rect.h  > rect.y &&
+		other->rect.y + other->velocity.y < rect.h)
 	{
 		other->collInfo->Collided = true;
 		other->collInfo->horizontal = true;
 	}
-
-	if (other->rect.y + other->rect.h + other->velocity.y >rect.y &&
+		 
+	if (other->rect.x + other->rect.w > rect.x &&
+		other->rect.x < rect.x + rect.w && 
+		other->rect.y + other->rect.h + other->velocity.y >rect.y &&
 		other->rect.y + other->velocity.y < rect.y + rect.h)
 	{
 		other->collInfo->Collided = true;
@@ -185,7 +198,7 @@ CollisionInfo* Collider::Intersects(const	Collider* other) const
 					return RectangleCircleCollision(other);
 					break;
 				case  Shape::RECTANGLE:
-					LOG("rect -> rect ");
+					//LOG("rect -> rect ");
 					return RectangleRectangleCollsion(other);
 					break;
 				default:
