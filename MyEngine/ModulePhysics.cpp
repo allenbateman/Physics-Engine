@@ -36,9 +36,6 @@ update_status ModulePhysics::Update() {
 update_status ModulePhysics::PostUpdate()
 {
 
-	int x = App->input->GetMouseX();
-	int y = App->input->GetMouseY();
-
 	if(App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 		debug = !debug;
 

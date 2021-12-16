@@ -18,10 +18,9 @@ Collider::Collider(fPoint center, float radius, Type type, Module* listener, flo
 {
 	shape = Shape::CIRCLE;
 	listeners[0] = listener;
-	mass = _mass;
 	collInfo = new CollisionInfo();
-
-
+	mass = _mass;
+	lastPosition = position;
 }
 
 
@@ -30,13 +29,14 @@ void Collider::CircleCollider(fPoint pos, float _radius, Type _type, Module* lis
 	shape = Shape::CIRCLE;
 	position.x = pos.x;
 	position.y = pos.y;
-	lastPosition = position;
-	deltaPosition = { 0,0 };
 	radius = _radius;
-	type = _type;
-	listeners[0] = listener;
+	type = _type;	
 	mass = _mass;
+	listeners[0] = listener;
 	collInfo = new CollisionInfo();
+
+	rect.w = radius * 2;
+	rect.h = radius * 2;
 
 }
 
@@ -46,10 +46,9 @@ void Collider::RectangleCollider(SDL_Rect _rectangle, Type _type, Module* listen
 	rect = _rectangle;
 	position.x = _rectangle.x - _rectangle.w * 0.5f;
 	position.y = _rectangle.y - _rectangle.h * 0.5f;
-	mass = _mass;
 	type = _type;
-	listeners[0] = listener;
 	mass = _mass;
+	listeners[0] = listener;
 	collInfo = new CollisionInfo();
 
 
@@ -63,42 +62,68 @@ void Collider::ChainCollider(float* vertices, Type type, Module* listener, float
 	shape = Shape::CHAIN;
 }
 
-void Collider::SetPos(int x, int y)
-{
-	switch (shape)
-	{
-		case Shape::RECTANGLE:
-			rect.x = x;
-			rect.y = y;
-			break;
-		case Shape::CIRCLE:
-			position.x = x;
-			position.y = y;
-			break;
-		default:
-
-			break;
-	}
-
-}
-
 CollisionInfo* Collider::CircleRectangleCollision(const Collider* other) const
 {
-	//c1 -> being a circle 
-	//c2 -> being a rectangle
+	//other being a circle
 	CollisionInfo* info = new CollisionInfo();
 	info->Collided = false;
-	info->collision =CollisionRecived::NONE;
+
+	float testX = position.x;
+	float testY = position.y;
+
+	if (position.x < other->rect.x)							//left?
+		testX = other->rect.x; 
+	else if (position.x > other->rect.x + other->rect.w)	//right?
+		testX = other->rect.x + other->rect.w;
+
+	if (position.y < other->rect.y)							//top?
+		testY = other->rect.y;
+	else if (position.y > other->rect.y + other->rect.h)	//bot?
+		testY = other->rect.y + other->rect.h;
+
+
+	float distX = position.x - testX;
+	float distY = position.y - testY;
+	float distance = sqrt((distX * distX) + (distY * distY));
+
+	if (distance <= radius) {
+		info->Collided = true;
+	}
+
 
 	return info;
 }
 
 CollisionInfo* Collider::RectangleCircleCollision(const Collider* other) const
 {
+	//other being a rectangle
 	CollisionInfo* info = new CollisionInfo();
 	info->Collided = false;
-	info->collision = CollisionRecived::NONE;
 
+	float testX = other->position.x;
+	float testY = other->position.y;
+
+	if (other->position.x < rect.x)							//left?
+		testX = rect.x;
+	else if (other->position.x >rect.x + rect.w)			//right?
+		testX = rect.x + rect.w;
+
+	if (other->position.y < rect.y)							//top?
+		testY = rect.y;
+	else if (other->position.y > rect.y + rect.h)			//bot?
+		testY = rect.y + rect.h;
+
+
+	float distX = other->position.x - testX;
+	float distY = other->position.y - testY;
+	float distance = sqrt((distX * distX) + (distY * distY));
+
+	if (distance <= other->radius) {
+		info->Collided = true;
+	}
+
+
+	return info;
 
 	return info;
 }
@@ -109,92 +134,77 @@ CollisionInfo* Collider::CircleCircleCollision(const Collider* other) const
 	//c2 -> being a Circle
 	CollisionInfo* info = new CollisionInfo();
 	info->Collided = false;
-	info->collision = CollisionRecived::NONE;
 
+	fPoint distance;
+	distance.x = other->position.x - position.x;
+	distance.y = other->position.y - position.y;
 
-	 //((other->position.x - position.x)* (other->position.x - position.x) + (other->position.y - position.y) * (other->position.y - position.y) <= (radius + other->radius)* (radius + other->radius));
+	if (distance.x*distance.x + distance.y*distance.y <= (radius + other->radius) * (radius + other->radius)) {
+		fPoint v1 = { velocity.x - velocity.x, velocity.y - velocity.y };
+		fPoint v2 = { other->velocity.x - velocity.x, other->velocity.y - velocity.y };
+
+		info->Collided = true;
+	}
+	
 	 return info;
 }
 
 CollisionInfo* Collider::RectangleRectangleCollsion(const Collider* other) const
 {
-	//c1 -> being a rectangle
-	//c2 -> being a rectangle
-	//if (type == Type::WALL && other->type == Type::BULLET)
-	//	LOG(" this->WALL - other->BULLET collison");
-	//if (type == Type::BULLET && other->type == Type::BULLET)
-	//	LOG("this->BULLET - other->BULLET collison");
-
 	//side collsions
 	other->collInfo->Collided = false;
-	other->collInfo->horizontal = false;
-	other->collInfo->horizontal = false;
-	other->collInfo->collision = CollisionRecived::NONE;
+	other->collInfo->Left = false;
+	other->collInfo->Right = false;
+	other->collInfo->Top= false;
+	other->collInfo->Bot = false;
+
+	//Position is the center of the obj
+	fPoint distance;
+	distance.x = other->position.x - position.x;
+	distance.y = other->position.y - position.y;
 
 
-
-
-
-	if (other->rect.x + other->rect.w + other->velocity.x > rect.x &&
-		other->rect.x + other->velocity.x < rect.x + rect.w &&
+	if (other->rect.x + other->rect.w  > rect.x &&
+		other->rect.x < rect.x + rect.w &&
 		other->rect.y + other->rect.h  > rect.y &&
 		other->rect.y < rect.y + rect.h)
 	{
 		other->collInfo->Collided = true;
-		other->collInfo->horizontal = true;
+		if (distance.x > 0)
+		{
+			//right
+			LOG("C->Right");
+			other->collInfo->Right = false;
+		}
+		if (distance.x < 0)
+		{
+			//left
+			LOG("C->Left");
+			other->collInfo->Left = false;
+		}
+		if (distance.y > 0)
+		{
+			//bot
+			LOG("C->BoT");
+			other->collInfo->Bot = false;
+		}
+		if (distance.y < 0)
+		{
+			//top
+			LOG("C->Top");
+			other->collInfo->Top = false;
+		}
+
 	}
-
-	if (other->rect.x + other->rect.w > rect.x &&
-		other->rect.x < rect.x + rect.w &&
-		other->rect.y + other->rect.h + other->velocity.y >rect.y &&
-		other->rect.y + other->velocity.y < rect.y + rect.h)
-	{
-		other->collInfo->Collided = true;
-		other->collInfo->vertical = true;
-	}
-
-	//if (other->rect.x + other->rect.w + other->velocity.x > rect.x &&
-	//	other->rect.x + other->velocity.x < rect.x + rect.w &&
-	//	other->rect.y + other->rect.h  > rect.y &&
-	//	other->rect.y + other->velocity.y < rect.h)
-	//{
-	//	other->collInfo->Collided = true;
-	//	other->collInfo->horizontal = true;
-	//}
-	//	 
-	//if (other->rect.x + other->rect.w > rect.x &&
-	//	other->rect.x < rect.x + rect.w && 
-	//	other->rect.y + other->rect.h + other->velocity.y >rect.y &&
-	//	other->rect.y + other->velocity.y < rect.y + rect.h)
-	//{
-	//	other->collInfo->Collided = true;
-	//	other->collInfo->vertical = true;
-	//}
-
 
 	return other->collInfo;
 }
 
-void Collider::SetPosition()
-{
-	switch(shape)
-	{
-		case RECTANGLE:
-			rect.x = position.x - rect.w * 0.5f;
-			rect.y = position.y - rect.h * 0.5f;
-			break;
-		case CIRCLE:
-			//Nothing since the center is alredy the pos
-			break;
-		default :
-			break;
-	}
-}
 
 CollisionInfo* Collider::Intersects(const	Collider* other) const
 {
 
-	switch (type)
+	switch (shape)
 	{
 		case Shape::CIRCLE:
 			switch (other->shape)
@@ -230,6 +240,43 @@ CollisionInfo* Collider::Intersects(const	Collider* other) const
 			break;
 	}
 
+}
+
+void Collider::SetPosition(int x, int y)
+{
+	switch (shape)
+	{
+	case Shape::RECTANGLE:
+		rect.x = x;
+		rect.y = y;
+		rect.x = position.x - rect.w * 0.5f;
+		rect.y = position.y - rect.h * 0.5f;
+		break;
+	case Shape::CIRCLE:
+		position.x = x;
+		position.y = y;
+		break;
+	default:
+
+		break;
+	}
+
+}
+
+void Collider::SetCenter()
+{
+	switch (shape)
+	{
+	case RECTANGLE:
+		rect.x = position.x - rect.w * 0.5f;
+		rect.y = position.y - rect.h * 0.5f;
+		break;
+	case CIRCLE:
+		//Nothing since the center is alredy the pos
+		break;
+	default:
+		break;
+	}
 }
 
 void Collider::AddListener(Module* listener)

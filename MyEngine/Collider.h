@@ -4,29 +4,21 @@
 #include "SDL/include/SDL_Rect.h"
 #include "p2Point.h"
 #define MAX_LISTENERS 5
+#define MAX_VELOCITY 1.5
+
 
 class Module;
 
-enum CollisionRecived
-{
-
-
-	NONE,
-	TOP,
-	BOT,
-	LEFT,
-	RIGHT,
-	HORIZONTAL,
-	VERTICAL
-};
-
 struct CollisionInfo {
-	CollisionRecived collision;
-	bool vertical = false;
-	bool horizontal = false;
+	bool Left = false;
+	bool Right = false;
+	bool Top = false;
+	bool Bot = false;
 	bool Collided = false;
 };
-
+struct Color {
+	float r, g, b, a;
+};
 
 struct Collider
 {
@@ -44,38 +36,30 @@ struct Collider
 		CHAIN
 	};
 
-	//Methods
+	//Constructors
 	Collider(SDL_Rect rectangle, Type type, Module* listener = nullptr, float _mass = 1);
 	Collider(fPoint positon,float radius, Type type, Module* listener = nullptr,float _mass = 1);
 
+	//Funcitons ot create shapes
 	void CircleCollider(fPoint pos,float _radius, Type _type, Module* listener = nullptr,  float _mass = 1);
-
 	void RectangleCollider(SDL_Rect _rctangle, Type _type, Module* listener = nullptr, float _mass = 1);
-
 	void ChainCollider(float* _vertices, Type _type, Module* listener = nullptr, float _mass = 1);
 
-	void SetPos(int x, int y);
 
+
+	//To call the desired Collision Solver
+	CollisionInfo* Intersects(const Collider* other) const;
+	//Collision Solvers
 	CollisionInfo* CircleRectangleCollision( const Collider* other) const;
 	CollisionInfo* RectangleCircleCollision( const Collider* other) const;
-
 	CollisionInfo* CircleCircleCollision(const Collider* other) const;
-
 	CollisionInfo* RectangleRectangleCollsion(const Collider* other)const;
 
-	void SetPosition();
-
-	//fPoint GetPos() { return fPoint {rect.x,rect.y}; }
-	
-	// const-> so it will not affect the object variables
-	CollisionInfo* Intersects( const Collider* other) const;
-
 	void AddListener(Module* listener);
+	void SetPosition(int x, int y);
+	void SetCenter();
 
-
-
-	//modyfiers
-
+	//Force Modifiers
 	void ResetForce() { force = fPoint(0, 0); }
 	void ApplyGravity() { force.y += 0.000005f; }
 	void ApplyHorizontalFriction() {force.x -= horizontalFriction;}
@@ -89,25 +73,33 @@ struct Collider
 	//circle
 	float radius;
 
+	//Sum of all forces
+	fPoint force;
+
+	//Movement Components
+	fPoint acceleration;
+	fPoint velocity;
 	fPoint position;
 	fPoint lastPosition;
 	fPoint deltaPosition;
-	fPoint velocity;
-	fPoint acceleration;
-	fPoint force;
 
+	//collision info 
 	CollisionInfo* collInfo;
-
 	bool pendingToDelete = false;
-	float mass;
-	Type type;
+
+	//particle properties
 	Shape shape;
+	Type type;
 	Module* listeners[MAX_LISTENERS] = { nullptr };
 
+	float mass;
 	float horizontalFriction = 0.01;
 	float verticalFriction = 0.01;
 
 	bool activeGravity = true;
+	bool Bounce = true;
+
+	Color color;
 };
 
 

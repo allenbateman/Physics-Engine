@@ -18,49 +18,37 @@ bool ModuleSceneIntro::Start()
 	
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
-	SDL_Rect rect;
-	rect.x = 0;
-	rect.y = SCREEN_HEIGHT-5;
-	rect.w = SCREEN_WIDTH;
-	rect.h = 10;
-	botWall = App->collisions->AddRectangleCollider(rect, Collider::Type::WALL, App->collisions); // Bottom
-	rect.x = 0;
-	rect.y = -10;
-	rect.w = SCREEN_WIDTH;
-	rect.h = 15;
-	topWall = App->collisions->AddRectangleCollider(rect, Collider::Type::WALL, App->collisions); // Top
-	rect.x = -10;
-	rect.y = 0;
-	rect.w = 15;
-	rect.h = SCREEN_HEIGHT;
-	leftWall = App->collisions->AddRectangleCollider(rect, Collider::Type::WALL, App->collisions); // Left
-	rect.x = SCREEN_WIDTH-5;
-	rect.y = 0;
-	rect.w = 10;
-	rect.h = SCREEN_HEIGHT;
-	rightWall = App->collisions->AddRectangleCollider(rect, Collider::Type::WALL, App->collisions); // Right
 
 	SDL_Rect rectangle;
 	rectangle.x = 250;
 	rectangle.y = 250;
 	rectangle.w = 50;
 	rectangle.h = 50;
-
 	squareBullet = App->collisions->AddRectangleCollider(rectangle, Collider::BULLET, App->collisions);
-	squareBullet->SetPosition();
+	squareBullet->SetCenter();
 	squareBullet->velocity.y = 0.0f;
 	squareBullet->velocity.x = 0.0f;
-	squareBullet->mass = 2;
-	rectangle.x = 350;
-	rectangle.y = 350;
-	rectangle.w = 20;
-	rectangle.h = 20;
-	squareBullet2 = App->collisions->AddRectangleCollider(rectangle, Collider::PLAYER, App->collisions);
-	squareBullet2->SetPosition();
+	squareBullet->mass = 1;
+
+	rectangle.x = 550;
+	rectangle.y = SCREEN_HEIGHT-25;
+	rectangle.w = 50;
+	rectangle.h = 50;
+	squareBullet2 = App->collisions->AddRectangleCollider(rectangle, Collider::BULLET, App->collisions);
+	squareBullet2->SetCenter();
+	squareBullet2->mass = 1;
 	squareBullet2->velocity.y = 0.0f;
 	squareBullet2->velocity.x = 0.0f;
 
+	circleBullet = App->collisions->AddCircleCollider(fPoint{220,130},20,Collider::BULLET,App->collisions);
+	circleBullet->mass = 1;
+	circleBullet->velocity.x = 0.1f;
+	circleBullet->velocity.y = 0.1f;
 
+	circleBullet2 = App->collisions->AddCircleCollider(fPoint{ 420,130 }, 20, Collider::BULLET, App->collisions);
+	circleBullet2->mass = 1;
+	circleBullet2->velocity.x = -0.1f;
+	circleBullet2->velocity.y = 0.1f;
 
 	return ret;
 }
@@ -70,19 +58,19 @@ update_status ModuleSceneIntro::PreUpdate()
 	fPoint addForce;
 	addForce.x = 0.001f;
 	addForce.y = 0.01;
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN)
 	{
 		squareBullet->force.x += addForce.x;
 	}
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN)
 	{
 		squareBullet->force.x -= addForce.x;
 	}
-	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN)
 	{
 		squareBullet->force.y -= addForce.y;
 	}
-	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN)
 	{
 		squareBullet->force.y += addForce.y;
 	}

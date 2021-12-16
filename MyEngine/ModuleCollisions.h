@@ -39,6 +39,7 @@ public:
 	void RemoveCollider(Collider* collider);
 	void DebugDraw();
 	void OnCollision(Collider* body1, Collider* body2);
+	void CheckParticleInBounds();
 private:
 	Collider* colliders[MAX_COLLIDERS] = { nullptr };
 	bool matrix[Collider::Type::MAX][Collider::Type::MAX];

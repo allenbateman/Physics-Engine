@@ -122,80 +122,113 @@ void ModuleCollisions::DebugDraw()
 
 void ModuleCollisions::OnCollision(Collider* body1, Collider* body2)
 {
-	https://happycoding.io/tutorials/processing/collision-detection
 
-	if (body2->type == Collider::Type::BULLET || body2->type == Collider::Type::PLAYER)
-	{
+	fPoint v1 = { body1->velocity.x - body1->velocity.x, body1->velocity.y - body1->velocity.y };
+	fPoint v2 = { body2->velocity.x - body1->velocity.x, body2->velocity.y - body1->velocity.y };
+	body2->velocity.x = -v2.x;
+	body2->velocity.y = -v2.y;
 
-		//if velocity is very small stop the particle
-		float dtvx = fabs(body2->velocity.x);
-		float acbax = fabs(body2->acceleration.x);
-		if (dtvx <= 0.05f)
-		{
-			body2->acceleration.x = 0;
-			body2->velocity.x = 0;
-		}
-		//if velocity is very small stop the particle
-		float dtvy = fabs(body2->velocity.y);
-		if (dtvy < 0.05f)
-		{
-			body2->activeGravity = false;
-			body2->acceleration.y = 0;
-			body2->velocity.y = 0;
-		}
-
-
-		if (body2->collInfo->horizontal)
-		{	
-			body2->velocity.x *= -1;			
-		}
-		if (body2->collInfo->vertical)
-		{
-			body2->velocity.y *= -1;
-		}
-
-		body2->collInfo->horizontal = false;
-		body2->collInfo->vertical = false;
-		body2->collInfo->Collided = false;
-
-	}
 }
 
-// Called before quitting
-bool ModuleCollisions::CleanUp()
+void ModuleCollisions::CheckParticleInBounds()
 {
-	LOG("Freeing all colliders");
 
+	bool checkLeft = false;
+	bool checkRight = false;
+	bool checkTop = false;
+	bool checkBot = false;
 	for (uint i = 0; i < MAX_COLLIDERS; ++i)
 	{
-		if (colliders[i] != nullptr)
-		{
-			delete colliders[i];
-			colliders[i] = nullptr;
-		}
-	}
+		if (colliders[i] == nullptr)
+			continue;
 
-	return true;
-}
-
-void ModuleCollisions::RemovePendingToDeleteColliders()
-{	
-	// Remove all colliders scheduled for deletion
-	for (uint i = 0; i < MAX_COLLIDERS; ++i)
-	{
-		if (colliders[i] != nullptr)
+		if (colliders[i]->shape == Collider::Shape::CIRCLE)
 		{
-			if (colliders[i]->pendingToDelete == true) {
-				delete colliders[i];
-				colliders[i] = nullptr;
+			checkLeft = colliders[i]->position.x - colliders[i]->radius > 0;
+			checkRight = colliders[i]->position.x + colliders[i]->radius  < SCREEN_WIDTH;
+			if (checkLeft && checkRight)
+			{
+				// in xBounds
+			}
+			else {
+				if (!checkLeft)
+					colliders[i]->collInfo->Left = true;
+				if (!checkRight)
+					colliders[i]->collInfo->Right = true;
+
+				colliders[i]->position.x = colliders[i]->lastPosition.x;
+				colliders[i]->velocity.x *= -1;
+			}
+
+
+			checkTop = colliders[i]->position.y - colliders[i]->radius > 0;
+			checkBot = colliders[i]->position.y + colliders[i]->radius < SCREEN_HEIGHT;
+
+			if (checkBot && checkTop)
+			{
+				// in xBounds
+			}
+			else {
+				if (!checkTop)
+					colliders[i]->collInfo->Top = true;
+				if (!checkBot)
+					colliders[i]->collInfo->Bot = true;
+
+				colliders[i]->position.y = colliders[i]->lastPosition.y;
+				colliders[i]->velocity.y *= -1;
+			}
+
+		}else
+		if (colliders[i]->shape == Collider::Shape::RECTANGLE)
+		{
+			checkLeft = colliders[i]->position.x - (colliders[i]->rect.w * 0.5) > 0;
+			checkRight = colliders[i]->position.x + (colliders[i]->rect.w * 0.5) < SCREEN_WIDTH;
+			if (checkLeft && checkRight)
+			{
+				// in xBounds
+			}
+			else {
+				if (!checkLeft)
+					colliders[i]->collInfo->Left = true;
+				if (!checkRight)
+					colliders[i]->collInfo->Right = true;
+
+				colliders[i]->position.x = colliders[i]->lastPosition.x;
+				colliders[i]->velocity.x *= -1;
+			}
+
+			checkTop = colliders[i]->position.y - (colliders[i]->rect.h * 0.5) > 0;
+			checkBot = colliders[i]->position.y + (colliders[i]->rect.h * 0.5) < SCREEN_HEIGHT;
+
+			if (checkBot && checkTop)
+			{
+				// in yBounds
+			}
+			else {
+
+				if (!checkBot)
+					colliders[i]->collInfo->Bot = true;
+				if (!checkTop)
+					colliders[i]->collInfo->Top = true;
+
+				colliders[i]->position.y = colliders[i]->lastPosition.y;
+				colliders[i]->velocity.y *= -1;
+
+
 			}
 		}
 	}
+
 }
 
 void ModuleCollisions::CheckCollisions()
 {
 
+	//between bounds
+	CheckParticleInBounds();
+
+
+	//between particles
 	Collider* c1;
 	Collider* c2;
 
@@ -240,19 +273,20 @@ void ModuleCollisions::ApplyForces()
 			{
 
 				colliders[i]->force = fPoint(0, 0);
+
 				//Gravity
 				if (colliders[i]->velocity.y != 0.00000f)
 					colliders[i]->activeGravity = true;
+
 				if(colliders[i]->activeGravity)
-				 colliders[i]->force += fPoint(0 , 0.0005f);
+				   colliders[i]->force += fPoint(0 , 0.0005f);
+
 				//Wind
 				colliders[i]->force += fPoint(0,0);
 
 			}
 		}
 	}
-	//Other Forces...
-
 }
 
 void ModuleCollisions::ApplyMovement(float dt)
@@ -266,7 +300,7 @@ void ModuleCollisions::ApplyMovement(float dt)
 				
 
 				colliders[i]->lastPosition = colliders[i]->position;
-				colliders[i]->SetPosition();
+				colliders[i]->SetCenter();
 
 				colliders[i]->acceleration.x = colliders[i]->mass * colliders[i]->force.x;
 				colliders[i]->acceleration.y = colliders[i]->mass * colliders[i]->force.y;
@@ -274,39 +308,30 @@ void ModuleCollisions::ApplyMovement(float dt)
 				colliders[i]->velocity.x += colliders[i]->acceleration.x * dt;
 				colliders[i]->velocity.y += colliders[i]->acceleration.y * dt;
 
+				if (colliders[i]->velocity.x > MAX_VELOCITY)  colliders[i]->velocity.x = MAX_VELOCITY;
+				else if (colliders[i]->velocity.x < -MAX_VELOCITY) colliders[i]->velocity.x = -MAX_VELOCITY;
+				else if (colliders[i]->velocity.y > MAX_VELOCITY)  colliders[i]->velocity.y = MAX_VELOCITY;
+				else if (colliders[i]->velocity.y > -MAX_VELOCITY) colliders[i]->velocity.y = -MAX_VELOCITY;
+
 				colliders[i]->position.x += colliders[i]->velocity.x * dt;
 				colliders[i]->position.y += colliders[i]->velocity.y * dt;
 
 				colliders[i]->deltaPosition = { colliders[i]->lastPosition.x - colliders[i]->position.x, colliders[i]->lastPosition.y - colliders[i]->position.y };
-
+				
+				colliders[i]->SetCenter();
 
 
 				//LOG("Delata y [%i]: %f", i, colliders[i]->deltaPosition.y);
 				//LOG("FORCE[%i]:x:%f y:%f", i, colliders[i]->force.x, colliders[i]->force.y);
-				LOG("ACCELERATION[%i]:x:%f y:%f", i, colliders[i]->acceleration.x, colliders[i]->acceleration.y);
+				//LOG("ACCELERATION[%i]:x:%f y:%f", i, colliders[i]->acceleration.x, colliders[i]->acceleration.y);
 				//LOG("VELOCITY[%i]:x:%f y:%f", i, colliders[i]->velocity.x, colliders[i]->velocity.y);
 
-				if (colliders[i]->rect.y + colliders[i]->rect.h  >  App->scene_intro->botWall->rect.y )
-				{
-					colliders[i]->position.y = App->scene_intro->botWall->position.y - (colliders[i]->rect.h*0.5f);
-				}
-				if (colliders[i]->rect.y < App->scene_intro->topWall->rect.y + App->scene_intro->topWall->rect.h)
-				{
-					colliders[i]->position.y = App->scene_intro->topWall->rect.y + App->scene_intro->topWall->rect.h + (colliders[i]->rect.h * 0.5f);
-				}
-				if (colliders[i]->rect.x < App->scene_intro->leftWall->rect.x + App->scene_intro->leftWall->rect.w)
-				{
-					colliders[i]->position.x = App->scene_intro->leftWall->rect.x + App->scene_intro->leftWall->rect.w + (colliders[i]->rect.w * 0.5f);
-				}
-				if (colliders[i]->rect.x + colliders[i]->rect.w > App->scene_intro->rightWall->rect.x)
-				{
-					colliders[i]->position.x = App->scene_intro->rightWall->rect.x - (colliders[i]->rect.w * 0.5f);
-				}
+			
 
-				colliders[i]->SetPosition();
+				App->renderer->DrawCircle(colliders[i]->position,2, 125, 255, 0, 255);
 
-				App->renderer->DrawCircle(colliders[i]->position,2, 0, 255, 0, 255);
-
+				if(colliders[i]->type == Collider::Type::PLAYER)
+					LOG("POSITION[%i]:x:%f y:%f", i, colliders[i]->position.x, colliders[i]->position.y);
 
 				if (i == -1)
 				{
@@ -319,7 +344,6 @@ void ModuleCollisions::ApplyMovement(float dt)
 		}
 	}
 }
-
 
 Collider* ModuleCollisions::AddRectangleCollider(SDL_Rect rect, Collider::Type type, Module* listener)
 {
@@ -353,6 +377,21 @@ Collider* ModuleCollisions::AddCircleCollider(fPoint center,float radius, Collid
 	return ret;
 }
 
+void ModuleCollisions::RemovePendingToDeleteColliders()
+{
+	// Remove all colliders scheduled for deletion
+	for (uint i = 0; i < MAX_COLLIDERS; ++i)
+	{
+		if (colliders[i] != nullptr)
+		{
+			if (colliders[i]->pendingToDelete == true) {
+				delete colliders[i];
+				colliders[i] = nullptr;
+			}
+		}
+	}
+}
+
 void ModuleCollisions::RemoveCollider(Collider* collider)
 {
 	for (uint i = 0; i < MAX_COLLIDERS; ++i)
@@ -363,4 +402,22 @@ void ModuleCollisions::RemoveCollider(Collider* collider)
 			colliders[i] = nullptr;
 		}
 	}
+}
+
+
+// Called before quitting
+bool ModuleCollisions::CleanUp()
+{
+	LOG("Freeing all colliders");
+
+	for (uint i = 0; i < MAX_COLLIDERS; ++i)
+	{
+		if (colliders[i] != nullptr)
+		{
+			delete colliders[i];
+			colliders[i] = nullptr;
+		}
+	}
+
+	return true;
 }

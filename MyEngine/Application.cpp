@@ -22,7 +22,6 @@ Application::Application()
 	AddModule(input);
 	AddModule(audio);
 
-
 	
 	// Scenes
 	AddModule(scene_intro);

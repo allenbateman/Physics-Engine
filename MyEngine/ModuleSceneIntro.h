@@ -62,11 +62,8 @@ public:
 
 	Collider* squareBullet;
 	Collider* squareBullet2;
-
-	Collider* leftWall;
-	Collider* rightWall;
-	Collider* topWall;
-	Collider* botWall;
+	Collider* circleBullet;
+	Collider* circleBullet2;
 
 	Bouncer bouncer1;
 	Bouncer bouncer2;
