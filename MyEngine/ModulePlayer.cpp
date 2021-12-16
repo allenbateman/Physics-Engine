@@ -60,7 +60,7 @@ update_status ModulePlayer::PreUpdate()
 update_status ModulePlayer::Update(float dt)
 {
 
-	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT)
+//	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT)
 		Aim();
 	
 
@@ -88,10 +88,10 @@ void ModulePlayer::OnCollision(Collider* body1, Collider* body2)
 
 void ModulePlayer::Aim()
 {
-	int xMouse;
-	int yMouse;
-	App->input->GetMousePosition(xMouse, yMouse);
-	App->renderer->DrawLine(player->position.x, player->position.y, xMouse, yMouse, 0, 100, 255, 255,true);
+//	int xMouse;
+//	int yMouse;
+	//App->input->GetMousePosition(xMouse, yMouse);
+//	App->renderer->DrawLine(player->position.x, player->position.y, xMouse, yMouse, 0, 100, 255, 255,true);
 
 }
 
