@@ -71,6 +71,7 @@ Collider::Collider(fPoint center, float radius, Type type, Module* listener, flo
 Collider::Collider(fPoint center, float radius, BulletType bulletType, Module* listener, float _mass) : position(center), radius(radius)
 {
 	type = BULLET;
+	shape = CIRCLE;
 	collInfo = new CollisionInfo();
 	switch (bulletType)
 	{
