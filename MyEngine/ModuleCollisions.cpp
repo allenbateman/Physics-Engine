@@ -125,14 +125,6 @@ void ModuleCollisions::OnCollision(Collider* body1, Collider* body2)
 	if (body1->type != Collider::WALL)
 	{
 
-		//reset positions
-		if (body2->collInfo->Left || body2->collInfo->Right)
-			body2->position.x = body2->position.x;
-
-		if (body2->collInfo->Bot || body2->collInfo->Top)
-			body2->position.y = body2->position.y;
-		
-
 		//calculate resultant velocity
 		fPoint v2 = { body2->velocity.x - body1->velocity.x, body2->velocity.y - body1->velocity.y };
 
@@ -157,50 +149,40 @@ void ModuleCollisions::OnCollision(Collider* body1, Collider* body2)
 		//set velocity to zero if verly small
 		v2 = StopVibration(body2->velocity);
 
-		body2->velocity.x = -v2.x;
-		body2->velocity.y = -v2.y;
+
+		body2->velocity = { -v2.x, -v2.y };
+
 	}
 	else {
 
-		if (body2->collInfo->Left || body2->collInfo->Right)
+		if (body2->collInfo->Right && body2->velocity.x > 0 )
 		{
 			//reset x position before solving collision
 			body2->position.x = body2->lastPosition.x;
-
-
-			//check if the velocity x is positive or negative to add or substract the friction force
-			if (IsPositive(body2->velocity.x))
-			{
-				body2->velocity.x -= body2->horizontalFriction;
-			}
-			else {
-				body2->velocity.x += body2->horizontalFriction;
-			}
-
-
-
+			body2->velocity.x -= body2->horizontalFriction;
+			body2->velocity.x *= -1;
+		}
+		if (body2->collInfo->Left && body2->velocity.x < 0)
+		{
+			body2->position.x = body2->lastPosition.x;
+			body2->velocity.x += body2->horizontalFriction;
 			body2->velocity.x *= -1;
 		}
 
-		if (body2->collInfo->Bot || body2->collInfo->Top)
+		if (body2->collInfo->Bot && body2->velocity.y > 0)
 		{
-			//reset y position before solving collision
 			body2->position.y = body2->lastPosition.y;
-
-			if (IsPositive(body2->velocity.y))
-			{
-				body2->velocity.y -= body2->horizontalFriction;
-			}
-			else {
-				body2->velocity.y += body2->horizontalFriction;
-			}
-
+			body2->velocity.y -= body2->horizontalFriction;
 			body2->velocity.y *= -1;
 		}
-
+		if (body2->collInfo->Top && body2->velocity.y < 0)
+		{
+			body2->position.y = body2->lastPosition.y;
+			body2->velocity.y += body2->horizontalFriction;
+			body2->velocity.y *= -1;
+		}
 		//set velocity to zero if verly small
 		body2->velocity = StopVibration(body2->velocity);
-
 	}
 
 }
@@ -437,7 +419,7 @@ void ModuleCollisions::ApplyMovement(float dt)
 
 		
 				if(colliders[i]->type == Collider::Type::PLAYER)
-					LOG("POSITION[%i]:x:%f y:%f", i, colliders[i]->position.x, colliders[i]->position.y);
+					//LOG("POSITION[%i]:x:%f y:%f", i, colliders[i]->position.x, colliders[i]->position.y);
 
 				if (i == -1)
 				{

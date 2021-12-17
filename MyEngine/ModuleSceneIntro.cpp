@@ -28,25 +28,34 @@ bool ModuleSceneIntro::Start()
 	Flor1 = App->collisions->AddRectangleCollider(rectangle, Collider::WALL, App->collisions);
 	Flor1->SetCenter();
 
-	rectangle.x = 250;
-	rectangle.y = 400;
-	rectangle.w = 50;
-	rectangle.h = 50;
-	squareBullet = App->collisions->AddRectangleCollider(rectangle, Collider::BULLET, App->collisions);
-	squareBullet->SetCenter();
-	squareBullet->velocity.y = 0.0f;
-	squareBullet->velocity.x = 0.0f;
-	squareBullet->mass = 1;
-
 	rectangle.x = 550;
-	rectangle.y = SCREEN_HEIGHT-25;
+	rectangle.y = 200;
 	rectangle.w = 50;
-	rectangle.h = 50;
-	squareBullet2 = App->collisions->AddRectangleCollider(rectangle, Collider::BULLET, App->collisions);
-	squareBullet2->SetCenter();
-	squareBullet2->mass = 1;
-	squareBullet2->velocity.y = 0.0f;
-	squareBullet2->velocity.x = 0.0f;
+	rectangle.h = 350;
+	Flor2 = App->collisions->AddRectangleCollider(rectangle, Collider::WALL, App->collisions);
+	Flor2->SetCenter();
+
+
+
+	//rectangle.x = 250;
+	//rectangle.y = 400;
+	//rectangle.w = 50;
+	//rectangle.h = 50;
+	//squareBullet = App->collisions->AddRectangleCollider(rectangle, Collider::BULLET, App->collisions);
+	//squareBullet->SetCenter();
+	//squareBullet->velocity.y = 0.0f;
+	//squareBullet->velocity.x = 0.0f;
+	//squareBullet->mass = 1;
+
+	//rectangle.x = 550;
+	//rectangle.y = SCREEN_HEIGHT-25;
+	//rectangle.w = 50;
+	//rectangle.h = 50;
+	//squareBullet2 = App->collisions->AddRectangleCollider(rectangle, Collider::BULLET, App->collisions);
+	//squareBullet2->SetCenter();
+	//squareBullet2->mass = 1;
+	//squareBullet2->velocity.y = 0.0f;
+	//squareBullet2->velocity.x = 0.0f;
 
 	circleBullet = App->collisions->AddCircleCollider(fPoint{120,400},20,Collider::BULLET,App->collisions);
 	circleBullet->mass = 1;

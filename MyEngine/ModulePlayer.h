@@ -22,6 +22,7 @@ public:
 
 	Collider* player;
 	p2Point<float> speed;
+	p2Point<float> force;
 	
 	p2Point<float> position;
 	p2Point<float> lasPosition;

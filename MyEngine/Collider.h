@@ -94,7 +94,7 @@ struct Collider
 
 	float mass;
 	float horizontalFriction = 0.01;
-	float verticalFriction = 0.01;
+	float verticalFriction =1;
 
 	bool activeGravity = true;
 	bool Bounce = true;

@@ -21,13 +21,13 @@ bool ModulePlayer::Start()
 	LOG("Loading player");
 
 	position = { 250, 250 };
-	player =  App->collisions->AddCircleCollider(position, 21 ,Collider::PLAYER,this);
+	player =  App->collisions->AddCircleCollider(position, 20 ,Collider::PLAYER,App->collisions);
 	player->SetPosition(450, 250);
 	player->mass = 1;
-	player->verticalFriction = 10;
 
 
 	speed = { 0.5f,0.7f };
+	force = { 0.01f,0.01f };
 
 	return ret;
 }
@@ -35,23 +35,27 @@ bool ModulePlayer::Start()
 update_status ModulePlayer::PreUpdate()
 {
 
-	player->velocity.x = 0;
+	//player->velocity.x = 0;
 
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN)
 	{
-		player->velocity.x = -speed.x;
+		player->force.x = -force.x;
+		//player->velocity.x = -speed.x;
 	}
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN)
 	{
-		player->velocity.x = speed.x;
+		player->force.x = force.x;
+		//player->velocity.x = speed.x;
 	}
-	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN)
 	{
-		player->velocity.y = -speed.y;
+		player->force.y = -force.y;
+		//player->velocity.y = -speed.y;
 	}
-	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
 	{
-		player->velocity.y = speed.y;
+		player->force.y = force.y;
+		//player->velocity.y = speed.y;
 	}
 	
 
@@ -60,8 +64,7 @@ update_status ModulePlayer::PreUpdate()
 
 update_status ModulePlayer::Update(float dt)
 {
-
-//	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT)
+	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT)
 		Aim();
 	
 
@@ -89,10 +92,10 @@ void ModulePlayer::OnCollision(Collider* body1, Collider* body2)
 
 void ModulePlayer::Aim()
 {
-//	int xMouse;
-//	int yMouse;
-	//App->input->GetMousePosition(xMouse, yMouse);
-//	App->renderer->DrawLine(player->position.x, player->position.y, xMouse, yMouse, 0, 100, 255, 255,true);
+	int xMouse = App->input->GetMouseX();
+	int yMouse = App->input->GetMouseY();
+
+	App->renderer->DrawLine(player->position.x, player->position.y, xMouse, yMouse, 0, 100, 255, 255,true);
 
 }
 

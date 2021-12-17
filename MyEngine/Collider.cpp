@@ -77,23 +77,23 @@ CollisionInfo* Collider::CircleRectangleCollision(const Collider* other) const
 	if (position.x < other->rect.x)							//left?
 	{
 		testX = other->rect.x;
-		other->collInfo->Right = true;
+		other->collInfo->Right = true;	//the rectangle has a collision on the right
 	}
 	else if (position.x > other->rect.x + other->rect.w)	//right?
 	{
 		testX = other->rect.x + other->rect.w;
-		other->collInfo->Left = true;
+		other->collInfo->Left = true;	//the rectangle has a collision on the left
 	}
 
 	if (position.y < other->rect.y)							//top?
 	{
 		testY = other->rect.y;
-		other->collInfo->Bot = true;
+		other->collInfo->Bot = true;	//the rectangle has a collision on the bot
 	}
 	else if (position.y > other->rect.y + other->rect.h)	//bot?
 	{
 		testY = other->rect.y + other->rect.h;
-		other->collInfo->Top = true;
+		other->collInfo->Top = true;	//the rectangle has a collision on the bot
 	}
 
 
@@ -125,23 +125,23 @@ CollisionInfo* Collider::RectangleCircleCollision(const Collider* other) const
 	if (other->position.x < rect.x)							//left?
 	{
 		testX = rect.x;
-		other->collInfo->Right = true;
+		other->collInfo->Right = true; //the circle has a collision on the right
 	}
 	else if (other->position.x > rect.x + rect.w)			//right?
 	{
 		testX = rect.x + rect.w;
-		other->collInfo->Left = true;
+		other->collInfo->Left = true; //the circle has a collision on the left
 	}
 
 	if (other->position.y < rect.y)							//top?
 	{	
 		testY = rect.y;
-		other->collInfo->Bot = true;
+		other->collInfo->Bot = true; //the circle has a collision on the bot
 	}
 	else if (other->position.y > rect.y + rect.h)			//bot?
 	{
 		testY = rect.y + rect.h;
-		other->collInfo->Top = true;
+		other->collInfo->Top = true; //the circle has a collision on the top
 	}
 
 
@@ -201,27 +201,26 @@ CollisionInfo* Collider::RectangleRectangleCollsion(const Collider* other) const
 		{
 			//right
 			LOG("C->Right");
-			other->collInfo->Right = true;
+			other->collInfo->Left = true;
 
 		}else if (distance.x < 0)
 		{
 			//left
 			LOG("C->Left");
-			other->collInfo->Left = true;
+			other->collInfo->Right = true;
 		}
 		if (distance.y > 0)
 		{
 			//bot
 			LOG("C->BoT");
-			other->collInfo->Bot = true;
+			other->collInfo->Top = true;
 
 		}else if (distance.y < 0)
 		{
 			//top
 			LOG("C->Top");
-			other->collInfo->Top = true;
+			other->collInfo->Bot = true;
 		}
-
 	}
 
 	return other->collInfo;
