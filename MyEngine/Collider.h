@@ -19,26 +19,39 @@ struct CollisionInfo {
 struct Color {
 	float r, g, b, a;
 };
-
+struct BulletProperties {
+	float lifeTime;
+	int bounceCounter;
+	int damage;
+	float force;
+//	SDL_Texture* texture;
+};
 struct Collider
 {
+	enum Shape {
+		RECTANGLE,
+		CIRCLE,
+		CHAIN
+	};
 	enum Type
 	{
 		NONE = -1,
 		WALL,
 		PLAYER,
 		BULLET,
+		ENEMY,
 		MAX
 	};
-	enum Shape {
-		RECTANGLE,
-		CIRCLE,
-		CHAIN
+	enum BulletType
+	{
+		BOMB,		//explodes on impact
+		LASER,		//pure elastic vs metal
+		BOUNCER		//bounces 3 times and explodes on the last hit
 	};
-
 	//Constructors
 	Collider(SDL_Rect rectangle, Type type, Module* listener = nullptr, float _mass = 1);
-	Collider(fPoint positon,float radius, Type type, Module* listener = nullptr,float _mass = 1);
+	Collider(fPoint center,float radius, Type type, Module* listener = nullptr,float _mass = 1);
+	Collider(fPoint center,float radius, BulletType bulletType, Module* listener = nullptr,float _mass = 1);
 
 	//Funcitons ot create shapes
 	void CircleCollider(fPoint pos,float _radius, Type _type, Module* listener = nullptr,  float _mass = 1);
@@ -62,11 +75,11 @@ struct Collider
 	//Force Modifiers
 	void ResetForce() { force = fPoint(0, 0); }
 	void ApplyGravity() { force.y += 0.000005f; }
-	void ApplyHorizontalFriction() {force.x -= horizontalFriction;}
-	void ApplyVerticalFriction() {force.x -= verticalFriction;}
+	void ApplyHorizontalFriction() {force.x -= friction;}
+	void ApplyVerticalFriction() {force.x -= coeficientOfRestitution;}
 	void ApplyExternalForce(fPoint externalForce) { force += externalForce; }
+	
 	//Variables
-
 	//square
 	SDL_Rect rect;
 	
@@ -93,13 +106,16 @@ struct Collider
 	Module* listeners[MAX_LISTENERS] = { nullptr };
 
 	float mass;
-	float horizontalFriction = 0.01;
-	float verticalFriction =1;
+	float friction = 0.01;
+	float coeficientOfRestitution = 0.01;
 
 	bool activeGravity = true;
 	bool Bounce = true;
 
 	Color color;
+
+	//if collider is a bullet
+	BulletProperties bulletProperties;
 };
 
 

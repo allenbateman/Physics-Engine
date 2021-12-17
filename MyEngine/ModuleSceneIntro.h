@@ -70,6 +70,7 @@ public:
 	//FLORS
 	Collider* Flor1;
 	Collider* Flor2;
+	Collider* CenterCube;
 
 	Bouncer bouncer1;
 	Bouncer bouncer2;

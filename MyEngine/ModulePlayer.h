@@ -7,6 +7,12 @@
 class ModulePlayer : public Module
 {
 public:
+	enum CurrentWeapon {
+		CANNON,
+		BLASTER,
+		BOUNCER_SHOOTER
+	};
+
 	ModulePlayer(Application* app, bool start_enabled = true);
 	virtual ~ModulePlayer();
 
@@ -18,6 +24,7 @@ public:
 
 	void OnCollision(Collider* body1, Collider* body2);
 
+	void Shoot();
 	void Aim();
 
 	Collider* player;
@@ -25,7 +32,7 @@ public:
 	p2Point<float> force;
 
 	bool canJumnp = true;
-
+	bool canShoot = true;
 	// A set of animations
 	SDL_Texture* texture = nullptr;
 	Animation* currentAnimation = nullptr;

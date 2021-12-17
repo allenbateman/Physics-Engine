@@ -34,6 +34,7 @@ public:
 
 	Collider* AddCircleCollider(fPoint center, float radius, Collider::Type type, Module* listener = nullptr);
 	Collider* AddRectangleCollider(SDL_Rect rect, Collider::Type type, Module* listener = nullptr);
+	Collider* AddBulletCollider(fPoint center, float radius, Collider::BulletType bulletType, Module* listener = nullptr);
 	
 	void RemoveCollider(Collider* collider);
 	void DebugDraw();

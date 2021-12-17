@@ -1,6 +1,7 @@
 #include "Collider.h"
 #include "math.h"
 
+//rectangle constructor
 Collider::Collider(SDL_Rect rectangle, Type type, Module* listener, float _mass) : rect(rectangle), type(type)
 {
 	shape = Shape::RECTANGLE;
@@ -12,8 +13,29 @@ Collider::Collider(SDL_Rect rectangle, Type type, Module* listener, float _mass)
 	mass = _mass;
 	collInfo = new CollisionInfo();
 
+	switch (type)
+	{
+	case PLAYER:
+		color.r = 52;
+		color.g = 235;
+		color.b = 58;
+		color.a = 255;
+		break;
+	case ENEMY:
+		color.r = 235;
+		color.g = 52;
+		color.b = 52;
+		color.a = 255;
+		break;
+	case WALL:
+		color.r = 52;
+		color.g = 52;
+		color.b = 235;
+		color.a = 255;
+		break;
+	}
 }
-
+//circle constructor
 Collider::Collider(fPoint center, float radius, Type type, Module* listener, float _mass) : position(center),radius (radius), type(type)
 {
 	shape = Shape::CIRCLE;
@@ -21,6 +43,71 @@ Collider::Collider(fPoint center, float radius, Type type, Module* listener, flo
 	collInfo = new CollisionInfo();
 	mass = _mass;
 	lastPosition = position;
+
+	switch (type)
+	{
+	case PLAYER:
+		color.r = 52;
+		color.g = 235;
+		color.b = 58;
+		color.a = 255;
+		break;
+	case ENEMY:
+		color.r = 235;
+		color.g = 52;
+		color.b = 52;
+		color.a = 255;
+		break;
+	case WALL:
+		color.r = 52;
+		color.g = 52;
+		color.b = 235;
+		color.a = 255;
+		break;
+	}
+
+}
+//bullet Constructor
+Collider::Collider(fPoint center, float radius, BulletType bulletType, Module* listener, float _mass) : position(center), radius(radius)
+{
+	type = BULLET;
+	collInfo = new CollisionInfo();
+	switch (bulletType)
+	{
+	case Collider::BOMB:
+		friction = 0;
+		coeficientOfRestitution = 0;
+		mass = 1;
+		listeners[0] = listener;
+		color.r = 152;
+		color.g = 52;
+		color.b = 235;
+		color.a = 255;
+		break;
+	case Collider::LASER:
+		bulletProperties.force = 0.1f;
+		friction = 0;
+		coeficientOfRestitution = 0;
+		mass = 1;
+		listeners[0] = listener;
+		color.r = 235;
+		color.g = 235;
+		color.b = 52;
+		color.a = 255;
+		break;
+	case Collider::BOUNCER:
+		friction = 0;
+		coeficientOfRestitution = 0;
+		mass = 1;
+		listeners[0] = listener;
+		color.r = 235;
+		color.g = 82;
+		color.b = 52;
+		color.a = 255;
+		break;
+	default:
+		break;
+	}
 }
 
 
@@ -57,9 +144,6 @@ void Collider::RectangleCollider(SDL_Rect _rectangle, Type _type, Module* listen
 void Collider::ChainCollider(float* vertices, Type type, Module* listener, float _mass)
 {
 	//todo
-	mass = _mass;
-
-	shape = Shape::CHAIN;
 }
 
 CollisionInfo* Collider::CircleRectangleCollision(const Collider* other) const

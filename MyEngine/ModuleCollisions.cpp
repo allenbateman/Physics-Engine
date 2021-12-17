@@ -78,6 +78,7 @@ void ModuleCollisions::DebugDraw()
 		if (colliders[i] == nullptr)
 			continue;
 
+		Color color = colliders[i]->color;
 		switch (colliders[i]->shape) {
 		case Collider::Shape::RECTANGLE:
 			switch (colliders[i]->type)
@@ -86,13 +87,13 @@ void ModuleCollisions::DebugDraw()
 					App->renderer->DrawQuad(colliders[i]->rect, 255, 255, 255, alpha);
 					break;
 				case Collider::Type::WALL: // blue
-					App->renderer->DrawQuad(colliders[i]->rect, 0, 0, 255, alpha);
+					App->renderer->DrawQuad(colliders[i]->rect, color.r, color.g, color.b, color.a);
 					break;
 				case Collider::Type::PLAYER: // green
-					App->renderer->DrawQuad(colliders[i]->rect, 0, 255, 0, alpha);
+					App->renderer->DrawQuad(colliders[i]->rect, color.r, color.g, color.b, color.a);
 					break;
 				case Collider::Type::BULLET: // red
-					App->renderer->DrawQuad(colliders[i]->rect, 255, 0, 0, alpha);
+					App->renderer->DrawQuad(colliders[i]->rect, color.r, color.g, color.b, color.a);
 					break;
 			}
 			break;
@@ -100,16 +101,16 @@ void ModuleCollisions::DebugDraw()
 			switch (colliders[i]->type)
 			{
 				case Collider::Type::NONE: // white
-					App->renderer->DrawCircle(colliders[i]->position, colliders[i]->radius, 255, 255, alpha);
+					App->renderer->DrawCircle(colliders[i]->position, colliders[i]->radius, color.r, color.g, color.b, color.a);
 					break;
 				case Collider::Type::WALL: // blue
-					App->renderer->DrawCircle(colliders[i]->position, colliders[i]->radius, 0, 0, 255, alpha);
+					App->renderer->DrawCircle(colliders[i]->position, colliders[i]->radius, color.r, color.g, color.b, color.a);
 					break;
 				case Collider::Type::PLAYER: // green
-					App->renderer->DrawCircle(colliders[i]->position, colliders[i]->radius, 0, 255, 0, alpha);
+					App->renderer->DrawCircle(colliders[i]->position, colliders[i]->radius, color.r, color.g, color.b, color.a);
 					break;
 				case Collider::Type::BULLET: // red
-					App->renderer->DrawCircle(colliders[i]->position, colliders[i]->radius, 255, 0, 0, alpha);
+					App->renderer->DrawCircle(colliders[i]->position, colliders[i]->radius, color.r, color.g, color.b, color.a);
 					break;
 			}
 			break;
@@ -130,17 +131,17 @@ void ModuleCollisions::OnCollision(Collider* body1, Collider* body2)
 
 		if (IsPositive(v2.x))
 		{
-			v2.x -= body2->horizontalFriction;
+			v2.x -= body2->friction;
 		}
 		else {
-			v2.x += body2->horizontalFriction;
+			v2.x += body2->friction;
 		}
 		if (IsPositive(v2.y))
 		{
-			v2.y -= body2->horizontalFriction;
+			v2.y -= body2->coeficientOfRestitution;
 		}
 		else {
-			v2.y += body2->horizontalFriction;
+			v2.y += body2->coeficientOfRestitution;
 		}
 
 		//control high velocity
@@ -159,26 +160,26 @@ void ModuleCollisions::OnCollision(Collider* body1, Collider* body2)
 		{
 			//reset x position before solving collision
 			body2->position.x = body2->lastPosition.x;
-			body2->velocity.x -= body2->horizontalFriction;
+			body2->velocity.x -= body2->friction;
 			body2->velocity.x *= -1;
 		}
 		if (body2->collInfo->Left && body2->velocity.x < 0)
 		{
 			body2->position.x = body2->lastPosition.x;
-			body2->velocity.x += body2->horizontalFriction;
+			body2->velocity.x += body2->friction;
 			body2->velocity.x *= -1;
 		}
 
 		if (body2->collInfo->Bot && body2->velocity.y > 0)
 		{
 			body2->position.y = body2->lastPosition.y;
-			body2->velocity.y -= body2->horizontalFriction;
+			body2->velocity.y -= body2->coeficientOfRestitution;
 			body2->velocity.y *= -1;
 		}
 		if (body2->collInfo->Top && body2->velocity.y < 0)
 		{
 			body2->position.y = body2->lastPosition.y;
-			body2->velocity.y += body2->horizontalFriction;
+			body2->velocity.y += body2->coeficientOfRestitution;
 			body2->velocity.y *= -1;
 		}
 		//set velocity to zero if verly small
@@ -278,45 +279,6 @@ void ModuleCollisions::CheckParticleInBounds()
 
 }
 
-bool ModuleCollisions::IsPositive(float value)
-{
-	if (value > 0)
-		return true;
-	else
-		return false;
-}
-
-fPoint ModuleCollisions::StopVibration(fPoint v)
-{
-	if (v.x <0.001f && v.x > -0.001f)
-		v.x = 0;
-	if (v.y <0.001f && v.y > -0.001f)
-		v.y = 0;
-
-	return v;
-
-}
-
-fPoint ModuleCollisions::CapBigVelocities(fPoint v)
-{
-	//Control Big Velocities
-	
-	if (v.x > MAX_VELOCITY)
-		v.x = MAX_VELOCITY;
-
-	if (v.x < -MAX_VELOCITY)
-		v.x = -MAX_VELOCITY;
-
-	if (v.y > MAX_VELOCITY)
-		v.y = MAX_VELOCITY;
-
-	if (v.y < -MAX_VELOCITY)
-		v.y = -MAX_VELOCITY;
-
-	return v;
-
-}
-
 void ModuleCollisions::CheckLineCollisionsWithRectangles(fPoint start, fPoint end, fPoint& _intersection)
 {
 	fPoint closestIntersection, currentintersection;
@@ -378,10 +340,9 @@ bool ModuleCollisions::LineLine(float x1, float y1, float x2, float y2, float x3
 
 fPoint ModuleCollisions::GravityRotation()
 {
-
-	fPoint gravity = {(float) ( GRAVITY * cos(GravityMovement*App->GetTime())),(float)( GRAVITY * sin(GravityMovement *App->GetTime())) };
-
-
+	float cosine = cos(GravityMovement * App->GetTime());
+	float sine = sin(GravityMovement * App->GetTime());
+	fPoint gravity = {(float) ( GRAVITY * cosine),(float)( GRAVITY * sine) };
 	return gravity;
 }
 
@@ -443,7 +404,7 @@ void ModuleCollisions::ApplyForces()
 					colliders[i]->activeGravity = true;
 
 				if(colliders[i]->activeGravity)
-				   colliders[i]->force += GravityRotation();
+				 //  colliders[i]->force += GravityRotation();
 
 				//Wind
 				colliders[i]->force += fPoint(0,0);
@@ -504,6 +465,42 @@ void ModuleCollisions::ApplyMovement(float dt)
 	}
 }
 
+bool ModuleCollisions::IsPositive(float value)
+{
+	if (value > 0)
+		return true;
+	else
+		return false;
+}
+
+fPoint ModuleCollisions::StopVibration(fPoint v)
+{
+	if (v.x <0.001f && v.x > -0.001f)
+		v.x = 0;
+	if (v.y <0.001f && v.y > -0.001f)
+		v.y = 0;
+
+	return v;
+}
+
+fPoint ModuleCollisions::CapBigVelocities(fPoint v)
+{
+	//Control Big Velocities
+	if (v.x > MAX_VELOCITY)
+		v.x = MAX_VELOCITY;
+
+	if (v.x < -MAX_VELOCITY)
+		v.x = -MAX_VELOCITY;
+
+	if (v.y > MAX_VELOCITY)
+		v.y = MAX_VELOCITY;
+
+	if (v.y < -MAX_VELOCITY)
+		v.y = -MAX_VELOCITY;
+
+	return v;
+}
+
 Collider* ModuleCollisions::AddRectangleCollider(SDL_Rect rect, Collider::Type type, Module* listener)
 {
 	Collider* ret = nullptr;
@@ -513,6 +510,22 @@ Collider* ModuleCollisions::AddRectangleCollider(SDL_Rect rect, Collider::Type t
 		if (colliders[i] == nullptr)
 		{
 			ret = colliders[i] = new Collider(rect, type, listener);
+			break;
+		}
+	}
+
+	return ret;
+}
+
+Collider* ModuleCollisions::AddBulletCollider(fPoint center, float radius, Collider::BulletType bulletType, Module* listener)
+{
+	Collider* ret = nullptr;
+
+	for (uint i = 0; i < MAX_COLLIDERS; ++i)
+	{
+		if (colliders[i] == nullptr)
+		{
+			ret = colliders[i] = new Collider(center, radius, bulletType, listener);
 			break;
 		}
 	}
@@ -563,8 +576,6 @@ void ModuleCollisions::RemoveCollider(Collider* collider)
 	}
 }
 
-
-// Called before quitting
 bool ModuleCollisions::CleanUp()
 {
 	LOG("Freeing all colliders");
