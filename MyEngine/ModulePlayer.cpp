@@ -19,9 +19,7 @@ bool ModulePlayer::Start()
 	bool ret = true;
 
 	LOG("Loading player");
-
-	position = { 250, 250 };
-	player =  App->collisions->AddCircleCollider(position, 20 ,Collider::PLAYER,App->collisions);
+	player = App->collisions->AddCircleCollider({0,0}, 20, Collider::PLAYER, App->collisions);
 	player->SetPosition(450, 250);
 	player->mass = 1;
 
@@ -66,7 +64,9 @@ update_status ModulePlayer::Update(float dt)
 {
 	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT)
 		Aim();
-	
+	player->SetCenter();
+
+	LOG("player pos.x:%f , pos.y:%f", player->position.x, player->position.y);
 
 	return UPDATE_CONTINUE;
 }
@@ -92,10 +92,15 @@ void ModulePlayer::OnCollision(Collider* body1, Collider* body2)
 
 void ModulePlayer::Aim()
 {
-	int xMouse = App->input->GetMouseX();
-	int yMouse = App->input->GetMouseY();
+	fPoint mousePos, endPos;
+	mousePos.x = App->input->GetMouseX();
+	mousePos.y = App->input->GetMouseY();
 
-	App->renderer->DrawLine(player->position.x, player->position.y, xMouse, yMouse, 0, 100, 255, 255,true);
+	App->collisions->CheckLineCollisionsWithRectangles(player->position, mousePos, endPos);
+	if (endPos.x == 0 && endPos.y == 0)
+		endPos = mousePos;
+	App->renderer->DrawLine(player->position.x, player->position.y, endPos.x, endPos.y, 0, 100, 255, 150,true);
+	App->renderer->DrawCircle(endPos, 2, 125, 255, 125, 200);
 
 }
 

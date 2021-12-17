@@ -45,7 +45,7 @@ public:
 	bool Init();
 	update_status Update();
 	bool CleanUp();
-
+	float GetTime() { return secondsSinceStartup; };
 private:
 
 	void AddModule(Module* mod);
@@ -53,6 +53,7 @@ private:
 	PerfTimer ptimer;
 	PerfTimer frameDuration;
 	uint64 frameCount = 0;
+	float secondsSinceStartup = 0;
 
 	Timer startupTime;
 	Timer frameTime;

@@ -184,7 +184,6 @@ void ModuleCollisions::OnCollision(Collider* body1, Collider* body2)
 		//set velocity to zero if verly small
 		body2->velocity = StopVibration(body2->velocity);
 	}
-
 }
 
 void ModuleCollisions::CheckParticleInBounds()
@@ -194,6 +193,7 @@ void ModuleCollisions::CheckParticleInBounds()
 	bool checkRight = false;
 	bool checkTop = false;
 	bool checkBot = false;
+
 	for (uint i = 0; i < MAX_COLLIDERS; ++i)
 	{
 		if (colliders[i] == nullptr)
@@ -317,6 +317,74 @@ fPoint ModuleCollisions::CapBigVelocities(fPoint v)
 
 }
 
+void ModuleCollisions::CheckLineCollisionsWithRectangles(fPoint start, fPoint end, fPoint& _intersection)
+{
+	fPoint closestIntersection, currentintersection;
+	for (uint i = 0; i < MAX_COLLIDERS; ++i)
+	{
+		if (colliders[i] == nullptr || colliders[i]->shape != Collider::Shape::RECTANGLE)
+			continue;
+		SDL_Rect r;
+		r = colliders[i]->rect;
+		// left 
+		if (LineLine(start.x, start.y, end.x, end.y, r.x, r.y, r.x, r.y + r.h, currentintersection))
+		{
+			App->renderer->DrawCircle(currentintersection, 2, 255, 0, 255, 255);
+			closestIntersection = currentintersection;
+	
+		}
+		//right 
+		if (LineLine(start.x, start.y, end.x, end.y, r.x + r.w, r.y, r.x + r.w, r.y + r.h, currentintersection))
+		{
+			App->renderer->DrawCircle(currentintersection, 2, 255, 0, 255, 255);
+			if (currentintersection.DistanceTo(start) < closestIntersection.DistanceTo(start))
+				closestIntersection = currentintersection;
+		}
+		//top
+		if (LineLine(start.x, start.y, end.x, end.y, r.x, r.y, r.x + r.w, r.y, currentintersection))
+		{
+			App->renderer->DrawCircle(currentintersection, 2, 255, 0, 255, 255);
+			if (currentintersection.DistanceTo(start) < closestIntersection.DistanceTo(start))
+				closestIntersection = currentintersection;
+		}
+		//bottom
+		if (LineLine(start.x, start.y, end.x, end.y, r.x, r.y + r.h, r.x + r.w, r.y + r.h, currentintersection))
+		{
+			App->renderer->DrawCircle(currentintersection, 2, 255, 0, 255, 255);
+			if (currentintersection.DistanceTo(start) < closestIntersection.DistanceTo(start))
+				closestIntersection = currentintersection;
+		}
+	}
+	_intersection = closestIntersection;
+}
+
+bool ModuleCollisions::LineLine(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, fPoint &_intersection)
+{
+		// calculate the direction of the lines
+		float uA = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1));
+		float uB = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1));
+
+		// if uA and uB are between 0-1, lines are colliding
+		if (uA >= 0 && uA <= 1 && uB >= 0 && uB <= 1) {
+
+			fPoint intersection;
+			intersection.x = x1 + (uA * (x2 - x1));
+			intersection.y = y1 + (uA * (y2 - y1));
+			_intersection = intersection;
+			return true;
+		}
+		return false;
+}
+
+fPoint ModuleCollisions::GravityRotation()
+{
+
+	fPoint gravity = {(float) ( GRAVITY * cos(GravityMovement*App->GetTime())),(float)( GRAVITY * sin(GravityMovement *App->GetTime())) };
+
+
+	return gravity;
+}
+
 void ModuleCollisions::CheckCollisions()
 {
 
@@ -375,7 +443,7 @@ void ModuleCollisions::ApplyForces()
 					colliders[i]->activeGravity = true;
 
 				if(colliders[i]->activeGravity)
-				   colliders[i]->force += fPoint(0 , 0.0005f);
+				   colliders[i]->force += GravityRotation();
 
 				//Wind
 				colliders[i]->force += fPoint(0,0);

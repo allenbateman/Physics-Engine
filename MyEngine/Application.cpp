@@ -63,7 +63,7 @@ bool Application::FinishUpdate()
 	}
 
 	float averageFps = float(frameCount) / startupTime.ReadSec();
-	float secondsSinceStartup = startupTime.ReadSec();
+	secondsSinceStartup = startupTime.ReadSec();
 	uint32 lastFrameMs = frameTime.Read();
 	uint32 framesOnLastUpdate = prevLastSecFrameCount;
 
