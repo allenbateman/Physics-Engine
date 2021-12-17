@@ -20,8 +20,16 @@ bool ModuleSceneIntro::Start()
 
 
 	SDL_Rect rectangle;
+
 	rectangle.x = 250;
-	rectangle.y = 250;
+	rectangle.y = 200;
+	rectangle.w = 150;
+	rectangle.h = 50;
+	Flor1 = App->collisions->AddRectangleCollider(rectangle, Collider::WALL, App->collisions);
+	Flor1->SetCenter();
+
+	rectangle.x = 250;
+	rectangle.y = 400;
 	rectangle.w = 50;
 	rectangle.h = 50;
 	squareBullet = App->collisions->AddRectangleCollider(rectangle, Collider::BULLET, App->collisions);
@@ -40,12 +48,12 @@ bool ModuleSceneIntro::Start()
 	squareBullet2->velocity.y = 0.0f;
 	squareBullet2->velocity.x = 0.0f;
 
-	circleBullet = App->collisions->AddCircleCollider(fPoint{220,130},20,Collider::BULLET,App->collisions);
+	circleBullet = App->collisions->AddCircleCollider(fPoint{120,400},20,Collider::BULLET,App->collisions);
 	circleBullet->mass = 1;
 	circleBullet->velocity.x = 0.1f;
 	circleBullet->velocity.y = 0.1f;
 
-	circleBullet2 = App->collisions->AddCircleCollider(fPoint{ 420,130 }, 20, Collider::BULLET, App->collisions);
+	circleBullet2 = App->collisions->AddCircleCollider(fPoint{ 420,400 }, 20, Collider::BULLET, App->collisions);
 	circleBullet2->mass = 1;
 	circleBullet2->velocity.x = -0.1f;
 	circleBullet2->velocity.y = 0.1f;

@@ -122,11 +122,86 @@ void ModuleCollisions::DebugDraw()
 
 void ModuleCollisions::OnCollision(Collider* body1, Collider* body2)
 {
+	if (body1->type != Collider::WALL)
+	{
 
-	fPoint v1 = { body1->velocity.x - body1->velocity.x, body1->velocity.y - body1->velocity.y };
-	fPoint v2 = { body2->velocity.x - body1->velocity.x, body2->velocity.y - body1->velocity.y };
-	body2->velocity.x = -v2.x;
-	body2->velocity.y = -v2.y;
+		//reset positions
+		if (body2->collInfo->Left || body2->collInfo->Right)
+			body2->position.x = body2->position.x;
+
+		if (body2->collInfo->Bot || body2->collInfo->Top)
+			body2->position.y = body2->position.y;
+		
+
+		//calculate resultant velocity
+		fPoint v2 = { body2->velocity.x - body1->velocity.x, body2->velocity.y - body1->velocity.y };
+
+		if (IsPositive(v2.x))
+		{
+			v2.x -= body2->horizontalFriction;
+		}
+		else {
+			v2.x += body2->horizontalFriction;
+		}
+		if (IsPositive(v2.y))
+		{
+			v2.y -= body2->horizontalFriction;
+		}
+		else {
+			v2.y += body2->horizontalFriction;
+		}
+
+		//control high velocity
+		v2 = CapBigVelocities(v2);
+
+		//set velocity to zero if verly small
+		v2 = StopVibration(body2->velocity);
+
+		body2->velocity.x = -v2.x;
+		body2->velocity.y = -v2.y;
+	}
+	else {
+
+		if (body2->collInfo->Left || body2->collInfo->Right)
+		{
+			//reset x position before solving collision
+			body2->position.x = body2->lastPosition.x;
+
+
+			//check if the velocity x is positive or negative to add or substract the friction force
+			if (IsPositive(body2->velocity.x))
+			{
+				body2->velocity.x -= body2->horizontalFriction;
+			}
+			else {
+				body2->velocity.x += body2->horizontalFriction;
+			}
+
+
+
+			body2->velocity.x *= -1;
+		}
+
+		if (body2->collInfo->Bot || body2->collInfo->Top)
+		{
+			//reset y position before solving collision
+			body2->position.y = body2->lastPosition.y;
+
+			if (IsPositive(body2->velocity.y))
+			{
+				body2->velocity.y -= body2->horizontalFriction;
+			}
+			else {
+				body2->velocity.y += body2->horizontalFriction;
+			}
+
+			body2->velocity.y *= -1;
+		}
+
+		//set velocity to zero if verly small
+		body2->velocity = StopVibration(body2->velocity);
+
+	}
 
 }
 
@@ -141,6 +216,8 @@ void ModuleCollisions::CheckParticleInBounds()
 	{
 		if (colliders[i] == nullptr)
 			continue;
+
+		colliders[i]->velocity = StopVibration(colliders[i]->velocity);
 
 		if (colliders[i]->shape == Collider::Shape::CIRCLE)
 		{
@@ -213,11 +290,48 @@ void ModuleCollisions::CheckParticleInBounds()
 
 				colliders[i]->position.y = colliders[i]->lastPosition.y;
 				colliders[i]->velocity.y *= -1;
-
-
 			}
 		}
 	}
+
+}
+
+bool ModuleCollisions::IsPositive(float value)
+{
+	if (value > 0)
+		return true;
+	else
+		return false;
+}
+
+fPoint ModuleCollisions::StopVibration(fPoint v)
+{
+	if (v.x <0.001f && v.x > -0.001f)
+		v.x = 0;
+	if (v.y <0.001f && v.y > -0.001f)
+		v.y = 0;
+
+	return v;
+
+}
+
+fPoint ModuleCollisions::CapBigVelocities(fPoint v)
+{
+	//Control Big Velocities
+	
+	if (v.x > MAX_VELOCITY)
+		v.x = MAX_VELOCITY;
+
+	if (v.x < -MAX_VELOCITY)
+		v.x = -MAX_VELOCITY;
+
+	if (v.y > MAX_VELOCITY)
+		v.y = MAX_VELOCITY;
+
+	if (v.y < -MAX_VELOCITY)
+		v.y = -MAX_VELOCITY;
+
+	return v;
 
 }
 
@@ -308,11 +422,6 @@ void ModuleCollisions::ApplyMovement(float dt)
 				colliders[i]->velocity.x += colliders[i]->acceleration.x * dt;
 				colliders[i]->velocity.y += colliders[i]->acceleration.y * dt;
 
-				if (colliders[i]->velocity.x > MAX_VELOCITY)  colliders[i]->velocity.x = MAX_VELOCITY;
-				else if (colliders[i]->velocity.x < -MAX_VELOCITY) colliders[i]->velocity.x = -MAX_VELOCITY;
-				else if (colliders[i]->velocity.y > MAX_VELOCITY)  colliders[i]->velocity.y = MAX_VELOCITY;
-				else if (colliders[i]->velocity.y > -MAX_VELOCITY) colliders[i]->velocity.y = -MAX_VELOCITY;
-
 				colliders[i]->position.x += colliders[i]->velocity.x * dt;
 				colliders[i]->position.y += colliders[i]->velocity.y * dt;
 
@@ -326,10 +435,7 @@ void ModuleCollisions::ApplyMovement(float dt)
 				//LOG("ACCELERATION[%i]:x:%f y:%f", i, colliders[i]->acceleration.x, colliders[i]->acceleration.y);
 				//LOG("VELOCITY[%i]:x:%f y:%f", i, colliders[i]->velocity.x, colliders[i]->velocity.y);
 
-			
-
-				App->renderer->DrawCircle(colliders[i]->position,2, 125, 255, 0, 255);
-
+		
 				if(colliders[i]->type == Collider::Type::PLAYER)
 					LOG("POSITION[%i]:x:%f y:%f", i, colliders[i]->position.x, colliders[i]->position.y);
 
@@ -341,6 +447,9 @@ void ModuleCollisions::ApplyMovement(float dt)
 					LOG("POSITION[%i]:x:%f y:%f", i, colliders[i]->position.x, colliders[i]->position.y);
 				}
 			}
+			//draw centers of the objects for debug purposes and also look more pro
+			App->renderer->DrawCircle(colliders[i]->position, 2, 125, 255, 0, 255);
+
 		}
 	}
 }

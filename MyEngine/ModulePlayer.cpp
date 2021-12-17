@@ -24,6 +24,7 @@ bool ModulePlayer::Start()
 	player =  App->collisions->AddCircleCollider(position, 21 ,Collider::PLAYER,this);
 	player->SetPosition(450, 250);
 	player->mass = 1;
+	player->verticalFriction = 10;
 
 
 	speed = { 0.5f,0.7f };

@@ -60,10 +60,15 @@ public:
 	SDL_Texture* graphics;
 	PhysBody* background;
 
+
 	Collider* squareBullet;
 	Collider* squareBullet2;
 	Collider* circleBullet;
 	Collider* circleBullet2;
+
+
+	//FLORS
+	Collider* Flor1;
 
 	Bouncer bouncer1;
 	Bouncer bouncer2;
@@ -71,16 +76,4 @@ public:
 	Bouncer side_bouncer1;
 	Bouncer side_bouncer2;
 
-	SDL_Texture* tex_light_tiny;
-	SDL_Texture* tex_light_medium;
-	SDL_Texture* tex_light_big;
-	
-	uint fx_light_tiny;
-	uint fx_light_medium;
-	uint fx_light_big;
-
-	p2DynArray<Light> lights;
-
-	PhysBody* player_lose;
-	uint player_lose_fx;
 };
