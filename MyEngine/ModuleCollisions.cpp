@@ -128,20 +128,10 @@ void ModuleCollisions::OnCollision(Collider* body1, Collider* body2)
 		//calculate resultant velocity
 		fPoint v2 = { body2->velocity.x - body1->velocity.x, body2->velocity.y - body1->velocity.y };
 
-		if (IsPositive(v2.x))
-		{
-			v2.x -= body2->friction;
-		}
-		else {
-			v2.x += body2->friction;
-		}
-		if (IsPositive(v2.y))
-		{
-			v2.y -= body2->coeficientOfRestitution;
-		}
-		else {
-			v2.y += body2->coeficientOfRestitution;
-		}
+		v2.x *= body2->friction;
+
+		v2.y *= body2->coeficientOfRestitution;
+
 
 		//control high velocity
 		v2 = CapBigVelocities(v2);
@@ -159,26 +149,28 @@ void ModuleCollisions::OnCollision(Collider* body1, Collider* body2)
 		{
 			//reset x position before solving collision
 			body2->position.x = body2->lastPosition.x;
-			body2->velocity.x -= body2->friction;
+			body2->velocity.x *= body2->friction;
 			body2->velocity.x *= -1;
 		}
 		if (body2->collInfo->Left && body2->velocity.x < 0)
 		{
 			body2->position.x = body2->lastPosition.x;
-			body2->velocity.x += body2->friction;
+			body2->velocity.x *= body2->friction;
 			body2->velocity.x *= -1;
 		}
 
 		if (body2->collInfo->Bot && body2->velocity.y > 0)
 		{
 			body2->position.y = body2->lastPosition.y;
-			body2->velocity.y -= body2->coeficientOfRestitution;
+			body2->velocity.x *= body2->friction;
+			body2->velocity.y *= body2->coeficientOfRestitution;
 			body2->velocity.y *= -1;
 		}
 		if (body2->collInfo->Top && body2->velocity.y < 0)
 		{
 			body2->position.y = body2->lastPosition.y;
-			body2->velocity.y += body2->coeficientOfRestitution;
+			body2->velocity.x *= body2->friction;
+			body2->velocity.y *= body2->coeficientOfRestitution;
 			body2->velocity.y *= -1;
 		}
 		//set velocity to zero if verly small
@@ -190,20 +182,8 @@ void ModuleCollisions::OnCollision(Collider* body1, Collider* body2)
 		//calculate resultant velocity
 		fPoint v2 = { body1->velocity.x - body1->velocity.x, body1->velocity.y - body1->velocity.y };
 
-		if (IsPositive(v2.x))
-		{
-			v2.x -= body1->friction;
-		}
-		else {
-			v2.x += body1->friction;
-		}
-		if (IsPositive(v2.y))
-		{
-			v2.y -= body1->coeficientOfRestitution;
-		}
-		else {
-			v2.y += body1->coeficientOfRestitution;
-		}
+		v2.x *= body1->friction;
+		v2.y *= body1->coeficientOfRestitution;
 
 		//control high velocity
 		v2 = CapBigVelocities(v2);
@@ -221,26 +201,28 @@ void ModuleCollisions::OnCollision(Collider* body1, Collider* body2)
 		{
 			//reset x position before solving collision
 			body1->position.x = body1->lastPosition.x;
-			body1->velocity.x -= body1->friction;
+			body1->velocity.x *= body1->friction;
 			body1->velocity.x *= -1;
 		}
 		if (body1->collInfo->Left && body1->velocity.x < 0)
 		{
 			body1->position.x = body1->lastPosition.x;
-			body1->velocity.x += body1->friction;
+			body1->velocity.x *= body1->friction;
 			body1->velocity.x *= -1;
 		}
 
 		if (body1->collInfo->Bot && body1->velocity.y > 0)
 		{
 			body1->position.y = body1->lastPosition.y;
-			body1->velocity.y -= body1->coeficientOfRestitution;
+			body2->velocity.x *= body2->friction;
+			body1->velocity.y *= body1->coeficientOfRestitution;
 			body1->velocity.y *= -1;
 		}
 		if (body1->collInfo->Top && body1->velocity.y < 0)
 		{
 			body1->position.y = body1->lastPosition.y;
-			body1->velocity.y += body1->coeficientOfRestitution;
+			body2->velocity.x *= body2->friction;
+			body1->velocity.y *= body1->coeficientOfRestitution;
 			body1->velocity.y *= -1;
 		}
 		//set velocity to zero if verly small
@@ -280,11 +262,17 @@ void ModuleCollisions::CheckParticleInBounds()
 				colliders[i]->position.x = colliders[i]->lastPosition.x;
 				if (colliders[i]->Bounce)
 				{
+					colliders[i]->velocity.x *= colliders[i]->friction;
 					colliders[i]->velocity.x *= -1;
 				}
 				else {
 					colliders[i]->velocity.x = 0;
 				}
+				colliders[i]->collInfo->Collided = true;
+
+				//call the collsion solver from module scene
+				if(colliders[i]->listeners[1] != nullptr)
+					colliders[i]->listeners[1]->OnCollision(colliders[i], nullptr);
 			}
 
 
@@ -305,11 +293,17 @@ void ModuleCollisions::CheckParticleInBounds()
 
 				if (colliders[i]->Bounce)
 				{
+					colliders[i]->velocity.x *= colliders[i]->friction;
+					colliders[i]->velocity.y *= colliders[i]->coeficientOfRestitution;
 					colliders[i]->velocity.y *= -1;
 				}
 				else {
 					colliders[i]->velocity.y = 0;
 				}
+				colliders[i]->collInfo->Collided = true;
+				//call the collsion solver from module scene
+				if (colliders[i]->listeners[1] != nullptr)
+					colliders[i]->listeners[1]->OnCollision(colliders[i], nullptr);
 			}
 
 		}else
@@ -330,11 +324,17 @@ void ModuleCollisions::CheckParticleInBounds()
 				colliders[i]->position.x = colliders[i]->lastPosition.x;
 				if (colliders[i]->Bounce)
 				{
+					colliders[i]->velocity.x *= colliders[i]->friction;
 					colliders[i]->velocity.x *= -1;
 				}
 				else {
 					colliders[i]->velocity.x = 0;
 				}
+				colliders[i]->collInfo->Collided = true;
+
+				//call the collsion solver from module scene
+				if (colliders[i]->listeners[1] != nullptr)
+					colliders[i]->listeners[1]->OnCollision(colliders[i], nullptr);
 			}
 
 			checkTop = colliders[i]->position.y - (colliders[i]->rect.h * 0.5) > 0;
@@ -354,11 +354,18 @@ void ModuleCollisions::CheckParticleInBounds()
 				colliders[i]->position.y = colliders[i]->lastPosition.y;
 				if (colliders[i]->Bounce)
 				{
+					colliders[i]->velocity.x *= colliders[i]->friction;
+					colliders[i]->velocity.y *= colliders[i]->coeficientOfRestitution;
 					colliders[i]->velocity.y *= -1;
 				}
 				else {
 					colliders[i]->velocity.y = 0;
 				}
+				colliders[i]->collInfo->Collided = true;
+
+				//call the collsion solver from module scene
+				if (colliders[i]->listeners[1] != nullptr)
+					colliders[i]->listeners[1]->OnCollision(colliders[i], nullptr);
 			}
 		}
 	}
@@ -432,6 +439,29 @@ fPoint ModuleCollisions::GravityRotation()
 	return gravity;
 }
 
+void ModuleCollisions::GravitationalForce(Collider* particle, int index)
+{
+	float gravityForce;
+	Collider* ground;
+	for (uint i = 0; i < MAX_COLLIDERS; i++)
+	{
+		
+		if (colliders[i] == nullptr || colliders[i]->type != Collider::Type::WALL)
+			continue;
+
+		ground = colliders[i];
+
+		//direction particle to the ground
+		fPoint direction = { ground->position.x - particle->position.x, ground->position.y - particle->position.y };
+		float directionLength = sqrt(direction.x * direction.x + direction.y * direction.y);
+		fPoint vDirectionNormalized = { direction.x / directionLength, direction.y / directionLength };
+		//float distance = fabs( particle->position.DistanceTo(ground->position));
+		gravityForce = (GRAVITY * (particle->mass + ground->mass)) / (directionLength * directionLength);
+		particle->force += {gravityForce * vDirectionNormalized.x, gravityForce* vDirectionNormalized.y};
+
+	}
+}
+
 void ModuleCollisions::CheckCollisions()
 {
 
@@ -475,30 +505,30 @@ void ModuleCollisions::CheckCollisions()
 
 void ModuleCollisions::ApplyForces()
 {
-	
+	Collider* particle;
 	for (uint i = 0; i < MAX_COLLIDERS; ++i)
 	{
-		if (colliders[i] != nullptr)
-		{
-			if (colliders[i]->type != Collider::Type::WALL)
-			{
+		if (colliders[i] == nullptr)
+			continue;
 
-				colliders[i]->force = fPoint(0, 0);
+		particle = colliders[i];
+		//reset all forces
+		particle->force = fPoint(0, 0);
 
-				//Gravity
-				if (colliders[i]->velocity.y != 0.00000f)
-					colliders[i]->activeGravity = true;
+		//Gravity
+		if(particle->activeGravity)
+		{	
+			//Gravity as the bot screen sdie is ground
+			//colliders[i]->force += {0,0.0005f};
 
-				if(colliders[i]->activeGravity)
-					colliders[i]->force += {0,0.0005f};
-				 //  colliders[i]->force += GravityRotation();
-
-
-				//Wind
-				colliders[i]->force += fPoint(0,0);
-
-			}
+			//thisfunction rotates de force of gravity as if a big palnet would rotate arround the map
+			particle->force += GravityRotation();
+			//this function calculates gravitational force between particles and "grounds" aka walls
+			 GravitationalForce(particle,i);
 		}
+
+		//Wind
+		particle->force += fPoint(0,0);
 	}
 }
 
@@ -563,9 +593,9 @@ bool ModuleCollisions::IsPositive(float value)
 
 fPoint ModuleCollisions::StopVibration(fPoint v)
 {
-	if (v.x <0.001f && v.x > -0.001f)
+	if (v.x <0.005f && v.x > -0.005f)
 		v.x = 0;
-	if (v.y <0.001f && v.y > -0.001f)
+	if (v.y <0.005f && v.y > -0.005f)
 		v.y = 0;
 
 	return v;

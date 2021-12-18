@@ -52,6 +52,7 @@ public:
 
 
 	fPoint GravityRotation();
+	void GravitationalForce(Collider* body, int index );
 
 	float GetGravityMovement() { return GravityMovement; };
 	float SetgravityMoement(float newMovement) { GravityMovement = newMovement; };

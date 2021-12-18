@@ -22,13 +22,13 @@ bool ModulePlayer::Start()
 	player = App->collisions->AddCircleCollider({0,0}, 20, Collider::PLAYER, App->collisions);
 	player->SetPosition(450, 250);
 	player->mass = 1;
-	player->friction = 0.5;
-	player->coeficientOfRestitution = 0.5;
+	player->friction = 0;
+	player->coeficientOfRestitution = 0;
 	player->Bounce = false;
 	player->activeGravity = true;
-
+	canJump = true;
 	currentMovementType = SPEED;
-	speed = { 0.5f,0.7f };
+	speed = { 0.1f,0.1f };
 	force = { 0.01f,0.01f };
 
 	currentWeapon = BLASTER;
@@ -94,7 +94,6 @@ update_status ModulePlayer::PostUpdate()
 	return UPDATE_CONTINUE;
 }
 
-// Unload assets
 bool ModulePlayer::CleanUp()
 {
 	LOG("Unloading player");
@@ -151,13 +150,15 @@ void ModulePlayer::MoveByImpulses()
 	{
 		player->force.x = force.x;
 	}
-	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN && canJump)
 	{
 		player->force.y = -force.y;
+		//canJump = false;
 	}
-	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN && canJump)
 	{
 		player->force.y = force.y;
+	//	canJump = false;
 	}
 }
 
@@ -172,13 +173,15 @@ void ModulePlayer::MoveBySpeed()
 	{
 		player->velocity.x = speed.x;
 	}
-	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT && canJump)
 	{
 		player->velocity.y = -speed.y;
+		//canJump = false;
 	}
-	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT && canJump)
 	{
 		player->velocity.y = speed.y;
+		//canJump = false;
 	}
 }
 
@@ -201,7 +204,7 @@ void ModulePlayer::SpawnLaser()
 	fPoint spawnPos = { player->position.x + vDirectionNormalized.x * spawnDistance, player->position.y + vDirectionNormalized.y * spawnDistance };
 
 	Collider* bullet;
-	bullet = App->collisions->AddBulletCollider(spawnPos, 10,LASER, App->collisions);
+	bullet = App->collisions->AddBulletCollider(spawnPos, 5,LASER, App->collisions);
 	bullet->velocity = { vDirectionNormalized.x * bullet->bulletProperties.velocity, vDirectionNormalized.y * bullet->bulletProperties.velocity };
 	bullet->listeners[1] = App->scene_intro;
 	bullet->activeGravity = false;
@@ -226,7 +229,7 @@ void ModulePlayer::SpawnBomb()
 	fPoint spawnPos = { player->position.x + vDirectionNormalized.x * spawnDistance, player->position.y + vDirectionNormalized.y * spawnDistance };
 
 	Collider* bullet;
-	bullet = App->collisions->AddBulletCollider(spawnPos, 10,BOMB, App->collisions);
+	bullet = App->collisions->AddBulletCollider(spawnPos, 15,BOMB, App->collisions);
 	bullet->velocity = { vDirectionNormalized.x * bullet->bulletProperties.velocity, vDirectionNormalized.y * bullet->bulletProperties.velocity };
 	bullet->listeners[1] = App->scene_intro;
 }
@@ -250,7 +253,7 @@ void ModulePlayer::SpawnBouncer()
 	fPoint spawnPos = { player->position.x + vDirectionNormalized.x * spawnDistance, player->position.y + vDirectionNormalized.y * spawnDistance };
 
 	Collider* bullet;
-	bullet = App->collisions->AddBulletCollider(spawnPos, 5, BOUNCER, App->collisions);
+	bullet = App->collisions->AddBulletCollider(spawnPos, 10, BOUNCER, App->collisions);
 	bullet->velocity = { vDirectionNormalized.x * bullet->bulletProperties.velocity, vDirectionNormalized.y * bullet->bulletProperties.velocity };
 	bullet->listeners[1] = App->scene_intro;
 }

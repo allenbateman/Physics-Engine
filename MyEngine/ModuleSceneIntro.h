@@ -61,16 +61,18 @@ public:
 	PhysBody* background;
 
 
-	Collider* squareBullet;
-	Collider* squareBullet2;
 	Collider* circleBullet;
 	Collider* circleBullet2;
 
 
-	//FLORS
-	Collider* Flor1;
-	Collider* Flor2;
-	Collider* CenterCube;
+	//grounds
+	Collider* ground1;
+	Collider* ground2;
+	Collider* ground3;
+	Collider* ground4;
+	Collider* ground5;
+
+
 
 	Bouncer bouncer1;
 	Bouncer bouncer2;

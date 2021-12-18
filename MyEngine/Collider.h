@@ -15,6 +15,7 @@ struct CollisionInfo {
 	bool Top = false;
 	bool Bot = false;
 	bool Collided = false;
+	bool Bounds = false;
 };
 struct Color {
 	float r, g, b, a;

@@ -42,7 +42,7 @@ public:
 	p2Point<float> force;
 	MovementType currentMovementType = SPEED;
 	CurrentWeapon currentWeapon = BLASTER;
-	bool canJumnp = true;
+	bool canJump = true;
 	bool canShoot = true;
 	// A set of animations
 	SDL_Texture* texture = nullptr;

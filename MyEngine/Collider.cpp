@@ -29,6 +29,7 @@ Collider::Collider(SDL_Rect rectangle, Type type, Module* listener, float _mass)
 		color.a = 255;
 		break;
 	case WALL:
+		mass = 10000;
 		color.r = 52;
 		color.g = 52;
 		color.b = 235;
@@ -61,6 +62,7 @@ Collider::Collider(fPoint center, float radius, Type type, Module* listener, flo
 		color.a = 255;
 		break;
 	case WALL:
+		mass = 10000;
 		color.r = 52;
 		color.g = 52;
 		color.b = 235;
@@ -82,8 +84,8 @@ Collider::Collider(fPoint center, float radius, BulletType bulletType, Module* l
 		bulletProperties.velocity = 0.1f;
 		activeGravity = true;
 		Bounce = true;
-		friction = 0.5f;
-		coeficientOfRestitution = 1;
+		friction = 0.6f;
+		coeficientOfRestitution = 0.7f;
 		mass = 1;
 		listeners[0] = listener;
 		color.r = 152;
@@ -108,10 +110,11 @@ Collider::Collider(fPoint center, float radius, BulletType bulletType, Module* l
 	case BOUNCER:
 		bulletProperties.type = BOUNCER;
 		bulletProperties.velocity = 0.5f;
+		bulletProperties.bounceCounter = 3;
 		activeGravity = true;
 		Bounce = true;
-		friction = 0.5f;
-		coeficientOfRestitution = 0.5f;
+		friction = 0.8f;
+		coeficientOfRestitution = 0.8f;
 		mass = 1;
 		listeners[0] = listener;
 		color.r = 235;
