@@ -37,6 +37,8 @@ public:
 	void SpawnBomb();
 	void SpawnBouncer();
 
+	void RenderWeapons();
+
 	Collider* player;
 	p2Point<float> speed;
 	p2Point<float> force;
@@ -46,6 +48,13 @@ public:
 	bool canShoot = true;
 	// A set of animations
 	SDL_Texture* texture = nullptr;
+	SDL_Texture* weaponsTexture = nullptr;
+	SDL_Rect blaster;
+	SDL_Rect cannon;
+	SDL_Rect bounceShooter;
+
+
+
 	Animation* currentAnimation = nullptr;
 	Animation moveAnim, idle, jumpAnim,fallAnim;
 	SDL_RendererFlip direction;

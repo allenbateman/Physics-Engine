@@ -18,50 +18,58 @@ public:
 	update_status PreUpdate();
 	update_status Update(float dt);
 	update_status PostUpdate();
+	
+	//draw
+	void DebugDraw();
 
 	// Removes all existing colliders
 	bool CleanUp();
 	void RemovePendingToDeleteColliders();
+	void RemoveCollider(Collider* collider);
 
-	void CheckCollisions();
 
 	//Apply forces
 	void ApplyForces();
 	void ApplyMovement(float dt);
 
-	// Adds a new collider to the list
+	//Spawnners
 	Collider* AddCollider(SDL_Rect rect, Collider::Type type, Module* listener = nullptr);
-
 	Collider* AddCircleCollider(fPoint center, float radius, Collider::Type type, Module* listener = nullptr);
 	Collider* AddRectangleCollider(SDL_Rect rect, Collider::Type type, Module* listener = nullptr);
 	Collider* AddBulletCollider(fPoint center, float radius, BulletType bulletType, Module* listener = nullptr);
-	
-	void RemoveCollider(Collider* collider);
-	void DebugDraw();
+
+	//collision Handelers
+	void CheckCollisions();
 	void OnCollision(Collider* body1, Collider* body2);
 	void CheckParticleInBounds();
+	void CheckLineCollisionsWithRectangles(fPoint start, fPoint end, fPoint& _intersection);
+	bool LineLine(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, fPoint& _intersection);
 
+	//Helpers
 	bool IsPositive(float value);
 	fPoint StopVibration(fPoint v);
 	fPoint CapBigVelocities(fPoint v);
 
-	void CheckLineCollisionsWithRectangles(fPoint start, fPoint end, fPoint& _intersection);
-
-
-	bool LineLine(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, fPoint& _intersection);
-
-
+	//gavitational functions
 	fPoint GravityRotation();
 	void GravitationalForce(Collider* body, int index );
 
-	float GetGravityMovement() { return GravityMovement; };
-	float SetgravityMoement(float newMovement) { GravityMovement = newMovement; };
+	//gavitational Setters
+	bool NormalGravity() { return Normal = !Normal; };
+	bool StateliteGravity() { return Satelite = !Satelite; };
+	bool InterplanetaryGravity() { return Interplanetary = !Interplanetary; };
 
 private:
 	Collider* colliders[MAX_COLLIDERS] = { nullptr };
 	bool matrix[Collider::Type::MAX][Collider::Type::MAX];
 	bool debug = false;
 
+
+	bool Normal = false;
+	bool Satelite = false;
+	bool Interplanetary = true;
+
+	//speed of the moving satelite
 	float GravityMovement = 0.1f;
 };
 

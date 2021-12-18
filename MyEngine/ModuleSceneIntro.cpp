@@ -1,6 +1,8 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleSceneIntro.h"
+#include "ModulePlayer.h"
+#include "Collider.h"
 
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -21,66 +23,54 @@ bool ModuleSceneIntro::Start()
 
 	SDL_Rect rectangle;
 
-	rectangle.x = 250;
-	rectangle.y = 200;
-	rectangle.w = 150;
+	rectangle.x = 180;
+	rectangle.y = 180;
+	rectangle.w = 50;
 	rectangle.h = 50;
 
 	ground1 = App->collisions->AddRectangleCollider(rectangle, Collider::WALL, App->collisions);
 	ground1->SetCenter();
 	ground1->activeGravity = false;
 
-	rectangle.x = 850;
-	rectangle.y = 200;
+	rectangle.x = 180;
+	rectangle.y = 520;
 	rectangle.w = 50;
-	rectangle.h = 250;
+	rectangle.h = 50;
 
 	ground2 = App->collisions->AddRectangleCollider(rectangle, Collider::WALL, App->collisions);
 	ground2->SetCenter();
 	ground2->activeGravity = false;
 
-
-	fPoint center;
-	center.x = SCREEN_WIDTH * 0.5f;
-	center.y = SCREEN_HEIGHT * 0.5f;
-	ground3 = App->collisions->AddCircleCollider(center, 75.0f, Collider::WALL, App->collisions);
+	rectangle.x = 482;
+	rectangle.y = 350;
+	rectangle.w = 50;
+	rectangle.h = 50;
+	ground3 = App->collisions->AddRectangleCollider(rectangle, Collider::WALL, App->collisions);
 	ground3->activeGravity = false;
+	ground3->SetCenter();
 
+	rectangle.x = 760;
+	rectangle.y = 520 ;
+	rectangle.w = 50;
+	rectangle.h = 50;
+	ground4 = App->collisions->AddRectangleCollider(rectangle, Collider::WALL, App->collisions);
+	ground4->activeGravity = false;
+	ground4->SetCenter();
 
-	circleBullet = App->collisions->AddCircleCollider(fPoint{100, 300}, 20,Collider::BULLET,App->collisions);
-	circleBullet->mass = 1;
-	circleBullet->velocity.x = 0.1f;
-	circleBullet->velocity.y = 0.1f;
+	rectangle.x = 760;
+	rectangle.y = 180;
+	rectangle.w = 50;
+	rectangle.h = 50;
+	ground5 = App->collisions->AddRectangleCollider(rectangle, Collider::WALL, App->collisions);
+	ground5->activeGravity = false;
+	ground5->SetCenter();
 
-	circleBullet2 = App->collisions->AddCircleCollider(fPoint{ 500, 300 }, 20, Collider::BULLET, App->collisions);
-	circleBullet2->mass = 1;
-	circleBullet2->velocity.x = -0.1f;
-	circleBullet2->velocity.y = 0.1f;
 
 	return ret;
 }
 
 update_status ModuleSceneIntro::PreUpdate()
 {
-	fPoint addForce;
-	addForce.x = 0.001f;
-	addForce.y = 0.01;
-	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN)
-	{
-
-	}
-	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN)
-	{
-
-	}
-	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN)
-	{
-
-	}
-	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN)
-	{
-
-	}
 
 	return UPDATE_CONTINUE;
 }
@@ -89,7 +79,10 @@ update_status ModuleSceneIntro::PreUpdate()
 // Update: draw background
 update_status ModuleSceneIntro::Update(float dt)
 {
-
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
+	{
+		SpawnAsteriod();
+	}
 	return UPDATE_CONTINUE;
 }
 
@@ -101,9 +94,8 @@ bool ModuleSceneIntro::CleanUp()
 	return true;
 }
 
-void ModuleSceneIntro::OnCollision(Collider* body1, Collider* body2)
+void ModuleSceneIntro::OnCollision(Collider* body1, Collider* body2) //carefull this bdoy2 may be nullptr
 {
-
 
 	switch (body1->type)
 	{
@@ -118,6 +110,7 @@ void ModuleSceneIntro::OnCollision(Collider* body1, Collider* body2)
 			{
 				//explode
 				body1->pendingToDelete = true;
+
 			}
 			break;
 		case BOUNCER:
@@ -140,7 +133,84 @@ void ModuleSceneIntro::OnCollision(Collider* body1, Collider* body2)
 	case Collider::Type::PLAYER:
 		App->player->canJump = true;
 		break;
+	case Collider::Type::ENEMY:
+		if (body2 != nullptr)
+		{
+			switch (body2->type)
+			{
+			case Collider::Type::WALL:
+				body1->pendingToDelete = true;
+				break;
+			default:
+				break;
+			}
+			break;
+		}
 	default:
 		break;
 	}
+}
+
+void ModuleSceneIntro::SpawnAsteriod()
+{
+	fPoint spawnPos, targetPos;
+	float asteroidSize, initialvelocity;
+	asteroidSize = rand() % 10 + 10; //between 10 and 20
+	//initialvelocity = static_cast <float> (rand()) / static_cast <float> (1) + 0.1f;
+	initialvelocity = 0.4f;
+
+	float targetx, targety;
+	targetx = rand() % 10 + (-10) ; //3 time more or less the player radius
+	targety = rand() % 10 + (-10) ; //3 time more or less the player radius
+	targetx += App->player->player->position.x;
+	targety += App->player->player->position.y;
+	targetPos = { targetx , targety };
+	//
+	//targetPos.x = App->player->player->position.x;
+	//targetPos.y = App->player->player->position.y;
+
+	// chose a side from screen to spawn
+	int side;
+	float x, y;
+	side = rand() % 4 + 1;
+	float spawnOffset;
+	spawnOffset = 10 + asteroidSize;
+	switch (side) {
+	case 1://top
+		x = rand() % SCREEN_WIDTH;
+		spawnPos = { x, spawnOffset };
+		break;
+	case 2://right
+		y = rand() % SCREEN_HEIGHT;
+		spawnPos = { SCREEN_WIDTH - spawnOffset, y };
+		break;
+	case 3://bot
+		x = rand() % SCREEN_WIDTH;
+		spawnPos = { x,SCREEN_HEIGHT - spawnOffset };
+		break;
+	case 4://left
+		y = rand() % SCREEN_HEIGHT;
+		spawnPos = { spawnOffset ,y };
+		break;
+	}
+
+
+	fPoint direction;
+	direction.x = targetPos.x - spawnPos.x;
+	direction.y = targetPos.y - spawnPos.y;
+
+	float directionLength = sqrt(direction.x * direction.x + direction.y * direction.y);
+	fPoint vDirectionNormalized = { direction.x / directionLength, direction.y / directionLength };
+
+	Collider* asteroid;
+	asteroid = App->collisions->AddCircleCollider(spawnPos, asteroidSize, Collider::Type::ENEMY, App->collisions);
+	asteroid->velocity = { vDirectionNormalized.x * initialvelocity, vDirectionNormalized.y * initialvelocity };
+	asteroid->listeners[1] = App->scene_intro;
+	asteroid->activeGravity = true; 
+	//asteroid->coeficientOfRestitution = 0.9;
+	//asteroid->friction = 0.9;
+}
+
+void ModuleSceneIntro::AsteroidHorde()
+{
 }

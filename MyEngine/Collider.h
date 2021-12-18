@@ -27,6 +27,8 @@ enum BulletType
 	BOUNCER		//bounces 3 times and explodes on the last hit
 };
 struct BulletProperties {
+	class Application;
+
 	float lifeTime;
 	int bounceCounter;
 	int damage;
@@ -109,8 +111,8 @@ struct Collider
 	Module* listeners[MAX_LISTENERS] = { nullptr };
 
 	float mass;
-	float friction = 0.01;
-	float coeficientOfRestitution = 0.01;
+	float friction = 0.9;
+	float coeficientOfRestitution = 0.9;
 
 	bool activeGravity;
 	bool Bounce;

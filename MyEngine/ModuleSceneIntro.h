@@ -55,6 +55,9 @@ public:
 
 	void OnCollision(Collider* body1, Collider* body2);
 
+	void SpawnAsteriod();
+	void AsteroidHorde();
+
 public:
 
 	SDL_Texture* graphics;

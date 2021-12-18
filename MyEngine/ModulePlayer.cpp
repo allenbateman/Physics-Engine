@@ -11,6 +11,7 @@ ModulePlayer::ModulePlayer(Application* app, bool start_enabled) : Module(app, s
 
 ModulePlayer::~ModulePlayer()
 {
+
 }
 
 // Load assets
@@ -32,6 +33,24 @@ bool ModulePlayer::Start()
 	force = { 0.01f,0.01f };
 
 	currentWeapon = BLASTER;
+
+	weaponsTexture = App->textures->Load("../Assets/Sprites/SpacialWeapons.png");
+
+	blaster.x = 0;
+	blaster.y = 0;
+	blaster.w = 174;
+	blaster.h = 54;
+
+	cannon.x = 0;
+	cannon.y = 144;
+	cannon.w = 144;
+	cannon.h = 54;
+
+	bounceShooter.x = 0;
+	bounceShooter.y = 54;
+	bounceShooter.w = 153;
+	bounceShooter.h = 54;
+
 
 	return ret;
 }
@@ -91,6 +110,13 @@ update_status ModulePlayer::Update(float dt)
 update_status ModulePlayer::PostUpdate()
 {
 	canShoot = true;
+	SDL_Rect rect;
+	rect.x = 100;
+	rect.y = 100;
+	rect.w = 174;
+	rect.h = 168;
+	App->renderer->Blit(weaponsTexture,0,0,&rect);
+	RenderWeapons();
 	return UPDATE_CONTINUE;
 }
 
@@ -256,6 +282,27 @@ void ModulePlayer::SpawnBouncer()
 	bullet = App->collisions->AddBulletCollider(spawnPos, 10, BOUNCER, App->collisions);
 	bullet->velocity = { vDirectionNormalized.x * bullet->bulletProperties.velocity, vDirectionNormalized.y * bullet->bulletProperties.velocity };
 	bullet->listeners[1] = App->scene_intro;
+}
+
+void ModulePlayer::RenderWeapons()
+{
+	if (weaponsTexture != nullptr)
+	{
+		switch (currentWeapon)
+		{
+		case BLASTER:
+			App->renderer->Blit(weaponsTexture, player->position.x , player->position.y, &blaster, direction, false, 0.1f, 1, 0);
+			break;
+		case CANNON:
+			App->renderer->Blit(weaponsTexture, player->position.x, player->position.y, &cannon, SDL_FLIP_NONE);
+			break;
+		case BOUNCER_SHOOTER:
+			App->renderer->Blit(weaponsTexture, player->position.x, player->position.y, &bounceShooter, SDL_FLIP_NONE);
+			break;
+		default:
+			break;
+		}
+	}
 }
 
 

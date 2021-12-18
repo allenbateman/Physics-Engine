@@ -19,15 +19,27 @@ ModuleCollisions::ModuleCollisions(Application* app, bool start_enabled) : Modul
 	matrix[Collider::Type::WALL][Collider::Type::WALL] = false;
 	matrix[Collider::Type::WALL][Collider::Type::PLAYER] = true;
 	matrix[Collider::Type::WALL][Collider::Type::BULLET] = true;
+	matrix[Collider::Type::WALL][Collider::Type::ENEMY] = true;
 
 	matrix[Collider::Type::PLAYER][Collider::Type::WALL] = true;
 	matrix[Collider::Type::PLAYER][Collider::Type::PLAYER] = false;
 	matrix[Collider::Type::PLAYER][Collider::Type::BULLET] = true;
+	matrix[Collider::Type::PLAYER][Collider::Type::ENEMY] = true;
 
 
 	matrix[Collider::Type::BULLET][Collider::Type::BULLET] = true;
 	matrix[Collider::Type::BULLET][Collider::Type::PLAYER] = true;
 	matrix[Collider::Type::BULLET][Collider::Type::WALL] = true;
+	matrix[Collider::Type::BULLET][Collider::Type::ENEMY] = true;
+
+	matrix[Collider::Type::ENEMY][Collider::Type::WALL] = true;
+	matrix[Collider::Type::ENEMY][Collider::Type::PLAYER] = true;
+	matrix[Collider::Type::ENEMY][Collider::Type::BULLET] = true;
+	matrix[Collider::Type::ENEMY][Collider::Type::ENEMY] = true;
+
+	Normal = false;
+	Satelite = false;
+	Interplanetary = true;
 }
 
 // Destructor
@@ -38,8 +50,21 @@ ModuleCollisions::~ModuleCollisions()
 
 update_status ModuleCollisions::PreUpdate()
 {
-	RemovePendingToDeleteColliders();
+	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)
+	{
+			NormalGravity();
+	}
+	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
+	{
 
+		StateliteGravity();
+	}
+	if (App->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN)
+	{
+		InterplanetaryGravity();
+	}
+
+	RemovePendingToDeleteColliders();
 	//Sumatory forces
 	ApplyForces();
 
@@ -72,7 +97,35 @@ update_status ModuleCollisions::PostUpdate()
 
 void ModuleCollisions::DebugDraw()
 {
-	Uint8 alpha = 80;
+
+	SDL_Rect r;
+	if (Normal)
+	{
+		r.x = 0;
+		r.y = 0;
+		r.w = 25;
+		r.h = 25;
+		App->renderer->DrawQuad(r, 213, 235, 52, 150);
+	}
+	if (Satelite)
+	{
+		r.x = 25;
+		r.y = 0;
+		r.w = 25;
+		r.h = 25;
+		App->renderer->DrawQuad(r, 52, 235, 100, 150);
+	}
+	if (Interplanetary)
+	{
+		r.x = 50;
+		r.y = 0;
+		r.w = 25;
+		r.h = 25;
+		App->renderer->DrawQuad(r, 52, 216, 235, 150);
+	}
+
+
+
 	for (uint i = 0; i < MAX_COLLIDERS; ++i)
 	{
 		if (colliders[i] == nullptr)
@@ -81,38 +134,10 @@ void ModuleCollisions::DebugDraw()
 		Color color = colliders[i]->color;
 		switch (colliders[i]->shape) {
 		case Collider::Shape::RECTANGLE:
-			switch (colliders[i]->type)
-			{
-				case Collider::Type::NONE: // white
-					App->renderer->DrawQuad(colliders[i]->rect, 255, 255, 255, alpha);
-					break;
-				case Collider::Type::WALL: // blue
-					App->renderer->DrawQuad(colliders[i]->rect, color.r, color.g, color.b, color.a);
-					break;
-				case Collider::Type::PLAYER: // green
-					App->renderer->DrawQuad(colliders[i]->rect, color.r, color.g, color.b, color.a);
-					break;
-				case Collider::Type::BULLET: // red
-					App->renderer->DrawQuad(colliders[i]->rect, color.r, color.g, color.b, color.a);
-					break;
-			}
+			App->renderer->DrawQuad(colliders[i]->rect, color.r, color.g, color.b, color.a);
 			break;
 		case Collider::Shape::CIRCLE:
-			switch (colliders[i]->type)
-			{
-				case Collider::Type::NONE: // white
-					App->renderer->DrawCircle(colliders[i]->position, colliders[i]->radius, color.r, color.g, color.b, color.a);
-					break;
-				case Collider::Type::WALL: // blue
-					App->renderer->DrawCircle(colliders[i]->position, colliders[i]->radius, color.r, color.g, color.b, color.a);
-					break;
-				case Collider::Type::PLAYER: // green
-					App->renderer->DrawCircle(colliders[i]->position, colliders[i]->radius, color.r, color.g, color.b, color.a);
-					break;
-				case Collider::Type::BULLET: // red
-					App->renderer->DrawCircle(colliders[i]->position, colliders[i]->radius, color.r, color.g, color.b, color.a);
-					break;
-			}
+			App->renderer->DrawCircle(colliders[i]->position, colliders[i]->radius, color.r, color.g, color.b, color.a);
 			break;
 		default:
 			break;
@@ -455,8 +480,7 @@ void ModuleCollisions::GravitationalForce(Collider* particle, int index)
 		fPoint direction = { ground->position.x - particle->position.x, ground->position.y - particle->position.y };
 		float directionLength = sqrt(direction.x * direction.x + direction.y * direction.y);
 		fPoint vDirectionNormalized = { direction.x / directionLength, direction.y / directionLength };
-		//float distance = fabs( particle->position.DistanceTo(ground->position));
-		gravityForce = (GRAVITY * (particle->mass + ground->mass)) / (directionLength * directionLength);
+		gravityForce = (GRAVITY * (particle->mass * ground->mass)) / (directionLength * directionLength);
 		particle->force += {gravityForce * vDirectionNormalized.x, gravityForce* vDirectionNormalized.y};
 
 	}
@@ -519,12 +543,16 @@ void ModuleCollisions::ApplyForces()
 		if(particle->activeGravity)
 		{	
 			//Gravity as the bot screen sdie is ground
-			//colliders[i]->force += {0,0.0005f};
+			if(Normal)
+				colliders[i]->force += {0,0.0005f};
 
 			//thisfunction rotates de force of gravity as if a big palnet would rotate arround the map
-			particle->force += GravityRotation();
+			if (Satelite)
+				particle->force += GravityRotation();
+
 			//this function calculates gravitational force between particles and "grounds" aka walls
-			 GravitationalForce(particle,i);
+			if (Interplanetary)
+				GravitationalForce(particle,i);
 		}
 
 		//Wind
