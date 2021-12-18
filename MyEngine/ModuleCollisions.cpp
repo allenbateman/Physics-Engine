@@ -125,7 +125,6 @@ void ModuleCollisions::OnCollision(Collider* body1, Collider* body2)
 {
 	if (body1->type != Collider::WALL)
 	{
-
 		//calculate resultant velocity
 		fPoint v2 = { body2->velocity.x - body1->velocity.x, body2->velocity.y - body1->velocity.y };
 
@@ -185,6 +184,68 @@ void ModuleCollisions::OnCollision(Collider* body1, Collider* body2)
 		//set velocity to zero if verly small
 		body2->velocity = StopVibration(body2->velocity);
 	}
+	if (body2->type != Collider::WALL)
+	{
+
+		//calculate resultant velocity
+		fPoint v2 = { body1->velocity.x - body1->velocity.x, body1->velocity.y - body1->velocity.y };
+
+		if (IsPositive(v2.x))
+		{
+			v2.x -= body1->friction;
+		}
+		else {
+			v2.x += body1->friction;
+		}
+		if (IsPositive(v2.y))
+		{
+			v2.y -= body1->coeficientOfRestitution;
+		}
+		else {
+			v2.y += body1->coeficientOfRestitution;
+		}
+
+		//control high velocity
+		v2 = CapBigVelocities(v2);
+
+		//set velocity to zero if verly small
+		v2 = StopVibration(body1->velocity);
+
+
+		body1->velocity = { -v2.x, -v2.y };
+
+	}
+	else {
+
+		if (body1->collInfo->Right && body1->velocity.x > 0)
+		{
+			//reset x position before solving collision
+			body1->position.x = body1->lastPosition.x;
+			body1->velocity.x -= body1->friction;
+			body1->velocity.x *= -1;
+		}
+		if (body1->collInfo->Left && body1->velocity.x < 0)
+		{
+			body1->position.x = body1->lastPosition.x;
+			body1->velocity.x += body1->friction;
+			body1->velocity.x *= -1;
+		}
+
+		if (body1->collInfo->Bot && body1->velocity.y > 0)
+		{
+			body1->position.y = body1->lastPosition.y;
+			body1->velocity.y -= body1->coeficientOfRestitution;
+			body1->velocity.y *= -1;
+		}
+		if (body1->collInfo->Top && body1->velocity.y < 0)
+		{
+			body1->position.y = body1->lastPosition.y;
+			body1->velocity.y += body1->coeficientOfRestitution;
+			body1->velocity.y *= -1;
+		}
+		//set velocity to zero if verly small
+		body1->velocity = StopVibration(body1->velocity);
+	}
 }
 
 void ModuleCollisions::CheckParticleInBounds()
@@ -217,7 +278,13 @@ void ModuleCollisions::CheckParticleInBounds()
 					colliders[i]->collInfo->Right = true;
 
 				colliders[i]->position.x = colliders[i]->lastPosition.x;
-				colliders[i]->velocity.x *= -1;
+				if (colliders[i]->Bounce)
+				{
+					colliders[i]->velocity.x *= -1;
+				}
+				else {
+					colliders[i]->velocity.x = 0;
+				}
 			}
 
 
@@ -235,7 +302,14 @@ void ModuleCollisions::CheckParticleInBounds()
 					colliders[i]->collInfo->Bot = true;
 
 				colliders[i]->position.y = colliders[i]->lastPosition.y;
-				colliders[i]->velocity.y *= -1;
+
+				if (colliders[i]->Bounce)
+				{
+					colliders[i]->velocity.y *= -1;
+				}
+				else {
+					colliders[i]->velocity.y = 0;
+				}
 			}
 
 		}else
@@ -254,7 +328,13 @@ void ModuleCollisions::CheckParticleInBounds()
 					colliders[i]->collInfo->Right = true;
 
 				colliders[i]->position.x = colliders[i]->lastPosition.x;
-				colliders[i]->velocity.x *= -1;
+				if (colliders[i]->Bounce)
+				{
+					colliders[i]->velocity.x *= -1;
+				}
+				else {
+					colliders[i]->velocity.x = 0;
+				}
 			}
 
 			checkTop = colliders[i]->position.y - (colliders[i]->rect.h * 0.5) > 0;
@@ -272,7 +352,13 @@ void ModuleCollisions::CheckParticleInBounds()
 					colliders[i]->collInfo->Top = true;
 
 				colliders[i]->position.y = colliders[i]->lastPosition.y;
-				colliders[i]->velocity.y *= -1;
+				if (colliders[i]->Bounce)
+				{
+					colliders[i]->velocity.y *= -1;
+				}
+				else {
+					colliders[i]->velocity.y = 0;
+				}
 			}
 		}
 	}
@@ -404,7 +490,9 @@ void ModuleCollisions::ApplyForces()
 					colliders[i]->activeGravity = true;
 
 				if(colliders[i]->activeGravity)
+					colliders[i]->force += {0,0.0005f};
 				 //  colliders[i]->force += GravityRotation();
+
 
 				//Wind
 				colliders[i]->force += fPoint(0,0);
@@ -517,7 +605,7 @@ Collider* ModuleCollisions::AddRectangleCollider(SDL_Rect rect, Collider::Type t
 	return ret;
 }
 
-Collider* ModuleCollisions::AddBulletCollider(fPoint center, float radius, Collider::BulletType bulletType, Module* listener)
+Collider* ModuleCollisions::AddBulletCollider(fPoint center, float radius, BulletType bulletType, Module* listener)
 {
 	Collider* ret = nullptr;
 

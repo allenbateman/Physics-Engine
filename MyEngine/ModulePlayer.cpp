@@ -22,11 +22,16 @@ bool ModulePlayer::Start()
 	player = App->collisions->AddCircleCollider({0,0}, 20, Collider::PLAYER, App->collisions);
 	player->SetPosition(450, 250);
 	player->mass = 1;
+	player->friction = 0.5;
 	player->coeficientOfRestitution = 0.5;
+	player->Bounce = false;
+	player->activeGravity = true;
 
-
+	currentMovementType = SPEED;
 	speed = { 0.5f,0.7f };
 	force = { 0.01f,0.01f };
+
+	currentWeapon = BLASTER;
 
 	return ret;
 }
@@ -34,28 +39,39 @@ bool ModulePlayer::Start()
 update_status ModulePlayer::PreUpdate()
 {
 
-	//player->velocity.x = 0;
+	if (App->input->GetKey(SDL_SCANCODE_5) == KEY_DOWN)
+	{
+		currentMovementType = SPEED;
 
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN)
+	}else if (App->input->GetKey(SDL_SCANCODE_6) == KEY_DOWN)
 	{
-		player->force.x = -force.x;
-		//player->velocity.x = -speed.x;
+		currentMovementType = IMPULSES;
 	}
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN)
+
+	switch (currentMovementType)
 	{
-		player->force.x = force.x;
-		//player->velocity.x = speed.x;
+	case SPEED:
+		MoveBySpeed();
+		break;
+	case IMPULSES:
+		MoveByImpulses();
+		break;
 	}
-	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN)
+
+
+	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
-		player->force.y = -force.y;
-		//player->velocity.y = -speed.y;
+		currentWeapon = BLASTER;
 	}
-	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
+	else if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
 	{
-		player->force.y = force.y;
-		//player->velocity.y = speed.y;
+		currentWeapon = CANNON;
 	}
+	else if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
+	{
+		currentWeapon = BOUNCER_SHOOTER;
+	}
+
 	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT)
 		Aim();
 	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN)
@@ -95,25 +111,18 @@ void ModulePlayer::Shoot()
 {
 	if (canShoot)
 	{
-		canShoot = false;
-		fPoint mousePos, endPos;
-		mousePos.x = App->input->GetMouseX();
-		mousePos.y = App->input->GetMouseY();
+		switch (currentWeapon) {
+		case BLASTER:
+			SpawnLaser();
+			break;
+		case CANNON:
+			SpawnBomb();
+			break;
+		case BOUNCER_SHOOTER:
+			SpawnBouncer();
+			break;
+		}
 
-		fPoint direction;
-		direction.x = mousePos.x - player->position.x;
-		direction.y = mousePos.y - player->position.y;
-
-		float directionLength = sqrt(direction.x * direction.x + direction.y * direction.y);
-		fPoint vDirectionNormalized = { direction.x / directionLength, direction.y / directionLength };
-
-		float spawnDistance = player->radius + 15;
-
-		fPoint spawnPos = { player->position.x + vDirectionNormalized.x * spawnDistance, player->position.y + vDirectionNormalized.y * spawnDistance };
-
-		Collider* bullet;
-		bullet = App->collisions->AddBulletCollider(spawnPos, 5, Collider::BulletType::LASER, App->collisions);
-		bullet->velocity = { vDirectionNormalized.x * bullet->bulletProperties.force, vDirectionNormalized.y * bullet->bulletProperties.force };
 	}
 }
 
@@ -129,6 +138,121 @@ void ModulePlayer::Aim()
 	App->renderer->DrawLine(player->position.x, player->position.y, endPos.x, endPos.y, 0, 100, 255, 150,true);
 	App->renderer->DrawCircle(endPos, 2, 125, 255, 125, 200);
 
+}
+
+void ModulePlayer::MoveByImpulses()
+{
+
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN)
+	{
+		player->force.x = -force.x;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN)
+	{
+		player->force.x = force.x;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN)
+	{
+		player->force.y = -force.y;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
+	{
+		player->force.y = force.y;
+	}
+}
+
+void ModulePlayer::MoveBySpeed()
+{
+
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
+	{
+		player->velocity.x = -speed.x;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
+	{
+		player->velocity.x = speed.x;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
+	{
+		player->velocity.y = -speed.y;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
+	{
+		player->velocity.y = speed.y;
+	}
+}
+
+void ModulePlayer::SpawnLaser()
+{
+	canShoot = false;
+	fPoint mousePos, endPos;
+	mousePos.x = App->input->GetMouseX();
+	mousePos.y = App->input->GetMouseY();
+
+	fPoint direction;
+	direction.x = mousePos.x - player->position.x;
+	direction.y = mousePos.y - player->position.y;
+
+	float directionLength = sqrt(direction.x * direction.x + direction.y * direction.y);
+	fPoint vDirectionNormalized = { direction.x / directionLength, direction.y / directionLength };
+
+	float spawnDistance = player->radius + 15;
+
+	fPoint spawnPos = { player->position.x + vDirectionNormalized.x * spawnDistance, player->position.y + vDirectionNormalized.y * spawnDistance };
+
+	Collider* bullet;
+	bullet = App->collisions->AddBulletCollider(spawnPos, 10,LASER, App->collisions);
+	bullet->velocity = { vDirectionNormalized.x * bullet->bulletProperties.velocity, vDirectionNormalized.y * bullet->bulletProperties.velocity };
+	bullet->listeners[1] = App->scene_intro;
+	bullet->activeGravity = false;
+}
+
+void ModulePlayer::SpawnBomb()
+{
+	canShoot = false;
+	fPoint mousePos, endPos;
+	mousePos.x = App->input->GetMouseX();
+	mousePos.y = App->input->GetMouseY();
+
+	fPoint direction;
+	direction.x = mousePos.x - player->position.x;
+	direction.y = mousePos.y - player->position.y;
+
+	float directionLength = sqrt(direction.x * direction.x + direction.y * direction.y);
+	fPoint vDirectionNormalized = { direction.x / directionLength, direction.y / directionLength };
+
+	float spawnDistance = player->radius + 15;
+
+	fPoint spawnPos = { player->position.x + vDirectionNormalized.x * spawnDistance, player->position.y + vDirectionNormalized.y * spawnDistance };
+
+	Collider* bullet;
+	bullet = App->collisions->AddBulletCollider(spawnPos, 10,BOMB, App->collisions);
+	bullet->velocity = { vDirectionNormalized.x * bullet->bulletProperties.velocity, vDirectionNormalized.y * bullet->bulletProperties.velocity };
+	bullet->listeners[1] = App->scene_intro;
+}
+
+void ModulePlayer::SpawnBouncer()
+{
+	canShoot = false;
+	fPoint mousePos, endPos;
+	mousePos.x = App->input->GetMouseX();
+	mousePos.y = App->input->GetMouseY();
+
+	fPoint direction;
+	direction.x = mousePos.x - player->position.x;
+	direction.y = mousePos.y - player->position.y;
+
+	float directionLength = sqrt(direction.x * direction.x + direction.y * direction.y);
+	fPoint vDirectionNormalized = { direction.x / directionLength, direction.y / directionLength };
+
+	float spawnDistance = player->radius + 15;
+
+	fPoint spawnPos = { player->position.x + vDirectionNormalized.x * spawnDistance, player->position.y + vDirectionNormalized.y * spawnDistance };
+
+	Collider* bullet;
+	bullet = App->collisions->AddBulletCollider(spawnPos, 5, BOUNCER, App->collisions);
+	bullet->velocity = { vDirectionNormalized.x * bullet->bulletProperties.velocity, vDirectionNormalized.y * bullet->bulletProperties.velocity };
+	bullet->listeners[1] = App->scene_intro;
 }
 
 

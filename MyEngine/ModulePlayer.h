@@ -12,7 +12,10 @@ public:
 		BLASTER,
 		BOUNCER_SHOOTER
 	};
-
+	enum MovementType {
+		IMPULSES,
+		SPEED,
+	};
 	ModulePlayer(Application* app, bool start_enabled = true);
 	virtual ~ModulePlayer();
 
@@ -27,10 +30,18 @@ public:
 	void Shoot();
 	void Aim();
 
+	void MoveByImpulses();
+	void MoveBySpeed();
+
+	void SpawnLaser();
+	void SpawnBomb();
+	void SpawnBouncer();
+
 	Collider* player;
 	p2Point<float> speed;
 	p2Point<float> force;
-
+	MovementType currentMovementType = SPEED;
+	CurrentWeapon currentWeapon = BLASTER;
 	bool canJumnp = true;
 	bool canShoot = true;
 	// A set of animations

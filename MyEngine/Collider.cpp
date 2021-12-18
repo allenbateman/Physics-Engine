@@ -12,7 +12,8 @@ Collider::Collider(SDL_Rect rectangle, Type type, Module* listener, float _mass)
 	listeners[0] = listener;
 	mass = _mass;
 	collInfo = new CollisionInfo();
-
+	activeGravity = true;
+	Bounce = true;
 	switch (type)
 	{
 	case PLAYER:
@@ -43,7 +44,8 @@ Collider::Collider(fPoint center, float radius, Type type, Module* listener, flo
 	collInfo = new CollisionInfo();
 	mass = _mass;
 	lastPosition = position;
-
+	activeGravity = true;
+	Bounce = true;
 	switch (type)
 	{
 	case PLAYER:
@@ -75,9 +77,13 @@ Collider::Collider(fPoint center, float radius, BulletType bulletType, Module* l
 	collInfo = new CollisionInfo();
 	switch (bulletType)
 	{
-	case Collider::BOMB:
-		friction = 0;
-		coeficientOfRestitution = 0;
+	case BOMB:
+		bulletProperties.type = BOMB;
+		bulletProperties.velocity = 0.1f;
+		activeGravity = true;
+		Bounce = true;
+		friction = 0.5f;
+		coeficientOfRestitution = 1;
 		mass = 1;
 		listeners[0] = listener;
 		color.r = 152;
@@ -85,8 +91,11 @@ Collider::Collider(fPoint center, float radius, BulletType bulletType, Module* l
 		color.b = 235;
 		color.a = 255;
 		break;
-	case Collider::LASER:
-		bulletProperties.force = 0.1f;
+	case LASER:
+		bulletProperties.type = LASER;
+		bulletProperties.velocity = 1;
+		activeGravity = false;
+		Bounce = true;
 		friction = 0;
 		coeficientOfRestitution = 0;
 		mass = 1;
@@ -96,9 +105,13 @@ Collider::Collider(fPoint center, float radius, BulletType bulletType, Module* l
 		color.b = 52;
 		color.a = 255;
 		break;
-	case Collider::BOUNCER:
-		friction = 0;
-		coeficientOfRestitution = 0;
+	case BOUNCER:
+		bulletProperties.type = BOUNCER;
+		bulletProperties.velocity = 0.5f;
+		activeGravity = true;
+		Bounce = true;
+		friction = 0.5f;
+		coeficientOfRestitution = 0.5f;
 		mass = 1;
 		listeners[0] = listener;
 		color.r = 235;

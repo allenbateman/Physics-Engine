@@ -1,7 +1,7 @@
 #ifndef __MODULE_COLLISIONS_H__
 #define __MODULE_COLLISIONS_H__
 
-#define MAX_COLLIDERS 25
+#define MAX_COLLIDERS 350
 #define GRAVITY 0.0005f
 #include "Module.h"
 #include "Collider.h"
@@ -34,7 +34,7 @@ public:
 
 	Collider* AddCircleCollider(fPoint center, float radius, Collider::Type type, Module* listener = nullptr);
 	Collider* AddRectangleCollider(SDL_Rect rect, Collider::Type type, Module* listener = nullptr);
-	Collider* AddBulletCollider(fPoint center, float radius, Collider::BulletType bulletType, Module* listener = nullptr);
+	Collider* AddBulletCollider(fPoint center, float radius, BulletType bulletType, Module* listener = nullptr);
 	
 	void RemoveCollider(Collider* collider);
 	void DebugDraw();

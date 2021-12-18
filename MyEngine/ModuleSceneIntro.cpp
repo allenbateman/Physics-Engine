@@ -25,6 +25,7 @@ bool ModuleSceneIntro::Start()
 	rectangle.y = 200;
 	rectangle.w = 150;
 	rectangle.h = 50;
+
 	Flor1 = App->collisions->AddRectangleCollider(rectangle, Collider::WALL, App->collisions);
 	Flor1->SetCenter();
 
@@ -32,6 +33,7 @@ bool ModuleSceneIntro::Start()
 	rectangle.y = 200;
 	rectangle.w = 50;
 	rectangle.h = 250;
+
 	Flor2 = App->collisions->AddRectangleCollider(rectangle, Collider::WALL, App->collisions);
 	Flor2->SetCenter();
 
@@ -39,15 +41,16 @@ bool ModuleSceneIntro::Start()
 	rectangle.y = SCREEN_HEIGHT * 0.5f;
 	rectangle.w = 100;
 	rectangle.h = 100;
+
 	CenterCube = App->collisions->AddRectangleCollider(rectangle, Collider::WALL, App->collisions);
 	CenterCube->SetCenter();
 
-	circleBullet = App->collisions->AddCircleCollider(fPoint{120,400},20,Collider::BULLET,App->collisions);
+	circleBullet = App->collisions->AddCircleCollider(fPoint{120, 400}, 20,Collider::BULLET,App->collisions);
 	circleBullet->mass = 1;
 	circleBullet->velocity.x = 0.1f;
 	circleBullet->velocity.y = 0.1f;
 
-	circleBullet2 = App->collisions->AddCircleCollider(fPoint{ 420,400 }, 20, Collider::BULLET, App->collisions);
+	circleBullet2 = App->collisions->AddCircleCollider(fPoint{ 420, 400 }, 20, Collider::BULLET, App->collisions);
 	circleBullet2->mass = 1;
 	circleBullet2->velocity.x = -0.1f;
 	circleBullet2->velocity.y = 0.1f;
@@ -99,4 +102,12 @@ bool ModuleSceneIntro::CleanUp()
 void ModuleSceneIntro::OnCollision(Collider* body1, Collider* body2)
 {
 	LOG("COLLISION IN SCENE INTRO");
+
+	if (body1->type == Collider::Type::BULLET)
+	{
+		if (body1->bulletProperties.type == LASER)
+		{
+			body1->pendingToDelete = true;
+		}
+	}
 }

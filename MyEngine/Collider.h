@@ -19,11 +19,18 @@ struct CollisionInfo {
 struct Color {
 	float r, g, b, a;
 };
+enum BulletType
+{
+	BOMB,		//explodes on impact
+	LASER,		//pure elastic vs metal
+	BOUNCER		//bounces 3 times and explodes on the last hit
+};
 struct BulletProperties {
 	float lifeTime;
 	int bounceCounter;
 	int damage;
-	float force;
+	float velocity;
+	BulletType type;
 //	SDL_Texture* texture;
 };
 struct Collider
@@ -42,12 +49,7 @@ struct Collider
 		ENEMY,
 		MAX
 	};
-	enum BulletType
-	{
-		BOMB,		//explodes on impact
-		LASER,		//pure elastic vs metal
-		BOUNCER		//bounces 3 times and explodes on the last hit
-	};
+
 	//Constructors
 	Collider(SDL_Rect rectangle, Type type, Module* listener = nullptr, float _mass = 1);
 	Collider(fPoint center,float radius, Type type, Module* listener = nullptr,float _mass = 1);
@@ -109,8 +111,8 @@ struct Collider
 	float friction = 0.01;
 	float coeficientOfRestitution = 0.01;
 
-	bool activeGravity = true;
-	bool Bounce = true;
+	bool activeGravity;
+	bool Bounce;
 
 	Color color;
 
