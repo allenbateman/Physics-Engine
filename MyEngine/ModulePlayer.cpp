@@ -192,16 +192,18 @@ void ModulePlayer::CalcualteAngle()
 	dir.y = mousePos.y - player->position.y;
 	float module = sqrt(dir.x * dir.x + dir.y * dir.y);
 
-	angle = acos(dir.x / module) * (dir.x / fabs(dir.x));
-
-	LOG("MODULE:%f", (dir.x / module));
+	angle = acos(dir.x / module);
 	angle = (RADTODEG * angle);
+
+	if (dir.y < 0)
+		angle = 360 - angle;
+
 	LOG("ANGLE:%f", angle);
 
 	if ((dir.x / module)>0)
 		direction = SDL_FLIP_NONE;
 	else
-		direction = SDL_FLIP_HORIZONTAL;
+		direction = SDL_FLIP_VERTICAL;
 }
 
 void ModulePlayer::MoveByForces()
@@ -336,10 +338,12 @@ void ModulePlayer::RenderWeapons()
 			App->renderer->Blit(weaponsTexture, player->position.x - pivotBlaster.x, player->position.y - pivotBlaster.y, &blaster, direction, false,0.6f, 1,angle,pivotBlaster);
 			break;
 		case CANNON:
-			App->renderer->Blit(weaponsTexture, player->position.x, player->position.y, &cannon, direction, false, 0.6f, 1, angle,pivotCannon);
+			//App->renderer->Blit(weaponsTexture, player->position.x - pivotCannon.x, player->position.y - pivotCannon.y, &cannon, direction, false, 0.6f, 1, angle, pivotCannon);
+			App->renderer->Blit(weaponsTexture, player->position.x - pivotBlaster.x, player->position.y - pivotBlaster.y, &blaster, direction, false, 0.6f, 1, angle, pivotBlaster);
 			break;
 		case BOUNCER_SHOOTER:
-			App->renderer->Blit(weaponsTexture, player->position.x, player->position.y, &bounceShooter, direction, false, 0.6f, 1, angle,pivotBouncer);
+			//App->renderer->Blit(weaponsTexture, player->position.x - pivotBouncer.x, player->position.y - pivotBouncer.y, &bounceShooter, direction, false, 0.6f, 1, angle,pivotBouncer);
+			App->renderer->Blit(weaponsTexture, player->position.x - pivotBlaster.x, player->position.y - pivotBlaster.y, &blaster, direction, false, 0.6f, 1, angle, pivotBlaster);
 			break;
 		default:
 			break;

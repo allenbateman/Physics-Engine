@@ -49,6 +49,7 @@ public:
 	p2Point<float> force;
 	p2Point<float> spawnPos = { 482, 280 };
 	int bulletCounter = 0;
+	float fireRate = 0.2f;
 
 	bool canJump = true;
 	bool canShoot = true;
