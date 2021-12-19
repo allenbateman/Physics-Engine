@@ -102,9 +102,9 @@ Collider::Collider(fPoint center, float radius, BulletType bulletType, Module* l
 		coeficientOfRestitution = 0;
 		mass = 1;
 		listeners[0] = listener;
-		color.r = 235;
-		color.g = 235;
-		color.b = 52;
+		color.r = 2;
+		color.g = 252;
+		color.b = 248;
 		color.a = 255;
 		break;
 	case BOUNCER:
@@ -118,8 +118,8 @@ Collider::Collider(fPoint center, float radius, BulletType bulletType, Module* l
 		mass = 1;
 		listeners[0] = listener;
 		color.r = 235;
-		color.g = 82;
-		color.b = 52;
+		color.g = 235;
+		color.b = 2;
 		color.a = 255;
 		break;
 	default:
@@ -262,6 +262,12 @@ CollisionInfo* Collider::CircleCircleCollision(const Collider* other) const
 {
 	//c1 -> being a Circle
 	//c2 -> being a Circle
+
+	if (type == ENEMY && other->type == ENEMY)
+	{
+		//stop
+	}
+
 	CollisionInfo* info = new CollisionInfo();
 	info->Collided = false;
 

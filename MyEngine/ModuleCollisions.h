@@ -2,7 +2,8 @@
 #define __MODULE_COLLISIONS_H__
 
 #define MAX_COLLIDERS 350
-#define GRAVITY 0.0005f
+#define GRAVITY 0.0005f//normal gravity
+#define SATELITE_GRAVITY 0.0001f // roational gravity
 #include "Module.h"
 #include "Collider.h"
 
@@ -45,6 +46,9 @@ public:
 	void CheckLineCollisionsWithRectangles(fPoint start, fPoint end, fPoint& _intersection);
 	bool LineLine(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, fPoint& _intersection);
 
+	//Game Functions
+	void OnResetGame();
+
 	//Helpers
 	bool IsPositive(float value);
 	fPoint StopVibration(fPoint v);
@@ -59,10 +63,11 @@ public:
 	bool StateliteGravity() { return Satelite = !Satelite; };
 	bool InterplanetaryGravity() { return Interplanetary = !Interplanetary; };
 
+	bool debug = false;
 private:
 	Collider* colliders[MAX_COLLIDERS] = { nullptr };
 	bool matrix[Collider::Type::MAX][Collider::Type::MAX];
-	bool debug = false;
+
 
 
 	bool Normal = false;

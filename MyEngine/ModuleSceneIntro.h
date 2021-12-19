@@ -5,6 +5,7 @@
 #include "Globals.h"
 
 #define BOUNCER_TIME 200
+#define MAX_ASTEROIDS 70
 
 struct Bouncer
 {
@@ -50,23 +51,21 @@ public:
 	bool Start();
 	update_status PreUpdate();
 	update_status Update(float dt);
+	update_status PostUpdate();
 	
 	bool CleanUp();
+
+	void ResetGame();
 
 	void OnCollision(Collider* body1, Collider* body2);
 
 	void SpawnAsteriod();
 	void AsteroidHorde();
-
+	void ParticleSystem();
 public:
 
 	SDL_Texture* graphics;
 	PhysBody* background;
-
-
-	Collider* circleBullet;
-	Collider* circleBullet2;
-
 
 	//grounds
 	Collider* ground1;
@@ -75,12 +74,12 @@ public:
 	Collider* ground4;
 	Collider* ground5;
 
+	//wave variables
+	int AsteroidCounter = 0;
+	int spawnPerSecond = 3;
+	float secondsToSpawn = 1;
+	float currentTime = 0;
 
-
-	Bouncer bouncer1;
-	Bouncer bouncer2;
-
-	Bouncer side_bouncer1;
-	Bouncer side_bouncer2;
-
+	bool InGame = false;
+	bool InParticleSystem = false;
 };

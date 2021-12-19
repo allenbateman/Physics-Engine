@@ -21,7 +21,7 @@ bool ModulePlayer::Start()
 
 	LOG("Loading player");
 	player = App->collisions->AddCircleCollider({0,0}, 20, Collider::PLAYER, App->collisions);
-	player->SetPosition(450, 250);
+	player->SetPosition(spawnPos.x, spawnPos.y);
 	player->mass = 1;
 	player->friction = 0;
 	player->coeficientOfRestitution = 0;
@@ -40,16 +40,19 @@ bool ModulePlayer::Start()
 	blaster.y = 0;
 	blaster.w = 174;
 	blaster.h = 54;
+	pivotBlaster = { 50,14};
 
 	cannon.x = 0;
-	cannon.y = 144;
-	cannon.w = 144;
+	cannon.y = 114;
+	cannon.w = 174;
 	cannon.h = 54;
+	pivotCannon = { 24,134 };
 
 	bounceShooter.x = 0;
 	bounceShooter.y = 54;
 	bounceShooter.w = 153;
 	bounceShooter.h = 54;
+	pivotBouncer = {64,80};
 
 
 	return ret;
@@ -58,13 +61,20 @@ bool ModulePlayer::Start()
 update_status ModulePlayer::PreUpdate()
 {
 
+	//player indestructible
+	if (App->input->GetKey(SDL_SCANCODE_G) == KEY_DOWN)
+	{
+		GodMode = !GodMode;
+	}
+
+	//type of movement
 	if (App->input->GetKey(SDL_SCANCODE_5) == KEY_DOWN)
 	{
 		currentMovementType = SPEED;
 
 	}else if (App->input->GetKey(SDL_SCANCODE_6) == KEY_DOWN)
 	{
-		currentMovementType = IMPULSES;
+		currentMovementType = FORCES;
 	}
 
 	switch (currentMovementType)
@@ -72,12 +82,12 @@ update_status ModulePlayer::PreUpdate()
 	case SPEED:
 		MoveBySpeed();
 		break;
-	case IMPULSES:
-		MoveByImpulses();
+	case FORCES:
+		MoveByForces();
 		break;
 	}
 
-
+	//type of weapon
 	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
 		currentWeapon = BLASTER;
@@ -91,18 +101,24 @@ update_status ModulePlayer::PreUpdate()
 		currentWeapon = BOUNCER_SHOOTER;
 	}
 
-	if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT)
-		Aim();
-	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN)
-		Shoot();
-
+	//Aim and Shoot
+	Aim();
+	if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN && canShoot)
+	{
+		if (bulletCounter < MAX_BULLETS)
+		{
+			Shoot();
+			bulletCounter++;
+		}
+	}
+	CalcualteAngle();
 	return UPDATE_CONTINUE;
 }
 
 update_status ModulePlayer::Update(float dt)
 {
-
-	//LOG("player pos.x:%f , pos.y:%f", player->position.x, player->position.y);
+	if(App->collisions->debug)
+		RenderWeapons();
 
 	return UPDATE_CONTINUE;
 }
@@ -123,13 +139,13 @@ update_status ModulePlayer::PostUpdate()
 bool ModulePlayer::CleanUp()
 {
 	LOG("Unloading player");
-
+	App->textures->Unload(weaponsTexture);
 	return true;
 }
 
 void ModulePlayer::OnCollision(Collider* body1, Collider* body2)
 {
-
+	// we dont do that here
 }
 
 void ModulePlayer::Shoot()
@@ -165,9 +181,31 @@ void ModulePlayer::Aim()
 
 }
 
-void ModulePlayer::MoveByImpulses()
+void ModulePlayer::CalcualteAngle()
 {
+	fPoint mousePos;
+	mousePos.x = App->input->GetMouseX();
+	mousePos.y = App->input->GetMouseY();
 
+	fPoint dir;
+	dir.x = mousePos.x - player->position.x;
+	dir.y = mousePos.y - player->position.y;
+	float module = sqrt(dir.x * dir.x + dir.y * dir.y);
+
+	angle = acos(dir.x / module) * (dir.x / fabs(dir.x));
+
+	LOG("MODULE:%f", (dir.x / module));
+	angle = (RADTODEG * angle);
+	LOG("ANGLE:%f", angle);
+
+	if ((dir.x / module)>0)
+		direction = SDL_FLIP_NONE;
+	else
+		direction = SDL_FLIP_HORIZONTAL;
+}
+
+void ModulePlayer::MoveByForces()
+{
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN)
 	{
 		player->force.x = -force.x;
@@ -179,12 +217,10 @@ void ModulePlayer::MoveByImpulses()
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN && canJump)
 	{
 		player->force.y = -force.y;
-		//canJump = false;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN && canJump)
 	{
 		player->force.y = force.y;
-	//	canJump = false;
 	}
 }
 
@@ -202,12 +238,10 @@ void ModulePlayer::MoveBySpeed()
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT && canJump)
 	{
 		player->velocity.y = -speed.y;
-		//canJump = false;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT && canJump)
 	{
 		player->velocity.y = speed.y;
-		//canJump = false;
 	}
 }
 
@@ -284,6 +318,14 @@ void ModulePlayer::SpawnBouncer()
 	bullet->listeners[1] = App->scene_intro;
 }
 
+void ModulePlayer::RestartPlayer()
+{
+	player->SetPosition(spawnPos.x, spawnPos.y);
+	GodMode = false;
+	PlayerAlive = true;
+	bulletCounter = 0;
+}
+
 void ModulePlayer::RenderWeapons()
 {
 	if (weaponsTexture != nullptr)
@@ -291,13 +333,13 @@ void ModulePlayer::RenderWeapons()
 		switch (currentWeapon)
 		{
 		case BLASTER:
-			App->renderer->Blit(weaponsTexture, player->position.x , player->position.y, &blaster, direction, false, 0.1f, 1, 0);
+			App->renderer->Blit(weaponsTexture, player->position.x - pivotBlaster.x, player->position.y - pivotBlaster.y, &blaster, direction, false,0.6f, 1,angle,pivotBlaster);
 			break;
 		case CANNON:
-			App->renderer->Blit(weaponsTexture, player->position.x, player->position.y, &cannon, SDL_FLIP_NONE);
+			App->renderer->Blit(weaponsTexture, player->position.x, player->position.y, &cannon, direction, false, 0.6f, 1, angle,pivotCannon);
 			break;
 		case BOUNCER_SHOOTER:
-			App->renderer->Blit(weaponsTexture, player->position.x, player->position.y, &bounceShooter, SDL_FLIP_NONE);
+			App->renderer->Blit(weaponsTexture, player->position.x, player->position.y, &bounceShooter, direction, false, 0.6f, 1, angle,pivotBouncer);
 			break;
 		default:
 			break;

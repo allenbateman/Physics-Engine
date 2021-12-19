@@ -58,12 +58,10 @@ struct Collider
 	Collider(fPoint center,float radius, Type type, Module* listener = nullptr,float _mass = 1);
 	Collider(fPoint center,float radius, BulletType bulletType, Module* listener = nullptr,float _mass = 1);
 
-	//Funcitons ot create shapes
+	//Funcitons to create shapes
 	void CircleCollider(fPoint pos,float _radius, Type _type, Module* listener = nullptr,  float _mass = 1);
 	void RectangleCollider(SDL_Rect _rctangle, Type _type, Module* listener = nullptr, float _mass = 1);
 	void ChainCollider(float* _vertices, Type _type, Module* listener = nullptr, float _mass = 1);
-
-
 
 	//To call the desired Collision Solver
 	CollisionInfo* Intersects(const Collider* other) const;

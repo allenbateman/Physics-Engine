@@ -19,7 +19,7 @@ bool ModuleSceneIntro::Start()
 	bool ret = true;
 	
 	App->renderer->camera.x = App->renderer->camera.y = 0;
-
+	
 
 	SDL_Rect rectangle;
 
@@ -65,13 +65,31 @@ bool ModuleSceneIntro::Start()
 	ground5->activeGravity = false;
 	ground5->SetCenter();
 
-
+	currentTime = 0;
+	AsteroidCounter = 0;
+	InGame = true;
+	InParticleSystem = false;
 	return ret;
 }
 
 update_status ModuleSceneIntro::PreUpdate()
 {
-
+	if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN)
+	{
+		InGame = !InGame;
+		InParticleSystem = false;
+		App->player->GodMode = false;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
+	{
+		ResetGame();
+	}
+	if (App->input->GetKey(SDL_SCANCODE_I) == KEY_DOWN)
+	{
+		InParticleSystem = !InParticleSystem;
+		InGame = false;
+		App->player->GodMode = true;
+	}
 	return UPDATE_CONTINUE;
 }
 
@@ -83,6 +101,36 @@ update_status ModuleSceneIntro::Update(float dt)
 	{
 		SpawnAsteriod();
 	}
+	if (InGame)
+	{
+		AsteroidHorde();
+	}
+	if (InParticleSystem)
+	{
+		ParticleSystem();
+	}
+	return UPDATE_CONTINUE;
+}
+
+update_status ModuleSceneIntro::PostUpdate()
+{
+	SDL_Rect r;
+	if (InGame)
+	{
+		r.x =20;
+		r.y = 20;
+		r.w = 25;
+		r.h = 25;
+		App->renderer->DrawQuad(r, 55, 200, 55, 200);
+	}
+	else {
+		r.x = 20;
+		r.y = 20;
+		r.w = 25;
+		r.h = 25;
+		App->renderer->DrawQuad(r, 200, 55, 55, 200);
+	}
+
 	return UPDATE_CONTINUE;
 }
 
@@ -92,6 +140,15 @@ bool ModuleSceneIntro::CleanUp()
 	LOG("Unloading Intro scene");
 
 	return true;
+}
+
+void ModuleSceneIntro::ResetGame()
+{
+	currentTime = App->GetTime();
+	AsteroidCounter = 0;
+	InGame = true;
+	App->collisions->OnResetGame();
+	App->player->RestartPlayer();
 }
 
 void ModuleSceneIntro::OnCollision(Collider* body1, Collider* body2) //carefull this bdoy2 may be nullptr
@@ -104,13 +161,19 @@ void ModuleSceneIntro::OnCollision(Collider* body1, Collider* body2) //carefull 
 		{
 		case LASER:
 			body1->pendingToDelete = true;
+			App->player->bulletCounter--;
 			break;
 		case BOMB:
-			if (body1->velocity.x == 0)
+			if (body1->velocity.x == 0 && body1->velocity.y == 0)
 			{
 				//explode
 				body1->pendingToDelete = true;
-
+				App->player->bulletCounter--;
+			}
+			if (body2 != nullptr && body2->type == Collider::Type::ENEMY)
+			{
+				body1->pendingToDelete = true;
+				App->player->bulletCounter--;
 			}
 			break;
 		case BOUNCER:
@@ -120,18 +183,47 @@ void ModuleSceneIntro::OnCollision(Collider* body1, Collider* body2) //carefull 
 				if (body1->bulletProperties.bounceCounter <= 0)
 				{
 					body1->pendingToDelete = true;
+					App->player->bulletCounter--;
 				}
 			}
 			else if(body2->type == Collider::Type::ENEMY)
 			{
 				body1->pendingToDelete = true;
+				App->player->bulletCounter--;
 			}
-
 			break;
 		}
 		break;
 	case Collider::Type::PLAYER:
 		App->player->canJump = true;
+		if (body2 != nullptr)
+		{
+			switch (body2->type)
+			{
+			case Collider::Type::WALL:
+				//in ground
+				break;
+			case Collider::Type::ENEMY:
+				if (!App->player->GodMode && InGame)
+				{
+					ResetGame();
+				}
+				break;
+			case Collider::Type::BULLET:
+				//lets say palyer can't kill himself
+				break;
+			default:
+				break;
+			}
+		}
+		else {
+			// if body2 is null we know it hitted with a boundery
+			// and in game player dies on getting out of the boundaries
+			if (!App->player->GodMode && InGame)
+			{
+				ResetGame();
+			}
+		}
 		break;
 	case Collider::Type::ENEMY:
 		if (body2 != nullptr)
@@ -140,12 +232,31 @@ void ModuleSceneIntro::OnCollision(Collider* body1, Collider* body2) //carefull 
 			{
 			case Collider::Type::WALL:
 				body1->pendingToDelete = true;
+				AsteroidCounter--;
+				break;
+			case Collider::Type::BULLET:
+				body1->pendingToDelete = true;
+				AsteroidCounter--;
+				break;
+			case Collider::Type::PLAYER:
+				if (!App->player->GodMode && InGame)
+				{
+					ResetGame();
+				}
+				body1->pendingToDelete = true;
+				AsteroidCounter--;
 				break;
 			default:
 				break;
 			}
-			break;
 		}
+		else {
+			//destroy when on bounds
+			body1->pendingToDelete = true;
+			AsteroidCounter--;
+		}
+
+		break;
 	default:
 		break;
 	}
@@ -156,18 +267,15 @@ void ModuleSceneIntro::SpawnAsteriod()
 	fPoint spawnPos, targetPos;
 	float asteroidSize, initialvelocity;
 	asteroidSize = rand() % 10 + 10; //between 10 and 20
-	//initialvelocity = static_cast <float> (rand()) / static_cast <float> (1) + 0.1f;
-	initialvelocity = 0.4f;
+	initialvelocity = 0.35f;
 
 	float targetx, targety;
-	targetx = rand() % 10 + (-10) ; //3 time more or less the player radius
-	targety = rand() % 10 + (-10) ; //3 time more or less the player radius
+	int n = 40; //target offset
+	targetx = rand() % n + (-n) ; //n time more or less the player radius
+	targety = rand() % n + (-n) ; //n time more or less the player radius
 	targetx += App->player->player->position.x;
 	targety += App->player->player->position.y;
 	targetPos = { targetx , targety };
-	//
-	//targetPos.x = App->player->player->position.x;
-	//targetPos.y = App->player->player->position.y;
 
 	// chose a side from screen to spawn
 	int side;
@@ -207,10 +315,28 @@ void ModuleSceneIntro::SpawnAsteriod()
 	asteroid->velocity = { vDirectionNormalized.x * initialvelocity, vDirectionNormalized.y * initialvelocity };
 	asteroid->listeners[1] = App->scene_intro;
 	asteroid->activeGravity = true; 
-	//asteroid->coeficientOfRestitution = 0.9;
-	//asteroid->friction = 0.9;
+
+	AsteroidCounter++;
 }
 
 void ModuleSceneIntro::AsteroidHorde()
 {
+	if (AsteroidCounter < MAX_ASTEROIDS)
+	{
+		if(App->GetTime()-currentTime > secondsToSpawn)
+		{
+			for (int i = 0; i < spawnPerSecond; i++)
+			{
+				SpawnAsteriod();
+			}
+			currentTime = App->GetTime();
+		}
+	}
+}
+void ModuleSceneIntro::ParticleSystem()
+{
+	if (AsteroidCounter < MAX_ASTEROIDS)
+	{
+		SpawnAsteriod();
+	}
 }

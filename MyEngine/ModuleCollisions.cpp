@@ -15,6 +15,9 @@ ModuleCollisions::ModuleCollisions(Application* app, bool start_enabled) : Modul
 		colliders[i] = nullptr;
 
 	debug = true;
+	Normal = false;
+	Satelite = false;
+	Interplanetary = true;
 
 	matrix[Collider::Type::WALL][Collider::Type::WALL] = false;
 	matrix[Collider::Type::WALL][Collider::Type::PLAYER] = true;
@@ -35,11 +38,9 @@ ModuleCollisions::ModuleCollisions(Application* app, bool start_enabled) : Modul
 	matrix[Collider::Type::ENEMY][Collider::Type::WALL] = true;
 	matrix[Collider::Type::ENEMY][Collider::Type::PLAYER] = true;
 	matrix[Collider::Type::ENEMY][Collider::Type::BULLET] = true;
-	matrix[Collider::Type::ENEMY][Collider::Type::ENEMY] = true;
+	matrix[Collider::Type::ENEMY][Collider::Type::ENEMY] = false;
 
-	Normal = false;
-	Satelite = false;
-	Interplanetary = true;
+
 }
 
 // Destructor
@@ -50,19 +51,17 @@ ModuleCollisions::~ModuleCollisions()
 
 update_status ModuleCollisions::PreUpdate()
 {
-	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)
-	{
-			NormalGravity();
-	}
-	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
-	{
+	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
+		NormalGravity();
 
+	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)
 		StateliteGravity();
-	}
-	if (App->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN)
-	{
+
+	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
 		InterplanetaryGravity();
-	}
+
+	if (App->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN)
+		debug = !debug;
 
 	RemovePendingToDeleteColliders();
 	//Sumatory forces
@@ -75,13 +74,9 @@ update_status ModuleCollisions::PreUpdate()
 update_status ModuleCollisions::Update(float dt)
 {
 	
-	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
-		debug = !debug;
-
 	ApplyMovement(dt);
 
 	CheckCollisions();
-
 	
 	return update_status::UPDATE_CONTINUE;
 }
@@ -201,58 +196,7 @@ void ModuleCollisions::OnCollision(Collider* body1, Collider* body2)
 		//set velocity to zero if verly small
 		body2->velocity = StopVibration(body2->velocity);
 	}
-	if (body2->type != Collider::WALL)
-	{
 
-		//calculate resultant velocity
-		fPoint v2 = { body1->velocity.x - body1->velocity.x, body1->velocity.y - body1->velocity.y };
-
-		v2.x *= body1->friction;
-		v2.y *= body1->coeficientOfRestitution;
-
-		//control high velocity
-		v2 = CapBigVelocities(v2);
-
-		//set velocity to zero if verly small
-		v2 = StopVibration(body1->velocity);
-
-
-		body1->velocity = { -v2.x, -v2.y };
-
-	}
-	else {
-
-		if (body1->collInfo->Right && body1->velocity.x > 0)
-		{
-			//reset x position before solving collision
-			body1->position.x = body1->lastPosition.x;
-			body1->velocity.x *= body1->friction;
-			body1->velocity.x *= -1;
-		}
-		if (body1->collInfo->Left && body1->velocity.x < 0)
-		{
-			body1->position.x = body1->lastPosition.x;
-			body1->velocity.x *= body1->friction;
-			body1->velocity.x *= -1;
-		}
-
-		if (body1->collInfo->Bot && body1->velocity.y > 0)
-		{
-			body1->position.y = body1->lastPosition.y;
-			body2->velocity.x *= body2->friction;
-			body1->velocity.y *= body1->coeficientOfRestitution;
-			body1->velocity.y *= -1;
-		}
-		if (body1->collInfo->Top && body1->velocity.y < 0)
-		{
-			body1->position.y = body1->lastPosition.y;
-			body2->velocity.x *= body2->friction;
-			body1->velocity.y *= body1->coeficientOfRestitution;
-			body1->velocity.y *= -1;
-		}
-		//set velocity to zero if verly small
-		body1->velocity = StopVibration(body1->velocity);
-	}
 }
 
 void ModuleCollisions::CheckParticleInBounds()
@@ -270,6 +214,7 @@ void ModuleCollisions::CheckParticleInBounds()
 
 		colliders[i]->velocity = StopVibration(colliders[i]->velocity);
 
+		//Circle collision solver 
 		if (colliders[i]->shape == Collider::Shape::CIRCLE)
 		{
 			checkLeft = colliders[i]->position.x - colliders[i]->radius > 0;
@@ -285,6 +230,7 @@ void ModuleCollisions::CheckParticleInBounds()
 					colliders[i]->collInfo->Right = true;
 
 				colliders[i]->position.x = colliders[i]->lastPosition.x;
+
 				if (colliders[i]->Bounce)
 				{
 					colliders[i]->velocity.x *= colliders[i]->friction;
@@ -331,7 +277,7 @@ void ModuleCollisions::CheckParticleInBounds()
 					colliders[i]->listeners[1]->OnCollision(colliders[i], nullptr);
 			}
 
-		}else
+		}else //Rectangle collision solver 
 		if (colliders[i]->shape == Collider::Shape::RECTANGLE)
 		{
 			checkLeft = colliders[i]->position.x - (colliders[i]->rect.w * 0.5) > 0;
@@ -456,11 +402,23 @@ bool ModuleCollisions::LineLine(float x1, float y1, float x2, float y2, float x3
 		return false;
 }
 
+void ModuleCollisions::OnResetGame()
+{
+	for (uint i = 0; i < MAX_COLLIDERS; ++i)
+	{
+		if (colliders[i] != nullptr)
+		{
+			if (colliders[i]->type == Collider::Type::BULLET || colliders[i]->type == Collider::Type::ENEMY)
+				colliders[i]->pendingToDelete = true;
+		}
+	}
+}
+
 fPoint ModuleCollisions::GravityRotation()
 {
 	float cosine = cos(GravityMovement * App->GetTime());
 	float sine = sin(GravityMovement * App->GetTime());
-	fPoint gravity = {(float) ( GRAVITY * cosine),(float)( GRAVITY * sine) };
+	fPoint gravity = {(float) (SATELITE_GRAVITY * cosine),(float)(SATELITE_GRAVITY * sine) };
 	return gravity;
 }
 
@@ -586,27 +544,22 @@ void ModuleCollisions::ApplyMovement(float dt)
 				
 				colliders[i]->SetCenter();
 
-
-				//LOG("Delata y [%i]: %f", i, colliders[i]->deltaPosition.y);
-				//LOG("FORCE[%i]:x:%f y:%f", i, colliders[i]->force.x, colliders[i]->force.y);
-				//LOG("ACCELERATION[%i]:x:%f y:%f", i, colliders[i]->acceleration.x, colliders[i]->acceleration.y);
-				//LOG("VELOCITY[%i]:x:%f y:%f", i, colliders[i]->velocity.x, colliders[i]->velocity.y);
-
-		
-				if(colliders[i]->type == Collider::Type::PLAYER)
-					//LOG("POSITION[%i]:x:%f y:%f", i, colliders[i]->position.x, colliders[i]->position.y);
-
-				if (i == -1)
+				if (i == -1)//for debug porpuses
 				{
-					
 					LOG("ACCELERATION[%i]:x:%f y:%f", i, colliders[i]->acceleration.x, colliders[i]->acceleration.y);
 					LOG("VELOCITY[%i]:x:%f y:%f", i, colliders[i]->velocity.x, colliders[i]->velocity.y);
 					LOG("POSITION[%i]:x:%f y:%f", i, colliders[i]->position.x, colliders[i]->position.y);
 				}
 			}
-			//draw centers of the objects for debug purposes and also look more pro
-			App->renderer->DrawCircle(colliders[i]->position, 2, 125, 255, 0, 255);
 
+			//draw center of the objects for debug purposes and also look more pro
+			if (colliders[i]->type == Collider::Type::WALL)
+			{
+				App->renderer->DrawCircle(colliders[i]->position, 2, 255, 125, 0, 255);
+			}
+			else {
+				App->renderer->DrawCircle(colliders[i]->position, 2, 125, 255, 0, 255);
+			}
 		}
 	}
 }

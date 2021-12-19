@@ -1,14 +1,131 @@
-﻿  ModuleSceneIntro.cpp
-C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.h(114,22): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
-C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.h(115,37): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+﻿  ModulePlayer.cpp
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.h(112,22): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.h(113,37): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
 C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(52,19): warning C4244: 'inicializando': conversión de 'const float' a 'int'; posible pérdida de datos
 C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(54,30): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
-C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleSceneIntro.cpp(158,29): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleSceneIntro.cpp(163,24): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleSceneIntro.cpp(164,24): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleSceneIntro.cpp(180,14): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleSceneIntro.cpp(184,14): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleSceneIntro.cpp(188,14): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleSceneIntro.cpp(192,14): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleSceneIntro.cpp(202,24): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(24,42): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(24,30): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(173,36): warning C4244: '=': conversión de 'int' a 'TYPE'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(174,36): warning C4244: '=': conversión de 'int' a 'TYPE'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(179,82): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(179,72): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(179,62): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(179,42): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(187,36): warning C4244: '=': conversión de 'int' a 'TYPE'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(188,36): warning C4244: '=': conversión de 'int' a 'TYPE'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(193,15): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(195,31): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(252,36): warning C4244: '=': conversión de 'int' a 'TYPE'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(253,36): warning C4244: '=': conversión de 'int' a 'TYPE'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(259,24): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(277,36): warning C4244: '=': conversión de 'int' a 'TYPE'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(278,36): warning C4244: '=': conversión de 'int' a 'TYPE'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(284,24): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(301,36): warning C4244: '=': conversión de 'int' a 'TYPE'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(302,36): warning C4244: '=': conversión de 'int' a 'TYPE'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(308,24): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(323,42): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(323,30): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(336,96): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(336,59): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(339,76): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(339,56): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(342,76): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(342,56): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
   SDL Game.vcxproj -> C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Debug\Physics 2 Class 1 Handout.exe
