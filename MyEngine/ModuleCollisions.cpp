@@ -87,12 +87,7 @@ update_status ModuleCollisions::PostUpdate()
 	if (debug)
 		DebugDraw();
 
-	return update_status::UPDATE_CONTINUE;
-}
-
-void ModuleCollisions::DebugDraw()
-{
-
+	//show current gravity
 	SDL_Rect r;
 	if (Normal)
 	{
@@ -120,6 +115,11 @@ void ModuleCollisions::DebugDraw()
 	}
 
 
+	return update_status::UPDATE_CONTINUE;
+}
+
+void ModuleCollisions::DebugDraw()
+{
 
 	for (uint i = 0; i < MAX_COLLIDERS; ++i)
 	{

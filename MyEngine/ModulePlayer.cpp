@@ -30,7 +30,7 @@ bool ModulePlayer::Start()
 	canJump = true;
 	currentMovementType = SPEED;
 	speed = { 0.1f,0.1f };
-	force = { 0.01f,0.01f };
+	force = { 0.015f,0.015f };
 
 	currentWeapon = BLASTER;
 
