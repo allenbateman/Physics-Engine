@@ -10,7 +10,6 @@
 #include "ModuleInput.h"
 #include "ModuleAudio.h"
 #include "ModulePlayer.h"
-#include "ModulePhysics.h"
 #include "ModuleSceneIntro.h"
 #include "ModuleCollisions.h"
 #include "PerfTimer.h"
@@ -28,7 +27,6 @@ public:
 	ModuleAudio* audio;
 	ModulePlayer* player;
 	ModuleSceneIntro* scene_intro;
-	ModulePhysics* physics;
 	ModuleCollisions* collisions;
 	int frames;
 private:

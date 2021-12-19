@@ -9,14 +9,12 @@ Application::Application()
 	audio = new ModuleAudio(this, true);
 	player = new ModulePlayer(this);
 	scene_intro = new ModuleSceneIntro(this);
-	physics = new ModulePhysics(this);
 	collisions = new ModuleCollisions(this);
 
 
 	// Main Modules
 	AddModule(window);	
 	AddModule(collisions);
-	AddModule(physics);
 	AddModule(renderer);
 	AddModule(textures);
 	AddModule(input);

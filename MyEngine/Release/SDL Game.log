@@ -1,0 +1,286 @@
+﻿  Application.cpp
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.h(112,22): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.h(113,37): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(52,19): warning C4244: 'inicializando': conversión de 'const float' a 'int'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(54,30): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Application.cpp(50,27): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Application.cpp(83,14): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Application.cpp(90,13): warning C4244: 'argumento': conversión de 'float' a 'Uint32'; posible pérdida de datos
+  Collider.cpp
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.h(112,22): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.h(113,37): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.cpp(8,24): warning C4244: '=': conversión de 'int' a 'TYPE'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.cpp(9,24): warning C4244: '=': conversión de 'int' a 'TYPE'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.cpp(84,34): warning C4305: '=': truncamiento de 'double' a 'float'
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.cpp(142,18): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.cpp(143,18): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.cpp(180,22): warning C4244: '=': conversión de 'const int' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.cpp(185,25): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.cpp(191,22): warning C4244: '=': conversión de 'const int' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.cpp(196,25): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.cpp(203,17): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.cpp(228,15): warning C4244: '=': conversión de 'const int' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.cpp(233,18): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.cpp(239,15): warning C4244: '=': conversión de 'const int' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.cpp(244,18): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.cpp(251,17): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.cpp(385,23): warning C4244: '=': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.cpp(386,23): warning C4244: '=': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.cpp(389,16): warning C4244: '=': conversión de 'int' a 'TYPE'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.cpp(390,16): warning C4244: '=': conversión de 'int' a 'TYPE'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.cpp(404,23): warning C4244: '=': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.cpp(405,23): warning C4244: '=': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+  log.cpp
+  Main.cpp
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.h(112,22): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.h(113,37): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(52,19): warning C4244: 'inicializando': conversión de 'const float' a 'int'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(54,30): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+  ModuleAudio.cpp
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.h(112,22): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.h(113,37): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(52,19): warning C4244: 'inicializando': conversión de 'const float' a 'int'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(54,30): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+  ModuleCollisions.cpp
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.h(112,22): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.h(113,37): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(52,19): warning C4244: 'inicializando': conversión de 'const float' a 'int'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(54,30): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleCollisions.cpp(132,80): warning C4244: 'argumento': conversión de 'float' a 'Uint8'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleCollisions.cpp(132,71): warning C4244: 'argumento': conversión de 'float' a 'Uint8'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleCollisions.cpp(132,62): warning C4244: 'argumento': conversión de 'float' a 'Uint8'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleCollisions.cpp(132,53): warning C4244: 'argumento': conversión de 'float' a 'Uint8'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleCollisions.cpp(135,108): warning C4244: 'argumento': conversión de 'float' a 'Uint8'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleCollisions.cpp(135,99): warning C4244: 'argumento': conversión de 'float' a 'Uint8'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleCollisions.cpp(135,90): warning C4244: 'argumento': conversión de 'float' a 'Uint8'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleCollisions.cpp(135,81): warning C4244: 'argumento': conversión de 'float' a 'Uint8'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleCollisions.cpp(135,66): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleCollisions.cpp(356,67): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleCollisions.cpp(356,59): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleCollisions.cpp(356,54): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleCollisions.cpp(356,49): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleCollisions.cpp(363,79): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleCollisions.cpp(363,68): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleCollisions.cpp(363,60): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleCollisions.cpp(363,52): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleCollisions.cpp(370,70): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleCollisions.cpp(370,62): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleCollisions.cpp(370,54): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleCollisions.cpp(370,49): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleCollisions.cpp(377,79): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleCollisions.cpp(377,68): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleCollisions.cpp(377,57): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleCollisions.cpp(377,49): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleCollisions.cpp(419,15): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleCollisions.cpp(420,13): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleCollisions.cpp(439,25): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
+  ModuleInput.cpp
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.h(112,22): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.h(113,37): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(52,19): warning C4244: 'inicializando': conversión de 'const float' a 'int'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(54,30): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+  ModulePhysics.cpp
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.h(112,22): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.h(113,37): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(52,19): warning C4244: 'inicializando': conversión de 'const float' a 'int'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(54,30): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+  ModulePlayer.cpp
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.h(112,22): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.h(113,37): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(52,19): warning C4244: 'inicializando': conversión de 'const float' a 'int'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(54,30): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(24,42): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(24,30): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(173,36): warning C4244: '=': conversión de 'int' a 'TYPE'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(174,36): warning C4244: '=': conversión de 'int' a 'TYPE'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(179,82): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(179,72): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(179,62): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(179,42): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(187,36): warning C4244: '=': conversión de 'int' a 'TYPE'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(188,36): warning C4244: '=': conversión de 'int' a 'TYPE'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(193,15): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(195,14): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(254,36): warning C4244: '=': conversión de 'int' a 'TYPE'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(255,36): warning C4244: '=': conversión de 'int' a 'TYPE'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(261,24): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(279,36): warning C4244: '=': conversión de 'int' a 'TYPE'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(280,36): warning C4244: '=': conversión de 'int' a 'TYPE'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(286,24): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(303,36): warning C4244: '=': conversión de 'int' a 'TYPE'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(304,36): warning C4244: '=': conversión de 'int' a 'TYPE'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(310,24): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(325,42): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(325,30): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(338,96): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(338,59): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(342,96): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(342,59): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(346,96): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModulePlayer.cpp(346,59): warning C4244: 'argumento': conversión de 'TYPE' a 'int'; posible pérdida de datos
+          with
+          [
+              TYPE=float
+          ]
+  ModuleRender.cpp
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.h(112,22): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.h(113,37): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(52,19): warning C4244: 'inicializando': conversión de 'const float' a 'int'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(54,30): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleRender.cpp(89,23): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleRender.cpp(90,23): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+  ModuleSceneIntro.cpp
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.h(112,22): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.h(113,37): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(52,19): warning C4244: 'inicializando': conversión de 'const float' a 'int'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(54,30): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleSceneIntro.cpp(269,29): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleSceneIntro.cpp(274,23): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleSceneIntro.cpp(275,23): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleSceneIntro.cpp(288,14): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleSceneIntro.cpp(292,14): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleSceneIntro.cpp(296,14): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleSceneIntro.cpp(300,14): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\ModuleSceneIntro.cpp(310,24): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
+  ModuleTextures.cpp
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.h(112,22): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.h(113,37): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(52,19): warning C4244: 'inicializando': conversión de 'const float' a 'int'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(54,30): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+  ModuleWindow.cpp
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.h(112,22): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.h(113,37): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(52,19): warning C4244: 'inicializando': conversión de 'const float' a 'int'; posible pérdida de datos
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Animation.h(54,30): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+  PerfTimer.cpp
+  Timer.cpp
+  Generando código
+  Previous IPDB not found, fall back to full compilation.
+C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Collider.cpp(376): warning C4715: 'Collider::Intersects': no todas las rutas de acceso de control devuelven un valor
+  All 191 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Generación de código finalizada
+  SDL Game.vcxproj -> C:\Users\allen\Documents\GitHub\MyEngine\MyEngine\Release\Physics 2 Class 1 Handout.exe
