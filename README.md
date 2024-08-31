@@ -1,5 +1,5 @@
-# MyEngine
-This is  a first attempt to create a physics engine in c++ !
+# Collision Engine
+This is  a first attempt to create a physics engine in c++!
 
 ## Intro
 This project is a small game where you have to survive destroying incoming asteroids to your position.
